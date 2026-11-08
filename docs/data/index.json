@@ -1,11 +1,17 @@
 {
- "updated": "2026-11-08T09:15:00Z",
+ "updated": "2026-11-08T10:35:04Z",
  "days": [
   {
    "date": "2026-11-08",
    "kind": "woche",
    "headline": "DAX nach Rekordhoch am Ende unverändert – Nasdaq rutscht in eine Korrektur",
    "dax": 0.01
+  },
+  {
+   "date": "2026-11-06",
+   "kind": "tag",
+   "headline": "DAX fällt um 1,9 % – Hochtief vorn, Hannover Rück hinten",
+   "dax": -1.92
   }
  ]
 }
