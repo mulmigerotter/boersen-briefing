@@ -435,7 +435,7 @@ def build(hist, meta, today, force=False):
 
 # ---------------------------------------------------------------- Merkliste (geschützter Bereich)
 WATCH_FILE = ROOT / "watch.json"
-FX = {"USD": "EURUSD=X", "HKD": "EURHKD=X", "AUD": "EURAUD=X", "GBP": "EURGBP=X", "CHF": "EURCHF=X"}
+FX = {"USD": "EURUSD=X", "HKD": "EURHKD=X", "AUD": "EURAUD=X", "GBP": "EURGBP=X", "CHF": "EURCHF=X", "SEK": "EURSEK=X"}
 
 
 def watch_symbols():
@@ -448,7 +448,7 @@ def watch_symbols():
 def currency_of(sym):
     suffix = sym.rsplit(".", 1)[-1].upper() if "." in sym else ""
     return {"DE": "EUR", "F": "EUR", "AS": "EUR", "PA": "EUR", "MI": "EUR", "VI": "EUR",
-            "HK": "HKD", "AX": "AUD", "SW": "CHF"}.get(suffix, "USD")
+            "MC": "EUR", "HK": "HKD", "AX": "AUD", "SW": "CHF", "ST": "SEK"}.get(suffix, "USD")
 
 
 def watch_fetch_list():
@@ -499,6 +499,65 @@ def write_quotes(hist):
     log(f"Merkliste: {len(out)} von {len(watch_symbols())} Werten mit Kursen")
 
 
+# ---------------------------------------------------------------- Dividenden (Yahoo, Ex-Tage)
+DIV_FILE = DATA / "dividends.json"
+FREQ = {1: "jährlich", 2: "halbjährlich", 3: "vierteljährlich", 4: "vierteljährlich", 12: "monatlich"}
+
+
+def summarize_dividends(rows, today):
+    """rows: [(date, betrag)] aufsteigend -> kompakte Zusammenfassung für die Webseite."""
+    if not rows:
+        return {"none": True}
+    last12 = [r for r in rows if r[0] > today - dt.timedelta(days=365)]
+    n12 = len(last12)
+    out = {"n12": n12, "sum12": round(sum(v for _, v in last12), 4),
+           "last": [rows[-1][0].isoformat(), round(rows[-1][1], 4)],
+           "months": sorted({d.month for d, _ in last12}),
+           "hist": [[d.isoformat(), round(v, 4)] for d, v in rows[-8:]]}
+    if n12:
+        out["freq"] = FREQ.get(n12, "monatlich" if n12 >= 10 else f"{n12}× pro Jahr")
+        step = dt.timedelta(days=round(365 / n12))
+        nxt = rows[-1][0] + step
+        while nxt <= today:
+            nxt += step
+        out["next"] = nxt.isoformat()
+    else:
+        out["freq"] = "zuletzt keine"
+    return out
+
+
+def refresh_dividends(symbols, today, cache, max_new=200, max_old=40):
+    import pandas as pd
+    import yfinance as yf
+
+    def age(sym):
+        try:
+            return (today - dt.date.fromisoformat(cache[sym]["updated"])).days
+        except Exception:
+            return 999
+
+    missing = [x for x in symbols if x not in cache][:max_new]
+    stale = sorted([x for x in symbols if x in cache and age(x) >= 7], key=age, reverse=True)[:max_old]
+    for sym in missing + stale:
+        try:
+            ser = yf.Ticker(sym).dividends
+            rows = []
+            if ser is not None and len(ser):
+                for idx, v in ser.items():
+                    d = pd.Timestamp(idx).date()
+                    if d >= today - dt.timedelta(days=3 * 366) and float(v) > 0:
+                        rows.append((d, float(v)))
+            entry = summarize_dividends(sorted(rows), today)
+            entry["cur"] = currency_of(sym)
+            entry["updated"] = today.isoformat()
+            cache[sym] = entry
+        except Exception as e:
+            log(f"  Dividende {sym}: {e}")
+        time.sleep(0.3)
+    log(f"Dividenden: {len(missing)} neu, {len(stale)} aktualisiert")
+    return cache
+
+
 def demo_data(today):
     """Zufallsdaten zum Testen ohne Internet."""
     rng = np.random.default_rng(7)
@@ -547,6 +606,14 @@ def main():
         write_quotes(hist)
     except Exception as e:  # die Merkliste darf den Tageslauf nie stoppen
         log(f"Merkliste fehlgeschlagen: {e}")
+    if not a.demo:
+        try:
+            div = json.loads(DIV_FILE.read_text(encoding="utf-8")) if DIV_FILE.exists() else {}
+            div_syms = watch_symbols() + [x["symbol"] for x in CONFIG["dax"] + CONFIG["us"]]
+            div = refresh_dividends(list(dict.fromkeys(div_syms)), today, div)
+            DIV_FILE.write_text(json.dumps(div, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        except Exception as e:
+            log(f"Dividenden fehlgeschlagen: {e}")
     build(hist, meta, today, force=a.force)
 
 

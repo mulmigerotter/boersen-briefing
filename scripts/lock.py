@@ -1,11 +1,10 @@
-"""Verschlüsselt den geschützten Bereich „Der Aktionär“ mit einem PIN.
+"""Verschlüsselt die Inhalte des gesperrten Bereichs (Zeitschriften) mit dem Zugangscode.
 
-    python scripts/lock.py inhalt.json --pin 1234     # verschlüsseln -> docs/data/aktionaer.enc.json
-    python scripts/lock.py --unlock --pin 1234        # Inhalt wieder anzeigen
+    python scripts/lock.py inhalt.json --pin CODE     # verschlüsseln -> docs/data/hefte.enc.json
+    python scripts/lock.py --unlock --pin CODE        # Inhalt wieder anzeigen
 
 Der Klartext gehört NICHT ins Repository. Die Webseite entschlüsselt im Browser
-(AES-GCM, Schlüssel per PBKDF2-SHA256 aus dem PIN). Ein 4-stelliger PIN ist nur
-ein einfaches Schloss, kein starker Schutz.
+(AES-GCM, Schlüssel per PBKDF2-SHA256 aus dem Code). Der Code öffnet die ganze Seite.
 Die Börsenkürzel der Empfehlungen landen zusätzlich in watch.json, damit der
 tägliche Lauf Kurs und Schwankung dafür holt (docs/data/quotes.json).
 """
@@ -21,7 +20,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "docs" / "data" / "aktionaer.enc.json"
+OUT = ROOT / "docs" / "data" / "hefte.enc.json"
 WATCH = ROOT / "watch.json"
 ITER = 250_000
 

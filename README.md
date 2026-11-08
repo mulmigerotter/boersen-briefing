@@ -32,12 +32,12 @@ Ausgeschlossen werden Aktien mit zu wenig Analystendaten, ohne aktuellen Kurs od
 - **Sofort neu rechnen:** Reiter **Actions** → **Börsen-Briefing aktualisieren** → **Run workflow**.
 - **Uhrzeit ändern:** in `.github/workflows/update.yml` die Zeile `cron` (Zeit in UTC).
 
-## Geschützter Bereich „Der Aktionär“
+## Zugang und gesperrter Bereich
 
-Der Reiter **🔒 Der Aktionär** zeigt eigene Zusammenfassungen von Heft-Ausgaben mit den Empfehlungen (Kurs, Ziel, Stopp) und einer Hochrechnung: Für jede Aktie werden im Browser 2.000 zufällige Kursverläufe gerechnet und gezählt, ob zuerst das Kursziel oder zuerst der Stopp erreicht wird.
+Die Seite öffnet sich erst nach Eingabe des Zugangscodes und bleibt danach 15 Minuten offen; dann muss der Code neu eingegeben werden. Der Reiter **🔒 Gesperrter Bereich** enthält je Zeitschrift einen eigenen Bereich mit eigener, vereinfachter Zusammenfassung der Ausgaben (neueste oben), allen Empfehlungen (Kurs, Ziel, Stopp), Dividenden (wann, wie oft, wie viel – laut Yahoo) und einer Hochrechnung mit 2.000 zufälligen Kursverläufen pro Aktie.
 
-- Der Inhalt liegt nur verschlüsselt in `docs/data/aktionaer.enc.json` und wird im Browser mit dem PIN geöffnet. Ein 4-stelliger PIN ist ein einfaches Schloss, kein starker Schutz.
-- Neue Ausgabe einpflegen: `python scripts/lock.py inhalt.json --pin <PIN>` (der Klartext gehört nicht ins Repository). Das Skript schreibt auch `watch.json`; dafür holt der Tageslauf Euro-Kurse und Schwankung nach `docs/data/quotes.json`.
+- Die Heft-Inhalte liegen nur verschlüsselt in `docs/data/hefte.enc.json` und werden im Browser mit dem Code geöffnet. Die Kurs- und Dividendendaten (`quotes.json`, `dividends.json`) und das tägliche Briefing sind öffentliche Marktdaten und liegen unverschlüsselt im Repository.
+- Neue Ausgabe einpflegen: `python scripts/lock.py inhalt.json --pin <CODE>` (der Klartext gehört nicht ins Repository). Das Skript schreibt auch `watch.json`; dafür holt der Tageslauf Kurse und Schwankungen.
 
 ## Falls es mal nicht läuft
 
