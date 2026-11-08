@@ -300,6 +300,82 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .toast { margin: -8px 0 0; font-size: 13px; color: var(--up); }
 .toast[hidden] { display: none; }
 .fineprint { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; margin: 0; }
+
+/* Bereiche */
+.tabs { display: flex; gap: 6px; margin-top: -6px; }
+.tabs a {
+  text-decoration: none; color: var(--ink); font-size: 14px; font-weight: 600;
+  padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+}
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.view { display: grid; gap: 18px; }
+.view[hidden] { display: none; }
+
+/* Der Aktionär (mit PIN) */
+.ak-lock {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 22px 18px; display: grid; gap: 10px; justify-items: start;
+}
+.ak-lock[hidden], .ak-open[hidden], .ak-err[hidden] { display: none; }
+.ak-lock h2 { font-family: var(--font-display); font-weight: 800; font-size: 24px; margin: 0; }
+.ak-lock p { margin: 0; color: var(--muted); font-size: 14.5px; max-width: 46ch; }
+.ak-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ak-form label { font-weight: 600; font-size: 14px; }
+.ak-pin {
+  font-family: var(--font-num); font-size: 22px; letter-spacing: 0.4em; width: 7.2em;
+  padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+  text-align: center;
+}
+.ak-pin:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ak-err { color: var(--down); font-weight: 600; font-size: 14px; }
+.ak-open { display: grid; gap: 16px; }
+.ak-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
+.seg button { font: inherit; font-size: 13.5px; padding: 6px 12px; background: none; border: 0; color: var(--ink); cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); font-weight: 600; }
+.ak-glance { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 14px; padding: 12px 14px; }
+.ak-glance h3 { margin: 0 0 6px; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ak-glance ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14.5px; }
+.ak-issue { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; }
+.ak-issue h3 { font-family: var(--font-display); font-weight: 800; font-size: 22px; line-height: 1.15; margin: 0; text-wrap: balance; }
+.ak-issue h4 { font-family: var(--font-display); font-weight: 600; font-size: 17px; margin: 8px 0 0; }
+.ak-kern { margin: 0; font-weight: 500; }
+.ak-points { margin: 0; padding-left: 20px; display: grid; gap: 5px; font-size: 14.5px; }
+.ak-picks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.akp { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
+.akp > summary { list-style: none; cursor: pointer; padding: 10px 12px; display: grid; gap: 4px; }
+.akp > summary::-webkit-details-marker { display: none; }
+.akp > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 12px; }
+.akp-top { display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+.akp-name { font-weight: 600; font-size: 16px; }
+.akp-name::after { content: " ›"; color: var(--muted); }
+.akp[open] .akp-name::after { content: " ⌄"; }
+.chip { font-size: 11px; font-weight: 600; padding: 0 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.chip.hot { color: var(--down); border-color: currentColor; }
+.chip.top { color: var(--accent); border-color: currentColor; }
+.akp-sub { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.odds-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--flat-bg); }
+.odds-bar i { display: block; height: 100%; }
+.odds-bar .bz { background: var(--up); }
+.odds-bar .bs { background: var(--down); margin-left: auto; }
+.akp-odds { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.akp-odds .oz { color: var(--up); font-weight: 600; }
+.akp-odds .os { color: var(--down); font-weight: 600; }
+.akp-odds .on { color: var(--muted); }
+.akp-body { padding: 0 12px 12px; display: grid; gap: 10px; }
+.fan .zl { stroke: var(--up); stroke-width: 1.4; stroke-dasharray: 5 3; }
+.fan .sl { stroke: var(--down); stroke-width: 1.4; stroke-dasharray: 5 3; }
+.fan .lbl-z { fill: var(--up); font-weight: 600; }
+.fan .lbl-s { fill: var(--down); font-weight: 600; }
+.fan .hist { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linejoin: round; }
+.fan .now { stroke: var(--muted); stroke-width: 1; }
+.fan .heft { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.ak-deriv { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; }
+.ak-deriv small { color: var(--muted); }
+.ak-more > summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+.ak-more[open] > summary { margin-bottom: 6px; }
+.ak-no { margin: 0; font-size: 14px; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -311,8 +387,47 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     </div>
     <button class="btn ghost" id="share" type="button">Link teilen</button>
   </header>
+  <nav class="tabs" aria-label="Bereiche">
+    <a href="./" id="tab-brief" aria-current="page">Briefing</a>
+    <a href="#aktionaer" id="tab-ak">🔒 Der Aktionär</a>
+  </nav>
   <p class="toast" id="toast" role="status" hidden></p>
 
+  <section class="view ak" id="v-ak" hidden aria-label="Der Aktionär">
+    <div class="ak-lock" id="ak-lock">
+      <h2>Der Aktionär</h2>
+      <p>Zusammenfassung der Hefte mit ihren Empfehlungen und Hochrechnungen. Dieser Bereich ist mit einem PIN geschützt.</p>
+      <form class="ak-form" id="ak-form" autocomplete="off">
+        <label for="ak-pin">PIN</label>
+        <input class="ak-pin" id="ak-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" enterkeyhint="go" aria-describedby="ak-err">
+        <button class="btn" id="ak-go" type="submit">Öffnen</button>
+      </form>
+      <p class="ak-err" id="ak-err" role="alert" hidden></p>
+    </div>
+    <div class="ak-open" id="ak-open" hidden>
+      <div class="sec-head">
+        <h2>Der Aktionär</h2>
+        <button class="btn ghost" id="ak-close" type="button">Sperren</button>
+      </div>
+      <div class="ak-controls">
+        <div class="seg" role="group" aria-label="Zeitraum der Hochrechnung">
+          <button type="button" data-h="63" aria-pressed="false">3 Mon.</button>
+          <button type="button" data-h="126" aria-pressed="true">6 Mon.</button>
+          <button type="button" data-h="252" aria-pressed="false">12 Mon.</button>
+        </div>
+        <div class="seg" role="group" aria-label="Annahme für den Trend">
+          <button type="button" data-sc="neutral" aria-pressed="true">Ohne Trend</button>
+          <button type="button" data-sc="trend" aria-pressed="false">Trend zum Ziel</button>
+        </div>
+        <button class="btn" id="ak-resim" type="button">Neu würfeln</button>
+      </div>
+      <p class="sec-note" id="ak-note"></p>
+      <div id="ak-content"></div>
+      <p class="fineprint">Eigene Zusammenfassung der Hefte, keine Kopie und keine Anlageberatung. Kurse, Kursziele und Stopps stammen aus dem Heft (in Euro, Stand siehe Ausgabe), die heutigen Kurse und Schwankungen von Yahoo Finance (in Euro umgerechnet). Die Hochrechnung zeigt nur, wie oft Ziel oder Stopp in zufälligen Kursverläufen erreicht werden – sie kennt keine Nachrichten und ist keine Vorhersage.</p>
+    </div>
+  </section>
+
+  <div class="view" id="v-brief">
   <div class="status" id="status" role="status">
     <span class="pulse" aria-hidden="true"></span>Die neueste Nachricht wird geladen …
   </div>
@@ -352,6 +467,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   </section>
 
   <p class="fineprint">Keine Anlageberatung. Ein Programm erstellt diese Seite automatisch aus Kurs- und Analystendaten von Yahoo Finance; die Daten können fehlen, verspätet oder fehlerhaft sein. Der „Rechner“ ist eine einfache Punkteformel und die Simulation zeigt nur mögliche Spannen – beides ist keine Empfehlung. Kurse können stark schwanken, prüfe jede Entscheidung selbst.</p>
+  </div>
 </main>
 
 <script>
@@ -552,6 +668,345 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       (r.excluded ? ' <span class="ex">(ausgeschlossen: ' + esc(r.reason || "negative Nachrichten") + ")</span>" : "") + "</li>").join("") + "</ol>" : "";
   }
 
+  // ---------- Der Aktionär: PIN, Entschlüsseln, Hochrechnung ----------
+  const AK = { data: null, quotes: null, H: 126, sc: "neutral", run: 0, results: null, busy: 0 };
+  const RUNS_AK = 2000;
+  const ss = {
+    get: (k) => { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
+    set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) { /* privat-Modus */ } },
+    del: (k) => { try { sessionStorage.removeItem(k); } catch (e) { /* egal */ } },
+  };
+  const b64bytes = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  let encBlob = null;
+  async function akDecrypt(pin) {
+    if (!(window.crypto && crypto.subtle)) throw new Error("nocrypto");
+    if (!encBlob) {
+      const r = await fetch("data/aktionaer.enc.json", { cache: "no-cache" });
+      if (!r.ok) throw new Error("net");
+      encBlob = await r.json();
+    }
+    const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pin), "PBKDF2", false, ["deriveKey"]);
+    const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64bytes(encBlob.salt), iterations: encBlob.iter, hash: "SHA-256" },
+      base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    let plain;
+    try {
+      plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64bytes(encBlob.iv) }, key, b64bytes(encBlob.ct));
+    } catch (e) { throw new Error("pin"); }
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+  async function akQuotes() {
+    try {
+      const r = await fetch("data/quotes.json", { cache: "no-cache" });
+      if (!r.ok) return { q: {} };
+      const j = await r.json();
+      return j && j.q ? j : { q: {} };
+    } catch (e) { return { q: {} }; }
+  }
+
+  const clip = (x, a, b) => Math.max(a, Math.min(b, x));
+  const pctInt = (x) => Math.round(x * 100) + " %";
+  const eur = (v) => num(v) + "\u00a0€";
+  function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  const monLabel = (h) => ({ 63: "3 Monaten", 126: "6 Monaten", 252: "12 Monaten" }[h] || h + " Handelstagen");
+  const monAcc = (h) => ({ 63: "3 Monate", 126: "6 Monate", 252: "12 Monate" }[h] || h + " Handelstage");
+  const monShort = (h) => ({ 63: "+3 Mon.", 126: "+6 Mon.", 252: "+12 Mon." }[h] || "+" + h + " T");
+
+  // Ausgangslage pro Empfehlung: Kurs heute (falls passend), Schwankung, Verlauf seit dem Heft
+  function akCtx(issue, p) {
+    const q = AK.quotes && AK.quotes.q ? AK.quotes.q[p.sym] : null;
+    const c = { S0: p.kurs, sigma: 0.45, src: "none", q: q, hist: [], n: 0 };
+    if (q && q.eur > 0 && q.sigma > 0) {
+      c.sigma = q.sigma; c.n = q.n || 0;
+      const ratio = q.eur / p.kurs;
+      if (ratio > 0.5 && ratio < 2) {
+        c.S0 = q.eur; c.src = "today";
+        c.hist = (q.hist || []).filter((h) => h[0] >= issue.stand);
+      } else c.src = "mismatch";
+    }
+    c.sigma = clip(c.sigma, 0.12, 1.5);
+    c.status = c.S0 >= p.ziel ? "ziel" : c.S0 <= p.stopp ? "stopp" : "offen";
+    return c;
+  }
+
+  // 2.000 zufällige Kursverläufe (t-verteilte Tagesrenditen, 4 Freiheitsgrade). Gezählt wird,
+  // ob zuerst das Kursziel oder zuerst der Stopp erreicht wird (auf Schlusskursbasis).
+  function akSim(c, p, H, trend, seed) {
+    const R = RUNS_AK, DF = 4, sc = Math.sqrt((DF - 2) / DF), vol = c.sigma / Math.sqrt(252);
+    const lz = Math.log(p.ziel / c.S0), ls = Math.log(p.stopp / c.S0);
+    const mu = trend ? clip(lz, -1, 1) / 252 : 0;
+    const step = Math.max(1, Math.ceil(H / 42)), days = [];
+    for (let d = 0; d <= H; d += step) days.push(d);
+    if (days[days.length - 1] !== H) days.push(H);
+    const cols = days.map(() => new Float64Array(R));
+    const rnd = mulberry32(seed >>> 0), TWO_PI = 2 * Math.PI;
+    let hitZ = 0, hitS = 0; const tZ = [];
+    for (let i = 0; i < R; i++) {
+      let lp = 0, first = 0, ci = 1, spare = NaN;
+      for (let d = 1; d <= H; d++) {
+        let z;
+        if (spare === spare) { z = spare; spare = NaN; }
+        else {
+          const u = rnd() || 1e-12, v = rnd(), r = Math.sqrt(-2 * Math.log(u));
+          z = r * Math.cos(TWO_PI * v); spare = r * Math.sin(TWO_PI * v);
+        }
+        const chi = -2 * Math.log((rnd() || 1e-12) * (rnd() || 1e-12));
+        lp += mu + vol * sc * z / Math.sqrt(chi / DF);
+        if (!first) {
+          if (lp >= lz) { first = 1; hitZ++; tZ.push(d); }
+          else if (lp <= ls) { first = 2; hitS++; }
+        }
+        if (d === days[ci]) { cols[ci][i] = lp; ci++; }
+      }
+    }
+    const q = (a, pc) => { const x = pc / 100 * (a.length - 1), lo = Math.floor(x), hi = Math.ceil(x); return a[lo] + (a[hi] - a[lo]) * (x - lo); };
+    const bands = { p10: [], p25: [], p50: [], p75: [], p90: [] };
+    for (const col of cols) { col.sort(); for (const k of [10, 25, 50, 75, 90]) bands["p" + k].push(c.S0 * Math.exp(q(col, k))); }
+    tZ.sort((a, b) => a - b);
+    return { pZ: hitZ / R, pS: hitS / R, tZ: tZ.length ? tZ[Math.floor(tZ.length / 2)] : null, days, bands };
+  }
+
+  function akChart(p, c, sim, H) {
+    const W = 320, Hh = 176, L = 6, R = 80, T = 10, B = 22;
+    const hist = c.hist.length >= 2 ? c.hist : [];
+    const plotW = W - L - R, histW = hist.length ? plotW * 0.24 : 0;
+    const b = sim.bands, last = sim.days.length - 1;
+    const vals = b.p10.concat(b.p90, [p.ziel, p.stopp, c.S0], hist.map((h) => h[1]), hist.length ? [p.kurs] : []);
+    let lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    const pad = (hi - lo) * 0.06 || c.S0 * 0.02; lo -= pad; hi += pad;
+    const xh = (i) => L + histW * i / Math.max(1, hist.length - 1);
+    const xf = (d) => L + histW + (plotW - histW) * d / H;
+    const y = (v) => T + (Hh - T - B) * (1 - (v - lo) / (hi - lo));
+    const P = (xx, yy) => xx.toFixed(1) + " " + yy.toFixed(1);
+    const fl = (arr) => arr.map((v, i) => P(xf(sim.days[i]), y(v)));
+    const area = (up, dn) => "M" + fl(up).join(" L") + " L" + fl(dn).reverse().join(" L") + " Z";
+    const x0 = L, x1 = xf(H);
+    const labels = [
+      { cls: "lbl-z", v: p.ziel, t: "Ziel " + num(p.ziel) },
+      { cls: "lbl-mid", v: b.p50[last], t: num(b.p50[last]) },
+      { cls: "lbl-s", v: p.stopp, t: "Stopp " + num(p.stopp) },
+    ].map((l) => Object.assign(l, { y: y(l.v) + 3.5 })).sort((a, b2) => a.y - b2.y);
+    for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < 12) labels[i].y = labels[i - 1].y + 12;
+    const over = labels[labels.length - 1].y - (Hh - B + 8);
+    if (over > 0) labels.forEach((l) => { l.y -= over; });
+    const aria = p.name + ": " + RUNS_AK + " simulierte Kursverläufe über " + monAcc(H) + ". Ziel zuerst erreicht in " + pctInt(sim.pZ) +
+      ", Stopp zuerst in " + pctInt(sim.pS) + ". Mittlerer Kurs am Ende " + eur(b.p50[last]) + ".";
+    let s = '<svg class="fan" viewBox="0 0 ' + W + " " + Hh + '" role="img" aria-label="' + esc(aria) + '">' +
+      '<line class="grid" x1="' + x0 + '" x2="' + x1.toFixed(1) + '" y1="' + (Hh - B) + '" y2="' + (Hh - B) + '"/>' +
+      '<path class="b80" d="' + area(b.p90, b.p10) + '"/>' +
+      '<path class="b50" d="' + area(b.p75, b.p25) + '"/>' +
+      '<line class="zl" x1="' + x0 + '" x2="' + x1.toFixed(1) + '" y1="' + y(p.ziel).toFixed(1) + '" y2="' + y(p.ziel).toFixed(1) + '"/>' +
+      '<line class="sl" x1="' + x0 + '" x2="' + x1.toFixed(1) + '" y1="' + y(p.stopp).toFixed(1) + '" y2="' + y(p.stopp).toFixed(1) + '"/>' +
+      '<path class="med" d="M' + fl(b.p50).join(" L") + '"/>';
+    if (hist.length) {
+      s += '<line class="now" x1="' + xf(0).toFixed(1) + '" x2="' + xf(0).toFixed(1) + '" y1="' + T + '" y2="' + (Hh - B) + '"/>' +
+        '<path class="hist" d="M' + hist.map((h, i) => P(xh(i), y(h[1]))).join(" L") + '"/>' +
+        '<circle class="heft" cx="' + xh(0).toFixed(1) + '" cy="' + y(p.kurs).toFixed(1) + '" r="3"/>' +
+        '<text x="' + L + '" y="' + (Hh - 6) + '">Heft</text>';
+    }
+    s += '<circle class="dot" cx="' + x1.toFixed(1) + '" cy="' + y(b.p50[last]).toFixed(1) + '" r="3"/>' +
+      labels.map((l) => '<text class="' + l.cls + '" x="' + (x1 + 5).toFixed(1) + '" y="' + l.y.toFixed(1) + '">' + esc(l.t) + "</text>").join("") +
+      '<text x="' + xf(0).toFixed(1) + '" y="' + (Hh - 6) + '"' + (hist.length ? ' text-anchor="middle"' : "") + ">heute</text>" +
+      '<text x="' + x1.toFixed(1) + '" y="' + (Hh - 6) + '" text-anchor="end">' + monShort(H) + "</text></svg>";
+    return s;
+  }
+
+  const CHIP = { "Hot-Stock": "hot", "Top-Tipp": "top" };
+  function akRow(issue, p, c, sim) {
+    const potZ = p.ziel / p.kurs - 1, potS = p.stopp / p.kurs - 1;
+    const chips = (p.tags || []).map((t) => '<span class="chip ' + (CHIP[t] || "") + '">' + esc(t) + "</span>").join("");
+    let odds;
+    if (c.status === "ziel") odds = '<div class="akp-odds"><span class="oz">✓ Kursziel schon erreicht – heute ' + eur(c.S0) + "</span></div>";
+    else if (c.status === "stopp") odds = '<div class="akp-odds"><span class="os">✗ Stopp unterschritten – heute ' + eur(c.S0) + "</span></div>";
+    else {
+      const pN = Math.max(0, 1 - sim.pZ - sim.pS);
+      odds = '<div class="odds-bar" aria-hidden="true"><i class="bz" style="width:' + (sim.pZ * 100).toFixed(1) + '%"></i><i class="bs" style="width:' + (sim.pS * 100).toFixed(1) + '%"></i></div>' +
+        '<div class="akp-odds"><span class="oz">Ziel zuerst ' + pctInt(sim.pZ) + '</span><span class="on">offen ' + pctInt(pN) + '</span><span class="os">Stopp zuerst ' + pctInt(sim.pS) + "</span></div>";
+    }
+    let body = "";
+    if (c.status === "offen") {
+      const b = sim.bands, last = sim.days.length - 1;
+      body = akChart(p, c, sim, AK.H) +
+        '<p class="legend">Durchgezogen: Kurs seit dem Heft · blaue Linie: mittlerer Verlauf · Flächen: mittlere 50 % und 80 % der Läufe · grün: Ziel · rot: Stopp</p>' +
+        '<div class="stats">' +
+        stat("Ziel zuerst", pctInt(sim.pZ), sim.tZ ? "meist nach ~" + sim.tZ + " Handelstagen" : "in " + monLabel(AK.H)) +
+        stat("Stopp zuerst", pctInt(sim.pS), "in " + monLabel(AK.H)) +
+        stat("Mitte in " + monShort(AK.H).slice(1), eur(b.p50[last]), signedPct(b.p50[last] / c.S0 - 1) + " zu heute") +
+        "</div>";
+    }
+    let src;
+    if (c.src === "today") src = "Kurs heute " + eur(c.S0) + " (Schluss " + shortDate(c.q.date) + ") · seit Heft " + signedPct(c.S0 / p.kurs - 1) +
+      " · bis Ziel " + signedPct(p.ziel / c.S0 - 1) + ", bis Stopp " + signedPct(p.stopp / c.S0 - 1);
+    else if (c.src === "mismatch") src = "Der Börsenkurs (" + eur(c.q.eur) + ") passt nicht zum Heft-Kurs – vermutlich anderes Papier oder Angabe im Heft. Gerechnet wird ab dem Heft-Kurs.";
+    else src = "Noch kein Börsenkurs geladen – gerechnet ab dem Heft-Kurs mit geschätzter Schwankung.";
+    body += '<p class="pick-text"><b>Laut Heft:</b> ' + esc(p.why || "") + "</p>" +
+      '<p class="pick-foot">' + esc(src) + "</p>" +
+      (c.status === "offen" ? '<p class="pick-foot">Schwankung ' + Math.round(c.sigma * 100) + " % pro Jahr" +
+        (c.src === "none" ? " (geschätzt)" : " (aus " + c.n + " Handelstagen)") + " · " +
+        (AK.sc === "trend" ? "Trend so, dass der mittlere Kurs das Ziel nach 12 Monaten erreicht" : "ohne Trend") + " · " +
+        RUNS_AK.toLocaleString("de-DE") + " Läufe</p>" : "");
+    return '<li><details class="akp"><summary>' +
+      '<div class="akp-top"><span class="akp-name">' + esc(p.name) + "</span>" + chips + "</div>" +
+      '<div class="akp-sub">Heft ' + eur(p.kurs) + " · Ziel " + eur(p.ziel) + " (" + signedPct(potZ) + ") · Stopp " + eur(p.stopp) + " (" + signedPct(potS) + ")</div>" +
+      odds + '</summary><div class="akp-body">' + body + "</div></details></li>";
+  }
+
+  const sortKey = (r) => (r.c.status === "ziel" ? 2 : r.c.status === "stopp" ? -1 : r.sim.pZ - 0.0001 * r.sim.pS);
+  function akRender() {
+    const d = AK.data, res = AK.results;
+    if (!d || !res) return;
+    const all = [].concat.apply([], res);
+    const open = all.filter((r) => r.c.status === "offen").sort((a, b) => sortKey(b) - sortKey(a));
+    const reached = all.filter((r) => r.c.status === "ziel"), stopped = all.filter((r) => r.c.status === "stopp");
+    const seen = {}, both = [];
+    d.issues.forEach((i) => i.picks.forEach((p) => { seen[p.sym] = (seen[p.sym] || 0) + 1; if (seen[p.sym] === 2) both.push(p.name); }));
+    const uniqTop = [], names = {};
+    for (const r of open) { if (names[r.p.sym]) continue; names[r.p.sym] = 1; uniqTop.push(r); if (uniqTop.length === 5) break; }
+    const glance = [];
+    if (uniqTop.length) glance.push("<li><b>Beste Chance aufs Ziel</b> (in " + monLabel(AK.H) + ", " + (AK.sc === "trend" ? "Trend zum Ziel" : "ohne Trend") + "): " +
+      uniqTop.map((r) => esc(r.p.name) + " " + pctInt(r.sim.pZ)).join(", ") + "</li>");
+    if (reached.length) glance.push("<li><b>Schon über dem Kursziel:</b> " + reached.map((r) => esc(r.p.name)).join(", ") + "</li>");
+    if (stopped.length) glance.push("<li><b>Schon unter dem Stopp:</b> " + stopped.map((r) => esc(r.p.name)).join(", ") + "</li>");
+    if (both.length) glance.push("<li><b>In beiden Heften empfohlen:</b> " + both.map(esc).join(", ") + "</li>");
+    let html = glance.length ? '<section class="ak-glance"><h3>Hochrechnung auf einen Blick</h3><ul>' + glance.join("") + "</ul></section>" : "";
+    d.issues.forEach((issue, ii) => {
+      const rows = res[ii].slice().sort((a, b) => sortKey(b) - sortKey(a));
+      html += '<article class="ak-issue">' +
+        '<div class="meta-row"><span class="kind">' + esc(issue.nr) + "</span><span>" + esc(issue.zeitraum) + " · Kurse vom " + esc(shortDate(issue.stand)) + "</span></div>" +
+        "<h3>" + esc(issue.titel) + "</h3>" +
+        '<p class="ak-kern">' + esc(issue.kern) + "</p>" +
+        '<ul class="ak-points">' + issue.punkte.map((t) => "<li>" + esc(t) + "</li>").join("") + "</ul>" +
+        "<h4>Was das Heft empfiehlt (" + issue.picks.length + " Aktien)</h4>" +
+        '<p class="sec-note">Sortiert nach der Chance, dass zuerst das Kursziel und nicht der Stopp erreicht wird. Tippen für Chart und Details.</p>' +
+        '<ol class="ak-picks">' + rows.map((r) => akRow(issue, r.p, r.c, r.sim)).join("") + "</ol>";
+      if (issue.derivate && issue.derivate.length) {
+        html += '<details class="ak-more"><summary>Hebelprodukte aus dem Heft (' + issue.derivate.length + ")</summary>" +
+          '<p class="sec-note">Zertifikate und Optionsscheine können bis zum Totalverlust fallen; dafür rechnet die Seite keine Simulation.</p><ul class="ak-deriv">' +
+          issue.derivate.map((x) => "<li><b>" + esc(x.name) + "</b> <small>WKN " + esc(x.wkn) + "</small><br>Kurs " + eur(x.kurs) + " → Ziel " + eur(x.ziel) +
+            " (" + signedPct(x.ziel / x.kurs - 1) + ") · Stopp " + eur(x.stopp) + (x.note ? "<br><small>" + esc(x.note) + "</small>" : "") + "</li>").join("") + "</ul></details>";
+      }
+      if (issue.nicht && issue.nicht.length) html += '<p class="ak-no"><b>Kein Kauf laut Heft:</b> ' + issue.nicht.map(esc).join(", ") + "</p>";
+      html += "</article>";
+    });
+    $("ak-content").innerHTML = html;
+    const qd = AK.quotes && AK.quotes.updated ? new Date(AK.quotes.updated) : null;
+    const nQ = AK.quotes && AK.quotes.q ? Object.keys(AK.quotes.q).length : 0;
+    $("ak-note").innerHTML = "Für jede Aktie " + RUNS_AK.toLocaleString("de-DE") + " zufällige Kursverläufe über " + monAcc(AK.H) +
+      ", Schwankung wie im letzten Jahr. Gezählt wird, ob zuerst das <strong>Kursziel</strong> oder zuerst der <strong>Stopp</strong> aus dem Heft erreicht wird. " +
+      (AK.sc === "trend" ? "<strong>Trend zum Ziel:</strong> angenommen, das Heft hat recht und der mittlere Kurs erreicht das Ziel nach 12 Monaten."
+        : "<strong>Ohne Trend:</strong> zeigt, was allein die Schwankung hergibt.") +
+      (nQ ? " Heutige Kurse: Stand " + (qd && !isNaN(qd) ? qd.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", timeZone: "Europe/Berlin" }) : "–") : " Heutige Kurse werden nach dem nächsten Tageslauf ergänzt.") +
+      (AK.run ? " Durchlauf Nr. " + AK.run + "." : "");
+  }
+
+  function akCompute() {
+    const d = AK.data;
+    const token = ++AK.busy;
+    const btn = $("ak-resim");
+    btn.disabled = true; btn.textContent = "Rechne …";
+    const jobs = [];
+    d.issues.forEach((issue, ii) => issue.picks.forEach((p, pi) => jobs.push([ii, pi])));
+    const out = d.issues.map((i) => new Array(i.picks.length));
+    let k = 0;
+    const tick = () => {
+      if (token !== AK.busy) return;
+      const t0 = performance.now();
+      while (k < jobs.length && performance.now() - t0 < 40) {
+        const [ii, pi] = jobs[k++], issue = d.issues[ii], p = issue.picks[pi], c = akCtx(issue, p);
+        const seed = hashStr(p.sym + issue.id + AK.H + AK.sc) ^ Math.imul(AK.run, 0x9E3779B1);
+        out[ii][pi] = { p, c, sim: c.status === "offen" ? akSim(c, p, AK.H, AK.sc === "trend", seed) : null };
+      }
+      $("ak-note").textContent = "Rechne " + RUNS_AK.toLocaleString("de-DE") + " Kursverläufe pro Aktie … " + k + " von " + jobs.length;
+      if (k < jobs.length) { setTimeout(tick, 0); return; }
+      AK.results = out;
+      akRender();
+      btn.disabled = false; btn.textContent = "Neu würfeln";
+    };
+    setTimeout(tick, 20);
+  }
+
+  function akShowLocked(msg) {
+    $("ak-open").hidden = true;
+    $("ak-lock").hidden = false;
+    $("ak-err").hidden = !msg;
+    $("ak-err").textContent = msg || "";
+    const inp = $("ak-pin");
+    inp.value = "";
+    setTimeout(() => inp.focus(), 50);
+  }
+  async function akUnlock(pin, silent) {
+    const go = $("ak-go");
+    go.disabled = true; go.textContent = "Prüfe …";
+    try {
+      const [data, quotes] = await Promise.all([akDecrypt(pin), akQuotes()]);
+      AK.data = data; AK.quotes = quotes; AK.results = null;
+      ss.set("ak-pin", pin);
+      $("ak-lock").hidden = true;
+      $("ak-open").hidden = false;
+      akCompute();
+    } catch (e) {
+      ss.del("ak-pin");
+      const m = e && e.message;
+      akShowLocked(silent ? "" : m === "pin" ? "Falscher PIN. Bitte noch einmal." : m === "nocrypto"
+        ? "Dein Browser kann den Bereich nicht öffnen. Bitte einen aktuellen Browser verwenden." : "Der Bereich lässt sich gerade nicht laden. Prüfe deine Verbindung.");
+    } finally {
+      go.disabled = false; go.textContent = "Öffnen";
+    }
+  }
+  function akEnter() {
+    if (AK.data) {
+      $("ak-lock").hidden = true; $("ak-open").hidden = false;
+      if (!AK.results) akCompute();
+      return;
+    }
+    const pin = ss.get("ak-pin");
+    if (pin) akUnlock(pin, true); else akShowLocked("");
+  }
+  $("ak-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if ($("ak-go").disabled) return;
+    const pin = $("ak-pin").value.trim();
+    if (!/^\d{4}$/.test(pin)) { akShowLocked("Bitte die 4 Ziffern eingeben."); return; }
+    akUnlock(pin, false);
+  });
+  $("ak-pin").addEventListener("input", (e) => {
+    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+    if (v !== e.target.value) e.target.value = v;
+    if (v.length === 4 && !$("ak-go").disabled) akUnlock(v, false);
+  });
+  $("ak-close").addEventListener("click", () => {
+    AK.data = null; AK.results = null; AK.busy++;
+    ss.del("ak-pin");
+    $("ak-content").innerHTML = "";
+    akShowLocked("");
+  });
+  document.querySelectorAll("#ak-open .seg button").forEach((b) => b.addEventListener("click", () => {
+    const grp = b.parentNode;
+    grp.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    if (b.dataset.h) AK.H = +b.dataset.h;
+    if (b.dataset.sc) AK.sc = b.dataset.sc;
+    if (AK.data) akCompute();
+  }));
+  $("ak-resim").addEventListener("click", () => { AK.run++; if (AK.data) akCompute(); });
+
+  // ---------- Bereiche umschalten ----------
+  const isAk = () => location.hash === "#aktionaer";
+  function setView(v) {
+    $("v-ak").hidden = v !== "ak";
+    $("v-brief").hidden = v === "ak";
+    $("tab-ak").setAttribute("aria-current", v === "ak" ? "page" : "false");
+    $("tab-brief").setAttribute("aria-current", v === "ak" ? "false" : "page");
+    document.title = v === "ak" ? "Der Aktionär · Börsen-Briefing" : "Börsen-Briefing";
+  }
+  function route() {
+    if (isAk()) { setView("ak"); akEnter(); }
+    else { setView("brief"); show(); }
+  }
+  $("tab-brief").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (location.hash) history.pushState(null, "", location.pathname);
+    route();
+  });
+
   // ---------- Daten laden (statische JSON-Dateien neben dieser Seite) ----------
   let entries = [];
   let current = null;
@@ -653,7 +1108,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   });
   $("back").addEventListener("click", () => { history.pushState(null, "", location.pathname); show(); });
-  window.addEventListener("popstate", show);
+  window.addEventListener("popstate", route);
 
   $("share").addEventListener("click", async () => {
     const url = location.href.split("#")[0];
@@ -688,9 +1143,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     simState = { id: cur ? cur.id : null, run: 0, sims: null };
     if (cur) renderTop5(cur);
   });
-  window.addEventListener("hashchange", show);
+  window.addEventListener("hashchange", route);
 
   (async function start() {
+    if (isAk()) route();
     try {
       const r = await fetch("data/index.json", { cache: "no-cache" });
       if (!r.ok) throw new Error("HTTP " + r.status);
@@ -704,7 +1160,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       setStatus("Noch keine Nachricht.", " Die erste Analyse kommt am nächsten Handelstag gegen 22:30 Uhr.");
       return;
     }
-    show();
+    if (!isAk()) show();
   })();
 })();
 </script>

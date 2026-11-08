@@ -433,10 +433,76 @@ def build(hist, meta, today, force=False):
     return True
 
 
+# ---------------------------------------------------------------- Merkliste (geschützter Bereich)
+WATCH_FILE = ROOT / "watch.json"
+FX = {"USD": "EURUSD=X", "HKD": "EURHKD=X", "AUD": "EURAUD=X", "GBP": "EURGBP=X", "CHF": "EURCHF=X"}
+
+
+def watch_symbols():
+    try:
+        return list(json.loads(WATCH_FILE.read_text(encoding="utf-8")).get("watch", []))
+    except Exception:
+        return []
+
+
+def currency_of(sym):
+    suffix = sym.rsplit(".", 1)[-1].upper() if "." in sym else ""
+    return {"DE": "EUR", "F": "EUR", "AS": "EUR", "PA": "EUR", "MI": "EUR", "VI": "EUR",
+            "HK": "HKD", "AX": "AUD", "SW": "CHF"}.get(suffix, "USD")
+
+
+def watch_fetch_list():
+    syms = watch_symbols()
+    fx = sorted({FX[c] for c in map(currency_of, syms) if c in FX})
+    return syms + fx
+
+
+def write_quotes(hist):
+    """Kurs in Euro, Schwankung und die letzten Schlusskurse für die Merkliste -> quotes.json."""
+    out = {}
+    for sym in watch_symbols():
+        ser = hist.get(sym) or []
+        cur = currency_of(sym)
+        if len(ser) < 22:
+            log(f"  Merkliste {sym}: keine Kurse")
+            continue
+        local_last = ser[-1][1]
+        if cur != "EUR":
+            fx = hist.get(FX.get(cur, ""), [])
+            if not fx:
+                log(f"  Merkliste {sym}: kein Wechselkurs {cur}")
+                continue
+            conv, j, rate = [], 0, None
+            for d, v in ser:
+                while j < len(fx) and fx[j][0] <= d:
+                    rate = fx[j][1]
+                    j += 1
+                if rate:
+                    conv.append((d, v / rate))
+            ser = conv
+        if len(ser) < 22:
+            continue
+        closes = np.array([v for _, v in ser])
+        rets = np.diff(np.log(closes[-251:]))
+        rnd = lambda v: round(float(v), 4 if v < 20 else 2)
+        out[sym] = {
+            "eur": rnd(closes[-1]), "date": ser[-1][0].isoformat(), "cur": cur,
+            "local": rnd(local_last), "sigma": round(float(rets.std(ddof=1) * math.sqrt(252)), 4),
+            "n": int(len(rets)), "hist": [[d.isoformat(), rnd(v)] for d, v in ser[-70:]],
+        }
+    if not out and not watch_symbols():
+        return
+    DATA.mkdir(parents=True, exist_ok=True)
+    (DATA / "quotes.json").write_text(json.dumps({
+        "updated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "q": out,
+    }, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    log(f"Merkliste: {len(out)} von {len(watch_symbols())} Werten mit Kursen")
+
+
 def demo_data(today):
     """Zufallsdaten zum Testen ohne Internet."""
     rng = np.random.default_rng(7)
-    syms = [i["symbol"] for i in CONFIG["indices"]] + [s["symbol"] for s in CONFIG["dax"] + CONFIG["us"]]
+    syms = [i["symbol"] for i in CONFIG["indices"]] + [s["symbol"] for s in CONFIG["dax"] + CONFIG["us"]] + watch_fetch_list()
     dates, d = [], today - dt.timedelta(days=460)
     while d <= today:
         if d.weekday() < 5:
@@ -444,11 +510,11 @@ def demo_data(today):
         d += dt.timedelta(days=1)
     hist, meta = {}, {}
     for s in syms:
-        start = 25000 if s.startswith("^") else float(rng.uniform(20, 400))
+        start = 25000 if s.startswith("^") else (float(rng.uniform(1.05, 9)) if s.endswith("=X") else float(rng.uniform(20, 400)))
         vol = float(rng.uniform(0.15, 0.55))
         r = rng.normal(0.0003, vol / math.sqrt(252), len(dates))
         hist[s] = list(zip(dates, start * np.exp(np.cumsum(r))))
-        if not s.startswith("^"):
+        if not s.startswith("^") and not s.endswith("=X"):
             last = hist[s][-1][1]
             meta[s] = {"target": last * float(rng.uniform(0.85, 1.6)), "n_analysts": int(rng.integers(0, 30)),
                        "buy_share": float(rng.uniform(0.2, 1.0)), "updated": today.isoformat(),
@@ -468,6 +534,7 @@ def main():
         hist, meta = demo_data(today)
     else:
         symbols = [i["symbol"] for i in CONFIG["indices"]] + [s["symbol"] for s in CONFIG["dax"] + CONFIG["us"]]
+        symbols += [s for s in watch_fetch_list() if s not in symbols]
         hist = fetch_history(symbols)
         meta_file = DATA / "meta.json"
         meta = json.loads(meta_file.read_text(encoding="utf-8")) if meta_file.exists() else {}
@@ -476,6 +543,10 @@ def main():
         DATA.mkdir(parents=True, exist_ok=True)
         meta_file.write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
 
+    try:
+        write_quotes(hist)
+    except Exception as e:  # die Merkliste darf den Tageslauf nie stoppen
+        log(f"Merkliste fehlgeschlagen: {e}")
     build(hist, meta, today, force=a.force)
 
 

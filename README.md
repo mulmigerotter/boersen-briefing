@@ -32,6 +32,13 @@ Ausgeschlossen werden Aktien mit zu wenig Analystendaten, ohne aktuellen Kurs od
 - **Sofort neu rechnen:** Reiter **Actions** → **Börsen-Briefing aktualisieren** → **Run workflow**.
 - **Uhrzeit ändern:** in `.github/workflows/update.yml` die Zeile `cron` (Zeit in UTC).
 
+## Geschützter Bereich „Der Aktionär“
+
+Der Reiter **🔒 Der Aktionär** zeigt eigene Zusammenfassungen von Heft-Ausgaben mit den Empfehlungen (Kurs, Ziel, Stopp) und einer Hochrechnung: Für jede Aktie werden im Browser 2.000 zufällige Kursverläufe gerechnet und gezählt, ob zuerst das Kursziel oder zuerst der Stopp erreicht wird.
+
+- Der Inhalt liegt nur verschlüsselt in `docs/data/aktionaer.enc.json` und wird im Browser mit dem PIN geöffnet. Ein 4-stelliger PIN ist ein einfaches Schloss, kein starker Schutz.
+- Neue Ausgabe einpflegen: `python scripts/lock.py inhalt.json --pin <PIN>` (der Klartext gehört nicht ins Repository). Das Skript schreibt auch `watch.json`; dafür holt der Tageslauf Euro-Kurse und Schwankung nach `docs/data/quotes.json`.
+
 ## Falls es mal nicht läuft
 
 - GitHub schaltet zeitgesteuerte Abläufe ab, wenn ein öffentliches Repository 60 Tage lang ruht. Dann im Reiter **Actions** den Ablauf wieder einschalten.
