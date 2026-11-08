@@ -182,7 +182,8 @@
    "pUp": 0.571,
    "pLoss10": 0.182,
    "why": "Analysten sehen im Schnitt fast das Doppelte (Ø-Ziel 86 €); Jahreszahlen kommen am Di 10.11.",
-   "risk": "Sehr schwankungsanfällig: Geht der KI-Ausverkauf weiter oder enttäuschen die Zahlen, kann es schnell weiter runtergehen."
+   "risk": "Sehr schwankungsanfällig: Geht der KI-Ausverkauf weiter oder enttäuschen die Zahlen, kann es schnell weiter runtergehen.",
+   "symbol": "IFX.DE"
   },
   {
    "rank": 2,
@@ -325,7 +326,8 @@
    "pUp": 0.585,
    "pLoss10": 0.154,
    "why": "Großer Abstand zum Ø-Kursziel (207 €), Zahlen und Ausblick am Mi 11.11.; am Freitag schon +4 %.",
-   "risk": "Der Kurs liegt unter der 200-Tage-Linie – fällt der Ausblick schwach aus, droht der nächste Rückschlag."
+   "risk": "Der Kurs liegt unter der 200-Tage-Linie – fällt der Ausblick schwach aus, droht der nächste Rückschlag.",
+   "symbol": "ENR.DE"
   },
   {
    "rank": 3,
@@ -468,7 +470,8 @@
    "pUp": 0.556,
    "pLoss10": 0.11,
    "why": "Starke Quartalszahlen, alle erfassten Analysten auf Kaufen, Ø-Ziel 228 €.",
-   "risk": "Nach +15 % in einer Woche sind Gewinnmitnahmen möglich; die Baukonjunktur bleibt wackelig."
+   "risk": "Nach +15 % in einer Woche sind Gewinnmitnahmen möglich; die Baukonjunktur bleibt wackelig.",
+   "symbol": "HEI.DE"
   },
   {
    "rank": 4,
@@ -611,7 +614,8 @@
    "pUp": 0.499,
    "pLoss10": 0.099,
    "why": "Prognose für 2026 angehoben, fast alle Analysten raten zum Kauf.",
-   "risk": "Kaum Abstand zum Ø-Kursziel (55 €); die Schwankung ist nur geschätzt."
+   "risk": "Kaum Abstand zum Ø-Kursziel (55 €); die Schwankung ist nur geschätzt.",
+   "symbol": "FRE.DE"
   },
   {
    "rank": 5,
@@ -754,7 +758,8 @@
    "pUp": 0.499,
    "pLoss10": 0.176,
    "why": "Prognose angehoben, mehrere Banken haben ihre Ziele auf bis zu 66 € erhöht.",
-   "risk": "Die Glyphosat-Klagen bleiben ein Risiko; das Ø-Ziel liegt nur rund 9 % über dem Kurs."
+   "risk": "Die Glyphosat-Klagen bleiben ein Risiko; das Ø-Ziel liegt nur rund 9 % über dem Kurs.",
+   "symbol": "BAYN.DE"
   }
  ],
  "ranking": [
