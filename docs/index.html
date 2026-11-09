@@ -457,7 +457,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 <main class="wrap">
   <section class="gate" id="gate" aria-labelledby="gate-title">
     <h1 class="brand" id="gate-title">Börsen<span>-</span>Briefing</h1>
-    <p>Bitte den Zugangscode eingeben. Danach bleibt die Seite 15 Minuten offen.</p>
+    <p>Bitte den Zugangscode eingeben. Danach bleibt die Seite offen, solange du sie nutzt – erst 15 Minuten nachdem du sie verlassen hast, wird sie wieder gesperrt.</p>
     <form class="ak-form" id="gate-form" autocomplete="off">
       <label for="gate-code">Code</label>
       <input class="gate-code" id="gate-code" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-describedby="gate-err">
@@ -490,7 +490,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   <section class="view ak" id="v-ak" hidden aria-labelledby="ak-title">
     <div class="sec-head"><h2 id="ak-title">Gesperrter Bereich</h2><button class="btn ghost" id="pin-lock" type="button" hidden>Bereich sperren</button></div>
     <div class="ak-lock" id="pin-box">
-      <p>Dieser Bereich ist zusätzlich mit einem PIN geschützt. Nach dem Öffnen bleibt er 15 Minuten offen.</p>
+      <p>Dieser Bereich ist zusätzlich mit einem PIN geschützt. Nach der Eingabe kannst du 15 Minuten lang raus und wieder rein, ohne den PIN neu einzugeben.</p>
       <form class="ak-form" id="pin-form" autocomplete="off">
         <label for="pin-input">PIN</label>
         <input class="ak-pin" id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" enterkeyhint="go" aria-describedby="pin-err">
@@ -1663,15 +1663,38 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     if (timerId) { clearInterval(timerId); timerId = null; }
     showGate(msg);
   }
-  function tickTimer() {
+  // Seite: bleibt offen, solange man sie nutzt; 15 Minuten nach dem Verlassen ist sie gesperrt.
+  const lastSeen = (s) => (s ? s.last || (s.until ? s.until - OPEN_MS : 0) : 0);
+  const awayTooLong = (s) => !s || !s.c || Date.now() - lastSeen(s) > OPEN_MS;
+  const pinExpired = () => { const p = pinStore.get(); return !p || !(p.until > Date.now()); };
+  function heartbeat() {
     const s = store.get();
-    const left = s && s.until ? s.until - Date.now() : 0;
-    if (left <= 0) { if (siteOpen) lockAll("Die 15 Minuten sind um – bitte den Code neu eingeben."); return; }
-    const p = pinStore.get();
-    const pleft = p && p.until ? p.until - Date.now() : 0;
-    if (AK.data && pleft <= 0) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
-    $("timer").textContent = "🔓 Seite noch " + Math.ceil(left / 60000) + " Min." + (AK.data ? " · Bereich noch " + Math.ceil(pleft / 60000) + " Min." : "");
+    if (s && siteOpen && !document.hidden) { s.last = Date.now(); delete s.until; store.set(s); }
+  }
+  function tickTimer() {
+    if (!siteOpen) return;
+    const s = store.get();
+    if (awayTooLong(s)) { lockAll("Du warst länger als 15 Minuten weg – bitte den Code neu eingeben."); return; }
+    heartbeat();
+    if (AK.data && pinExpired() && currentView() !== "ak") lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
+    const p = pinStore.get(), pleft = p && p.until ? p.until - Date.now() : 0;
+    $("timer").textContent = "🔓 Angemeldet" + (AK.data ? (pleft > 0 ? " · Bereich ohne PIN noch " + Math.ceil(pleft / 60000) + " Min." : " · beim Verlassen PIN neu") : "");
     $("pin-lock").hidden = !AK.data;
+  }
+  // Seite verlassen (App gewechselt, Tab im Hintergrund, Seite geschlossen)
+  function onLeave() {
+    if (!siteOpen) return;
+    const s = store.get();
+    if (s) { s.last = Date.now(); delete s.until; store.set(s); }
+    if (AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
+  }
+  // Zurück auf der Seite
+  function onReturn() {
+    if (!siteOpen) return;
+    if (awayTooLong(store.get())) { lockAll("Du warst länger als 15 Minuten weg – bitte den Code neu eingeben."); return; }
+    if (AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
+    tickTimer();
+    loadLive();
   }
   async function unlock(code, restore) {
     const go = $("gate-go");
@@ -1681,7 +1704,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       const [quotes, divs, stocks] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {})]);
       AK.quotes = quotes && quotes.q ? quotes : { q: {} }; DIVS = divs || {}; STOCKS = stocks || {};
       await loadLive();
-      store.set(restore || { c: code, until: Date.now() + OPEN_MS });
+      store.set({ c: restore ? restore.c : code, last: Date.now() });
       siteOpen = true;
       $("gate").hidden = true; $("site").hidden = false;
       tickTimer();
@@ -1737,7 +1760,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   });
   $("lock-now").addEventListener("click", () => lockAll(""));
   $("pin-lock").addEventListener("click", () => { lockPin(""); tickTimer(); });
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) { tickTimer(); if (siteOpen) loadLive(); } });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) onLeave(); else onReturn(); });
+  window.addEventListener("pagehide", onLeave);
+  window.addEventListener("pageshow", (e) => { if (e.persisted) onReturn(); });
   window.addEventListener("focus", tickTimer);
 
   // ---------- Bereiche umschalten ----------
@@ -1753,15 +1778,20 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     document.querySelectorAll(".tabs a[data-view]").forEach((a) => a.setAttribute("aria-current", a.dataset.view === v ? "page" : "false"));
     document.title = TITLES[v];
   }
+  let prevView = null;
   function route() {
     if (!siteOpen) return;
     const v = currentView();
+    // Gesperrten Bereich verlassen, nachdem die 15 Minuten um sind -> PIN beim nächsten Mal nötig
+    if (prevView === "ak" && v !== "ak" && AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
+    prevView = v;
     setView(v);
     if (v === "ak") {
+      if (AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
       if (AK.data) { $("pin-box").hidden = true; $("ak-open").hidden = false; akCompute(); }
       else {
         const p = pinStore.get();
-        if (p && p.p && p.until > Date.now()) unlockPin(p.p, p); else { pinStore.del(); showPinBox(""); }
+        if (p && p.p && p.until > Date.now()) unlockPin(p.p, p); else { pinStore.del(); showPinBox($("pin-err").hidden ? "" : $("pin-err").textContent); }
       }
     } else if (v === "stocks") renderStocks();
     else if (v === "calc") renderCalc();
@@ -1931,8 +1961,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   // Beim Laden: innerhalb von 15 Minuten nach dem letzten Öffnen direkt weiter, sonst Code abfragen
   (function boot() {
     const s = store.get();
-    if (s && s.c && s.until > Date.now()) unlock(s.c, s);
-    else { store.del(); showGate(""); }
+    if (!awayTooLong(s)) unlock(s.c, s);
+    else { store.del(); pinStore.del(); showGate(""); }
   })();
 })();
 </script>

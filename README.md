@@ -34,7 +34,7 @@ Ausgeschlossen werden Aktien mit zu wenig Analystendaten, ohne aktuellen Kurs od
 
 ## Zugang, Bereiche und Rechner
 
-- Die Seite öffnet sich erst nach Eingabe des Zugangscodes und bleibt danach 15 Minuten offen. Der Reiter **🔒 Gesperrter Bereich** braucht zusätzlich einen PIN (ebenfalls 15 Minuten).
+- Die Seite öffnet sich erst nach Eingabe des Zugangscodes. Sie bleibt offen, solange man sie nutzt, und ist 15 Minuten nach dem Verlassen wieder gesperrt. Der Reiter **🔒 Gesperrter Bereich** braucht zusätzlich einen PIN: 15 Minuten lang kann man raus und wieder rein; danach ist beim nächsten Verlassen der PIN erneut nötig.
 - **Alle Aktien:** alle Werte der Seite mit aktuellem Kurs, Dividende, Risiko (Schwankung) und Branche, sortier- und filterbar, mit Favoriten (gespeichert im Browser).
 - **Rechner:** Dividenden- und Sparrechner mit Kurve, „Meine Aktien“ mit Prognose (Monte Carlo) und „Was wäre, wenn“ mit echten Monatskursen seit 2000 (`long.json`).
 - **Aktuelle Kurse:** `.github/workflows/live.yml` holt Mo–Fr alle 30 Minuten verzögerte Kurse von Yahoo nach `docs/data/live.json` und veröffentlicht die Seite neu (die Datei wird nicht ins Repository geschrieben).
