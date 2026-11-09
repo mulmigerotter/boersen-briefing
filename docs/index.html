@@ -316,6 +316,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .gate[hidden] { display: none; }
 .gate p { margin: 0; color: var(--muted); max-width: 44ch; }
 .gate-code { font-family: var(--font-num); font-size: 18px; width: 12em; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.eye { padding: 9px 12px; font-size: 14px; }
 .gate-code:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .tabs { align-items: center; flex-wrap: wrap; }
 .timer { margin-left: auto; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -461,6 +462,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     <form class="ak-form" id="gate-form" autocomplete="off">
       <label for="gate-code">Code</label>
       <input class="gate-code" id="gate-code" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-describedby="gate-err">
+      <button class="btn ghost eye" type="button" data-eye="gate-code" aria-label="Code anzeigen" aria-pressed="false">Anzeigen</button>
       <button class="btn" id="gate-go" type="submit">Öffnen</button>
     </form>
     <p class="ak-err" id="gate-err" role="alert" hidden></p>
@@ -494,6 +496,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       <form class="ak-form" id="pin-form" autocomplete="off">
         <label for="pin-input">PIN</label>
         <input class="ak-pin" id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" enterkeyhint="go" aria-describedby="pin-err">
+        <button class="btn ghost eye" type="button" data-eye="pin-input" aria-label="PIN anzeigen" aria-pressed="false">Anzeigen</button>
         <button class="btn" id="pin-go" type="submit">Öffnen</button>
       </form>
       <p class="ak-err" id="pin-err" role="alert" hidden></p>
@@ -1642,13 +1645,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     $("gate-err").hidden = !msg;
     $("gate-err").textContent = msg || "";
     document.title = "Börsen-Briefing";
-    const inp = $("gate-code"); inp.value = "";
+    hideAllEyes(); const inp = $("gate-code"); inp.value = "";
     setTimeout(() => inp.focus(), 50);
   }
   function showPinBox(msg) {
     $("ak-open").hidden = true; $("pin-box").hidden = false; $("pin-lock").hidden = true;
     $("pin-err").hidden = !msg; $("pin-err").textContent = msg || "";
-    const inp = $("pin-input"); inp.value = "";
+    hideAllEyes(); const inp = $("pin-input"); inp.value = "";
     if (currentView() === "ak") setTimeout(() => inp.focus(), 50);
   }
   function lockPin(msg) {
@@ -1739,6 +1742,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       go.disabled = false; go.textContent = "Öffnen";
     }
   }
+  document.querySelectorAll("[data-eye]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const i = $(b.dataset.eye), show = i.type === "password";
+      i.type = show ? "text" : "password";
+      b.textContent = show ? "Verbergen" : "Anzeigen";
+      b.setAttribute("aria-pressed", String(show));
+      i.focus();
+    });
+  });
+  function hideAllEyes(){ document.querySelectorAll("[data-eye]").forEach((b) => { $(b.dataset.eye).type = "password"; b.textContent = "Anzeigen"; b.setAttribute("aria-pressed","false"); }); }
   $("gate-form").addEventListener("submit", (e) => {
     e.preventDefault();
     if ($("gate-go").disabled) return;
