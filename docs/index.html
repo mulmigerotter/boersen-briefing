@@ -580,6 +580,11 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <label class="sortbox wide">Werte einer Aktie übernehmen
         <select id="sp-stock"><option value="">– eigene Werte –</option></select>
       </label>
+      <div class="seg wide" role="group" aria-label="Voreinstellung übernehmen">
+        <button type="button" id="sp-mine">Prognose von Claude</button>
+        <button type="button" id="sp-heft">Prognose der Hefte</button>
+      </div>
+      <p class="sec-note" id="sp-hint"></p>
       <div class="form-grid">
         <label>Startbetrag (€)<input id="sp-start" type="number" inputmode="decimal" min="0" step="100" value="1000"></label>
         <label>Sparrate pro Monat (€)<input id="sp-rate" type="number" inputmode="decimal" min="0" step="10" value="100"></label>
@@ -627,9 +632,16 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
             <option value="4">Vorsichtig (4 % pro Jahr)</option>
             <option value="7" selected>Aktien-Durchschnitt (7 % pro Jahr)</option>
             <option value="hist">Wie in den letzten 10 Jahren</option>
+            <option value="mine">Prognose von Claude (Mix je Aktie)</option>
+            <option value="heft">Prognose der Hefte (Ziel in 12 Monaten)</option>
           </select>
         </label>
       </div>
+      <div class="seg wide" role="group" aria-label="Voreinstellung übernehmen">
+        <button type="button" id="pr-mine">Prognose von Claude</button>
+        <button type="button" id="pr-heft">Prognose der Hefte</button>
+      </div>
+      <p class="sec-note" id="pr-hint"></p>
       <div id="pr-out"></div>
 
       <h4>Was wäre, wenn du früher investiert hättest?</h4>
@@ -1561,6 +1573,13 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       if ($("sp-q").value.trim()) { const f = [...sp.options].find((o) => o.value); if (f) { sp.value = f.value; await applyStockToSpar(f.value); renderSpar(); } }
     });
     $("dp-q").addEventListener("input", () => { $("dp-stock").value = ""; fillStockSelects(); });
+    $("sp-mine").addEventListener("click", () => sparPreset("mine"));
+    $("sp-heft").addEventListener("click", () => sparPreset("heft"));
+    $("pr-mine").addEventListener("click", () => { $("pr-assume").value = "mine"; $("pr-hint").textContent = ""; renderPrognose(); });
+    $("pr-heft").addEventListener("click", () => {
+      if (!AK.data) { $("pr-hint").textContent = "Die Hefte sind gesperrt: erst den Gesperrten Bereich mit dem PIN öffnen, dann hier erneut tippen."; return; }
+      $("pr-assume").value = "heft"; $("pr-hint").textContent = ""; renderPrognose();
+    });
     $("sp-stock").addEventListener("change", async (e) => { await applyStockToSpar(e.target.value); renderSpar(); });
     $("dp-add").addEventListener("click", () => {
       const sym = $("dp-stock").value, amount = Number($("dp-amount").value);
@@ -1596,6 +1615,15 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       }
     });
   }
+  // Wachstum laut Heften: Ziel/Kurs-1 (Ziel in 12 Monaten), je Zeitschrift die neueste Ausgabe, Mittel über Zeitschriften
+  function heftGrowth(sym) {
+    if (!AK.data) return null;
+    const newest = {};
+    AK.data.issues.forEach((i) => i.picks.forEach((p) => { if (p.sym === sym && p.ziel && p.kurs && (!newest[i.mag] || i.datum > newest[i.mag].d)) newest[i.mag] = { d: i.datum, g: p.ziel / p.kurs - 1 }; }));
+    const v = Object.values(newest).map((x) => x.g);
+    return v.length ? clip(v.reduce((a, b) => a + b, 0) / v.length, -0.1, 0.3) : null;
+  }
+  const mineGrowth = (cagr) => (cagr == null ? 0.07 : clip(cagr, -0.05, 0.12));
   async function applyStockToSpar(sym) {
     if (!sym) { $("sp-src").textContent = ""; return; }
     await loadLong();
@@ -1604,6 +1632,20 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     $("sp-yield").value = (yv * 100).toFixed(1);
     $("sp-growth").value = (g * 100).toFixed(1);
     $("sp-src").textContent = nameOf(sym) + ": Dividendenrendite der letzten 12 Monate" + (cg == null ? ", Kurswachstum geschätzt (5 %)." : ", Kurswachstum wie im Schnitt der letzten Jahre (ohne Dividende, begrenzt auf −5 bis +12 %).") + " Werte kannst du ändern.";
+  }
+  async function sparPreset(kind) {
+    const sym = $("sp-stock").value, hint = $("sp-hint");
+    if (!sym) { hint.textContent = "Wähle zuerst oben eine Aktie."; return; }
+    if (kind === "mine") { await applyStockToSpar(sym); renderSpar(); return; }
+    if (!AK.data) { hint.textContent = "Die Hefte sind gesperrt: erst den Gesperrten Bereich mit dem PIN öffnen, dann hier erneut tippen."; return; }
+    const g = heftGrowth(sym);
+    if (g == null) { hint.textContent = nameOf(sym) + " hat in den Heften kein Kursziel – nutze die Prognose von Claude."; return; }
+    await loadLong();
+    const y = yieldOf(sym);
+    $("sp-yield").value = ((y == null ? 0 : y) * 100).toFixed(1);
+    $("sp-growth").value = (g * 100).toFixed(1);
+    hint.textContent = nameOf(sym) + ": Kurswachstum so, dass das Heft-Ziel in 12 Monaten erreicht wird (" + signedPct(g) + " pro Jahr), danach gleichbleibend fortgeschrieben – über viele Jahre ist das sehr optimistisch. Werte kannst du ändern.";
+    renderSpar();
   }
   function renderCalc() { initCalc(); renderSpar(); renderDepot(); }
   function renderSpar() {
@@ -1661,9 +1703,12 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   function renderPrognose() {
     if (!DEPOT.length) { $("pr-out").innerHTML = ""; return; }
     const years = Number($("pr-years").value) || 5, as = $("pr-assume").value;
+    const noHeft = [];
     const pos = DEPOT.map((p) => {
       const inf = posInfo(p);
-      const mu = as === "hist" ? (inf.cagr == null ? 0.07 : clip(inf.cagr, -0.1, 0.2)) : Number(as) / 100;
+      const hg = as === "heft" ? heftGrowth(p.sym) : null;
+      if (as === "heft" && hg == null) noHeft.push(inf.name);
+      const mu = as === "hist" ? (inf.cagr == null ? 0.07 : clip(inf.cagr, -0.1, 0.2)) : as === "mine" ? mineGrowth(inf.cagr) : as === "heft" ? (hg == null ? 0.07 : hg) : Number(as) / 100;
       return { amount: p.amount, mu, sigma: clip(inf.sigma, 0.05, 1.5), y: inf.y };
     });
     const sim = depotSim(pos, years, hashStr(JSON.stringify(DEPOT) + years + as));
@@ -1677,7 +1722,10 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       stat("80 % der Läufe", fmtK(b.p10[l]) + "–" + fmtK(b.p90[l]) + " €", "zwischen diesen Werten") +
       stat("Chance auf Verlust", pctInt(sim.pLoss), "am Ende unter " + eur(tot)) +
       stat("Dividende dann", eur(b.p50[l] * avgY), "pro Jahr, bei gleicher Rendite") + "</div>" +
-      '<p class="sec-note">' + (as === "hist" ? "Jede Aktie wächst wie im Schnitt der letzten Jahre (begrenzt auf −10 bis +20 %)." : "Annahme " + as + " % pro Jahr inkl. Dividenden.") +
+      '<p class="sec-note">' + (as === "hist" ? "Jede Aktie wächst wie im Schnitt der letzten Jahre (begrenzt auf −10 bis +20 %)." :
+        as === "mine" ? "Prognose von Claude: Jede Aktie wächst wie im Schnitt der letzten Jahre inkl. Dividenden, begrenzt auf −5 bis +12 % pro Jahr (ohne Kursverlauf 7 %)." :
+        as === "heft" ? (AK.data ? "Prognose der Hefte: Jede Aktie wächst pro Jahr so, dass das Kursziel aus dem Heft in 12 Monaten erreicht wird (begrenzt auf −10 bis +30 %), danach gleichbleibend – für lange Zeiträume sehr optimistisch." + (noHeft.length ? " Ohne Heft-Ziel, mit 7 % gerechnet: " + noHeft.map(esc).join(", ") + "." : "") : "Die Hefte sind gesperrt – gerechnet wird mit 7 % pro Jahr. Erst den Gesperrten Bereich öffnen.") :
+        "Annahme " + as + " % pro Jahr inkl. Dividenden.") +
       " Schwankung je Aktie wie im letzten Jahr, Aktien laufen teils gemeinsam (Korrelation 0,5). 1.000 Läufe.</p>";
   }
   function renderBacktest() {
