@@ -316,6 +316,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .gate[hidden] { display: none; }
 .gate p { margin: 0; color: var(--muted); max-width: 44ch; }
 .gate-code { font-family: var(--font-num); font-size: 18px; width: 12em; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.fd-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 0 0 12px; background: var(--surface); }
+.fd-card h3 { margin: 0 0 4px; font-size: 17px; }
+.fd-sum { margin: 0 0 8px; color: var(--muted, inherit); font-size: 14px; }
+.fd-m { border-top: 1px solid var(--line); padding: 8px 0 2px; font-size: 14px; }
+.fd-m .fd-h { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.fd-m small { opacity: .8; }
 .eye { padding: 9px 12px; font-size: 14px; }
 .gate-code:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .tabs { align-items: center; flex-wrap: wrap; }
@@ -502,6 +508,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       <p class="ak-err" id="pin-err" role="alert" hidden></p>
     </div>
     <div class="ak-open" id="ak-open" hidden>
+    <div class="filters"><input class="search" id="ak-search" type="search" placeholder="Aktie in allen Heften suchen, z. B. SAP" aria-label="Aktie in allen Heften suchen" autocomplete="off"></div>
+    <div id="ak-found" hidden></div>
+    <div id="ak-browse">
     <div class="mag-tabs" id="mag-tabs" role="tablist" aria-label="Zeitschriften"></div>
     <div class="ak-controls">
       <div class="seg" role="group" aria-label="Zeitraum der Hochrechnung">
@@ -526,6 +535,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     </label>
     <p class="sec-note" id="ak-note"></p>
     <div id="ak-content"></div>
+    </div>
     <p class="fineprint">Eigene, vereinfachte Zusammenfassung der Hefte – keine Kopie und keine Anlageberatung. Kurse, Kursziele und Stopps stammen aus dem jeweiligen Heft (Stand siehe Ausgabe), heutige Kurse, Schwankungen und Dividenden von Yahoo Finance. Die Hochrechnung zeigt nur, wie oft Ziel, Stopp oder ein Plus in zufälligen Kursverläufen erreicht werden – sie kennt keine Nachrichten und ist keine Vorhersage.</p>
     </div>
   </section>
@@ -1199,6 +1209,50 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     setTimeout(tick, 20);
   }
 
+  function findStocks(q) {
+    const d = AK.data, t = q.trim().toLowerCase(), groups = [];
+    const magName = (id) => { const m = d.mags.find((x) => x.id === id); return m ? m.name : id; };
+    const hit = (...f) => f.some((x) => x && String(x).toLowerCase().includes(t));
+    const norm = (n) => String(n || "").toLowerCase().replace(/\s+/g, " ").trim();
+    const find = (name, sym) => groups.find((g) => (sym && g.sym === sym) || norm(g.name) === norm(name) || norm(g.name).startsWith(norm(name)) || norm(name).startsWith(norm(g.name)));
+    const add = (name, sym, m) => { let g = find(name, sym); if (!g) { g = { name, sym, ms: [] }; groups.push(g); } if (sym && !g.sym) g.sym = sym; g.ms.push(m); };
+    const issues = d.issues.slice().sort(byDate);
+    issues.forEach((i) => {
+      const base = { mag: magName(i.mag), nr: i.nr, datum: i.datum, stand: i.stand };
+      i.picks.forEach((p) => { if (hit(p.name, p.sym)) add(p.name, p.sym, Object.assign({ kind: "Empfehlung", p }, base)); });
+      (i.beobachten || []).forEach((x) => { if (hit(x.name)) add(x.name, null, Object.assign({ kind: "Nur beobachten", x }, base)); });
+      (i.derivate || []).forEach((x) => { if (hit(x.name, x.wkn)) add(x.name, null, Object.assign({ kind: "Hebelprodukt", x }, base)); });
+      (i.sonstige || []).forEach((x) => { if (hit(x.name, x.wkn)) add(x.name, null, Object.assign({ kind: "Weitere Idee", x, txt: x.text }, base)); });
+      (i.nicht || []).forEach((n) => { if (hit(n)) add(String(n), null, Object.assign({ kind: "Kein Kauf", x: {} }, base)); });
+    });
+    return groups;
+  }
+  function renderFound() {
+    const q = ($("ak-search").value || "").trim(), box = $("ak-found"), br = $("ak-browse");
+    if (!q || !AK.data) { box.hidden = true; br.hidden = false; return; }
+    const g = findStocks(q);
+    br.hidden = true; box.hidden = false;
+    if (!g.length) { box.innerHTML = '<p class="sec-note">Keine Aktie mit „' + esc(q) + '“ in den Heften gefunden.</p>'; return; }
+    box.innerHTML = '<p class="sec-note">' + g.length + " Treffer in allen Heften, neueste Ausgabe zuerst.</p>" + g.map((a) => {
+      const mags = {}; a.ms.forEach((m) => { if (m.kind === "Empfehlung") mags[m.mag] = 1; });
+      const nrec = Object.keys(mags).length, tot = a.ms.filter((m) => m.kind === "Empfehlung").length;
+      const nein = a.ms.filter((m) => m.kind === "Kein Kauf").length;
+      const sum = (nrec ? "Empfohlen von " + nrec + " Zeitschrift" + (nrec > 1 ? "en" : "") + " (" + Object.keys(mags).map(esc).join(", ") + "), " + tot + "× in den Ausgaben" : "Keine Kaufempfehlung, nur erwähnt") + (nein ? " · " + nein + "× „Kein Kauf“" : "");
+      return '<article class="fd-card"><h3>' + esc(a.name) + (a.sym ? " <small>" + esc(a.sym) + "</small>" : "") + '</h3><p class="fd-sum">' + sum + "</p>" +
+        a.ms.map((m) => {
+          const x = m.p || m.x || {}, cu = x.cur || (m.p && m.p.cur) || "EUR", bits = [];
+          if (x.kurs) bits.push("Kurs im Heft " + amt(x.kurs, cu));
+          if (x.ziel) bits.push((m.p ? zName(m.p) : "Ziel") + " " + amt(x.ziel, cu) + (x.kurs ? " (" + signedPct(x.ziel / x.kurs - 1) + ")" : ""));
+          if (x.stopp) bits.push((m.p ? sName(m.p) : "Stopp") + " " + amt(x.stopp, cu));
+          if (x.risiko) bits.push("Risiko: " + esc(x.risiko));
+          if (x.seit) bits.push("empfohlen seit " + esc(x.seit));
+          const txt = x.why || m.txt || x.note || "";
+          return '<div class="fd-m"><div class="fd-h"><b>' + esc(m.mag) + "</b><span>" + esc(m.nr) + " · " + dmy(m.datum) + "</span><span class=\"chip\">" + esc(m.kind) + "</span></div>" +
+            (bits.length ? "<div>" + bits.join(" · ") + "</div>" : "") + (txt ? "<small>" + esc(txt) + "</small>" : "") + "</div>";
+        }).join("") + "</article>";
+    }).join("");
+  }
+  $("ak-search").addEventListener("input", renderFound);
   $("mag-tabs").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-mag]");
     if (!b || b.dataset.mag === AK.mag) return;
@@ -1656,7 +1710,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   }
   function lockPin(msg) {
     pinStore.del();
-    AK.data = null; AK.cache = {}; AK.busy++;
+    AK.data = null; if ($("ak-search")) $("ak-search").value = ""; AK.cache = {}; AK.busy++;
     $("ak-content").innerHTML = "";
     showPinBox(msg);
   }
