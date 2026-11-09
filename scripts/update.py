@@ -451,6 +451,55 @@ def currency_of(sym):
             "MC": "EUR", "HK": "HKD", "AX": "AUD", "SW": "CHF", "ST": "SEK"}.get(suffix, "USD")
 
 
+def all_stock_symbols():
+    """Alle Aktien der Seite: DAX, US-Werte und die Merkliste aus dem gesperrten Bereich."""
+    return list(dict.fromkeys([x["symbol"] for x in CONFIG["dax"] + CONFIG["us"]] + watch_symbols()))
+
+
+def write_long(today):
+    """Monatliche Schlusskurse inkl. Dividenden (auto_adjust) in Euro seit 2000 -> long.json (für „Was wäre wenn“)."""
+    import pandas as pd
+    import yfinance as yf
+
+    syms = all_stock_symbols()
+    fx_syms = sorted({FX[c] for c in map(currency_of, syms) if c in FX})
+    data = yf.download(syms + fx_syms, period="max", interval="1mo", auto_adjust=True,
+                       group_by="ticker", progress=False, threads=True)
+
+    def series(sym):
+        try:
+            col = data[sym]["Close"] if isinstance(data.columns, pd.MultiIndex) else data["Close"]
+        except Exception:
+            return None
+        col = col.dropna()
+        col = col[col.index >= "2000-01-01"]
+        if not len(col):
+            return None
+        col.index = pd.to_datetime(col.index).to_period("M")
+        return col.groupby(level=0).last()
+
+    fx = {c: series(FX[c]) for c in FX if FX[c] in fx_syms}
+    out = {}
+    for sym in syms:
+        ser = series(sym)
+        cur = currency_of(sym)
+        if ser is None or len(ser) < 2:
+            continue
+        if cur != "EUR":
+            rate = fx.get(cur)
+            if rate is None or not len(rate):
+                continue
+            rate = rate.reindex(ser.index.union(rate.index)).ffill().reindex(ser.index)
+            ser = (ser / rate).dropna()
+        if len(ser) < 2:
+            continue
+        sig = lambda v: float(f"{v:.5g}")
+        out[sym] = {"s": str(ser.index[0]), "v": [sig(v) for v in ser.values]}
+    DATA.mkdir(parents=True, exist_ok=True)
+    (DATA / "long.json").write_text(json.dumps({"updated": today.isoformat(), "q": out}, separators=(",", ":")), encoding="utf-8")
+    log(f"Langfristige Kurse: {len(out)} von {len(syms)} Aktien")
+
+
 def watch_fetch_list():
     syms = watch_symbols()
     fx = sorted({FX[c] for c in map(currency_of, syms) if c in FX})
@@ -460,7 +509,7 @@ def watch_fetch_list():
 def write_quotes(hist):
     """Kurs in Euro, Schwankung und die letzten Schlusskurse für die Merkliste -> quotes.json."""
     out = {}
-    for sym in watch_symbols():
+    for sym in all_stock_symbols():
         ser = hist.get(sym) or []
         cur = currency_of(sym)
         if len(ser) < 22:
@@ -594,6 +643,7 @@ def main():
     else:
         symbols = [i["symbol"] for i in CONFIG["indices"]] + [s["symbol"] for s in CONFIG["dax"] + CONFIG["us"]]
         symbols += [s for s in watch_fetch_list() if s not in symbols]
+        symbols += [s for s in sorted({FX[c] for c in map(currency_of, all_stock_symbols()) if c in FX}) if s not in symbols]
         hist = fetch_history(symbols)
         meta_file = DATA / "meta.json"
         meta = json.loads(meta_file.read_text(encoding="utf-8")) if meta_file.exists() else {}
@@ -607,6 +657,10 @@ def main():
     except Exception as e:  # die Merkliste darf den Tageslauf nie stoppen
         log(f"Merkliste fehlgeschlagen: {e}")
     if not a.demo:
+        try:
+            write_long(today)
+        except Exception as e:
+            log(f"Langfristige Kurse fehlgeschlagen: {e}")
         try:
             div = json.loads(DIV_FILE.read_text(encoding="utf-8")) if DIV_FILE.exists() else {}
             div_syms = watch_symbols() + [x["symbol"] for x in CONFIG["dax"] + CONFIG["us"]]

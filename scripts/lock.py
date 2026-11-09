@@ -4,7 +4,8 @@
     python scripts/lock.py --unlock --pin CODE        # Inhalt wieder anzeigen
 
 Der Klartext gehört NICHT ins Repository. Die Webseite entschlüsselt im Browser
-(AES-GCM, Schlüssel per PBKDF2-SHA256 aus dem Code). Der Code öffnet die ganze Seite.
+(AES-GCM, Schlüssel per PBKDF2-SHA256). Die Seite prüft den Zugangscode mit site.enc.json;
+die Heft-Inhalte werden mit "Zugangscode|PIN" verschlüsselt, man braucht also beides.
 Die Börsenkürzel der Empfehlungen landen zusätzlich in watch.json, damit der
 tägliche Lauf Kurs und Schwankung dafür holt (docs/data/quotes.json).
 """
@@ -44,6 +45,15 @@ def lock(src, pin):
     print(f"{OUT.relative_to(ROOT)} geschrieben ({len(ct)} Bytes), {len(syms)} Kürzel in watch.json")
 
 
+def lock_site(code):
+    """Kleine Prüfdatei für den Zugangscode der ganzen Seite."""
+    salt, iv = os.urandom(16), os.urandom(12)
+    ct = AESGCM(key(code, salt, ITER)).encrypt(iv, b'{"ok":1}', None)
+    (OUT.parent / "site.enc.json").write_text(json.dumps({"v": 1, "kdf": "PBKDF2-SHA256", "iter": ITER, "salt": b64(salt),
+                                                           "iv": b64(iv), "ct": b64(ct)}), encoding="utf-8")
+    print("docs/data/site.enc.json geschrieben")
+
+
 def unlock(pin):
     blob = json.loads(OUT.read_text(encoding="utf-8"))
     k = key(pin, base64.b64decode(blob["salt"]), blob["iter"])
@@ -56,7 +66,13 @@ if __name__ == "__main__":
     ap.add_argument("src", nargs="?")
     ap.add_argument("--pin", default=os.environ.get("AK_PIN"))
     ap.add_argument("--unlock", action="store_true")
+    ap.add_argument("--site", action="store_true", help="nur die Prüfdatei für den Seiten-Code schreiben")
     a = ap.parse_args()
     if not a.pin:
         sys.exit("PIN fehlt (--pin oder AK_PIN)")
-    unlock(a.pin) if a.unlock else lock(a.src, a.pin)
+    if a.site:
+        lock_site(a.pin)
+    elif a.unlock:
+        unlock(a.pin)
+    else:
+        lock(a.src, a.pin)

@@ -333,6 +333,58 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .ak-list { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; }
 .ak-list small { color: var(--muted); }
 
+/* Navigation, Status */
+.tabs { overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+.tabs a { flex: 0 0 auto; }
+.statusbar { display: flex; gap: 8px; align-items: center; justify-content: flex-end; flex-wrap: wrap; margin-top: -8px; }
+.live-stamp { margin-right: auto; font-size: 12.5px; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; }
+.card h3 { font-family: var(--font-display); font-weight: 800; font-size: 20px; margin: 0; }
+.card h4 { font-family: var(--font-display); font-weight: 600; font-size: 17px; margin: 10px 0 0; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.form-grid label, .sortbox { display: grid; gap: 4px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.sortbox { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sortbox.wide { display: grid; }
+.form-grid input, .sortbox select, .add-row select, .add-row input, .search {
+  font: inherit; font-size: 15px; font-weight: 400; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-width: 0;
+}
+.form-grid input:focus-visible, .sortbox select:focus-visible, .add-row select:focus-visible, .add-row input:focus-visible, .search:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+.add-row { display: grid; grid-template-columns: 1fr 7.5em auto; gap: 8px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.search { flex: 1 1 180px; }
+.fav-filter[aria-pressed="true"] { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+.st-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.st-group { font-family: var(--font-display); font-weight: 600; font-size: 15px; margin: 8px 0 0; color: var(--muted); }
+.star { font: inherit; font-size: 20px; line-height: 1; background: none; border: 0; padding: 2px 4px; cursor: pointer; color: var(--muted); }
+.star[aria-pressed="true"] { color: #d99a00; }
+.st-row > summary { grid-template-columns: auto 1fr auto; align-items: center; column-gap: 8px; display: grid; }
+.st-main { display: grid; gap: 2px; min-width: 0; }
+.st-price { text-align: right; font-variant-numeric: tabular-nums; display: grid; gap: 2px; }
+.st-price b { font-family: var(--font-num); font-size: 15px; }
+.chg-up { color: var(--up); } .chg-down { color: var(--down); } .chg-flat { color: var(--muted); }
+.risk { font-size: 11px; font-weight: 600; padding: 0 7px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.risk.lo { color: var(--up); } .risk.mid { color: #b07800; } .risk.hi { color: var(--down); }
+.dp-table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.dp-table th, .dp-table td { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: right; }
+.dp-table th:first-child, .dp-table td:first-child { text-align: left; }
+.dp-table tfoot td { font-weight: 700; border-bottom: 0; }
+.dp-table button { font: inherit; background: none; border: 0; color: var(--muted); cursor: pointer; padding: 2px 6px; }
+.lines .l1 { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+.lines .l2 { fill: none; stroke: var(--up); stroke-width: 1.6; stroke-dasharray: 5 3; }
+.lines .l3 { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 2 3; }
+.lines text { font-family: var(--font-num); font-size: 10.5px; fill: var(--muted); }
+.lines .t1 { fill: var(--accent); font-weight: 600; }
+.lines .t2 { fill: var(--up); }
+.tbl { overflow-x: auto; }
+.dp-table { font-size: 13.5px; }
+.dp-table td, .dp-table th { white-space: nowrap; }
+.dp-table td:first-child { white-space: normal; }
+.stats.stats4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 620px) { .stats.stats4 { grid-template-columns: 1fr 1fr; } .stats.stats4 .stat:last-child { grid-column: auto; } }
+
 /* Gesperrter Bereich */
 .ak-lock {
   background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
@@ -423,15 +475,30 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     <button class="btn ghost" id="share" type="button">Link teilen</button>
   </header>
   <nav class="tabs" aria-label="Bereiche">
-    <a href="./" id="tab-brief" aria-current="page">Briefing</a>
-    <a href="#gesperrt" id="tab-ak">🔒 Gesperrter Bereich</a>
-    <span class="timer" id="timer" role="timer" aria-live="off"></span>
-    <button class="btn ghost lock-btn" id="lock-now" type="button">Sperren</button>
+    <a href="./" id="tab-brief" data-view="brief" aria-current="page">Briefing</a>
+    <a href="#aktien" id="tab-stocks" data-view="stocks">Alle Aktien</a>
+    <a href="#rechner" id="tab-calc" data-view="calc">Rechner</a>
+    <a href="#gesperrt" id="tab-ak" data-view="ak">🔒 Gesperrter Bereich</a>
   </nav>
+  <div class="statusbar">
+    <span class="live-stamp" id="live-stamp"></span>
+    <span class="timer" id="timer" role="timer" aria-live="off"></span>
+    <button class="btn ghost lock-btn" id="lock-now" type="button">Abmelden</button>
+  </div>
   <p class="toast" id="toast" role="status" hidden></p>
 
   <section class="view ak" id="v-ak" hidden aria-labelledby="ak-title">
-    <div class="sec-head"><h2 id="ak-title">Gesperrter Bereich</h2></div>
+    <div class="sec-head"><h2 id="ak-title">Gesperrter Bereich</h2><button class="btn ghost" id="pin-lock" type="button" hidden>Bereich sperren</button></div>
+    <div class="ak-lock" id="pin-box">
+      <p>Dieser Bereich ist zusätzlich mit einem PIN geschützt. Nach dem Öffnen bleibt er 15 Minuten offen.</p>
+      <form class="ak-form" id="pin-form" autocomplete="off">
+        <label for="pin-input">PIN</label>
+        <input class="ak-pin" id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" enterkeyhint="go" aria-describedby="pin-err">
+        <button class="btn" id="pin-go" type="submit">Öffnen</button>
+      </form>
+      <p class="ak-err" id="pin-err" role="alert" hidden></p>
+    </div>
+    <div class="ak-open" id="ak-open" hidden>
     <div class="mag-tabs" id="mag-tabs" role="tablist" aria-label="Zeitschriften"></div>
     <div class="ak-controls">
       <div class="seg" role="group" aria-label="Zeitraum der Hochrechnung">
@@ -445,9 +512,111 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       </div>
       <button class="btn" id="ak-resim" type="button">Neu würfeln</button>
     </div>
+    <label class="sortbox">Sortieren nach
+      <select id="ak-sort">
+        <option value="chance">Chance laut Hochrechnung</option>
+        <option value="div">Dividende (höchste zuerst)</option>
+        <option value="risk-hi">Risiko hoch → niedrig</option>
+        <option value="risk-lo">Risiko niedrig → hoch</option>
+        <option value="sector">Branche</option>
+      </select>
+    </label>
     <p class="sec-note" id="ak-note"></p>
-    <div id="ak-content" class="ak-open"></div>
+    <div id="ak-content"></div>
     <p class="fineprint">Eigene, vereinfachte Zusammenfassung der Hefte – keine Kopie und keine Anlageberatung. Kurse, Kursziele und Stopps stammen aus dem jeweiligen Heft (Stand siehe Ausgabe), heutige Kurse, Schwankungen und Dividenden von Yahoo Finance. Die Hochrechnung zeigt nur, wie oft Ziel, Stopp oder ein Plus in zufälligen Kursverläufen erreicht werden – sie kennt keine Nachrichten und ist keine Vorhersage.</p>
+    </div>
+  </section>
+
+  <section class="view" id="v-stocks" hidden aria-labelledby="st-title">
+    <div class="sec-head"><h2 id="st-title">Alle Aktien</h2><span class="sec-note" id="st-count"></span></div>
+    <div class="filters">
+      <input class="search" id="st-search" type="search" placeholder="Suchen, z. B. SAP" aria-label="Aktie suchen" autocomplete="off">
+      <label class="sortbox">Sortieren
+        <select id="st-sort">
+          <option value="name">Name A–Z</option>
+          <option value="div">Dividende (höchste zuerst)</option>
+          <option value="risk-hi">Risiko hoch → niedrig</option>
+          <option value="risk-lo">Risiko niedrig → hoch</option>
+          <option value="sector">Branche</option>
+          <option value="day">Heute stärkste zuerst</option>
+        </select>
+      </label>
+      <label class="sortbox">Branche
+        <select id="st-sector"><option value="">Alle</option></select>
+      </label>
+      <button class="btn ghost fav-filter" id="st-favs" type="button" aria-pressed="false">★ Nur Favoriten</button>
+    </div>
+    <p class="sec-note">Kurse verzögert von Yahoo Finance. Risiko = Schwankung der letzten 12 Monate (niedrig unter 25 %, mittel bis 40 %, hoch darüber). ★ merkt eine Aktie als Favorit auf diesem Gerät.</p>
+    <ol class="st-list" id="st-list"></ol>
+  </section>
+
+  <section class="view" id="v-calc" hidden aria-labelledby="calc-title">
+    <div class="sec-head"><h2 id="calc-title">Rechner</h2></div>
+
+    <section class="card" aria-labelledby="sp-title">
+      <h3 id="sp-title">Dividenden- und Sparrechner</h3>
+      <p class="sec-note">Wie wächst dein Geld, wenn du einmal anlegst und monatlich sparst? Dividenden werden einmal im Jahr gezahlt und auf Wunsch wieder angelegt.</p>
+      <label class="sortbox wide">Werte einer Aktie übernehmen
+        <select id="sp-stock"><option value="">– eigene Werte –</option></select>
+      </label>
+      <div class="form-grid">
+        <label>Startbetrag (€)<input id="sp-start" type="number" inputmode="decimal" min="0" step="100" value="1000"></label>
+        <label>Sparrate pro Monat (€)<input id="sp-rate" type="number" inputmode="decimal" min="0" step="10" value="100"></label>
+        <label>Laufzeit (Jahre)<input id="sp-years" type="number" inputmode="numeric" min="1" max="50" value="20"></label>
+        <label>Dividendenrendite (% pro Jahr)<input id="sp-yield" type="number" inputmode="decimal" step="0.1" value="3"></label>
+        <label>Kurswachstum (% pro Jahr)<input id="sp-growth" type="number" inputmode="decimal" step="0.5" value="5"></label>
+      </div>
+      <label class="check"><input id="sp-reinvest" type="checkbox" checked> Dividenden wieder anlegen</label>
+      <label class="check"><input id="sp-tax" type="checkbox" checked> Steuer abziehen (26,375 % auf Dividenden über 1.000 € im Jahr)</label>
+      <p class="sec-note" id="sp-src"></p>
+      <div class="stats" id="sp-stats"></div>
+      <div id="sp-chart"></div>
+    </section>
+
+    <section class="card" aria-labelledby="dp-title">
+      <h3 id="dp-title">Meine Aktien</h3>
+      <p class="sec-note">Füge Aktien mit dem Betrag hinzu, den du anlegst oder angelegt hast. Gespeichert wird nur auf diesem Gerät.</p>
+      <div class="add-row">
+        <select id="dp-stock" aria-label="Aktie wählen"></select>
+        <input id="dp-amount" type="number" inputmode="decimal" min="1" step="100" value="1000" aria-label="Betrag in Euro">
+        <button class="btn" id="dp-add" type="button">Hinzufügen</button>
+      </div>
+      <details class="ak-more">
+        <summary>Eigene Aktie, die nicht in der Liste ist</summary>
+        <div class="form-grid">
+          <label>Name<input id="cu-name" type="text" placeholder="z. B. Meine Aktie"></label>
+          <label>Betrag (€)<input id="cu-amount" type="number" inputmode="decimal" min="1" value="1000"></label>
+          <label>Dividendenrendite (%)<input id="cu-yield" type="number" inputmode="decimal" step="0.1" value="2"></label>
+          <label>Erwartetes Wachstum (% p. a.)<input id="cu-growth" type="number" inputmode="decimal" step="0.5" value="5"></label>
+          <label>Schwankung (% p. a.)<input id="cu-sigma" type="number" inputmode="decimal" step="1" value="30"></label>
+        </div>
+        <button class="btn" id="cu-add" type="button">Eigene Aktie hinzufügen</button>
+      </details>
+      <div id="dp-table"></div>
+
+      <h4>Prognose für die nächsten Jahre</h4>
+      <div class="ak-controls">
+        <label class="sortbox">Zeitraum
+          <select id="pr-years"><option>1</option><option>3</option><option selected>5</option><option>10</option><option>15</option><option>20</option><option>30</option></select> Jahre
+        </label>
+        <label class="sortbox">Annahme
+          <select id="pr-assume">
+            <option value="0">Ohne Trend (0 % pro Jahr)</option>
+            <option value="4">Vorsichtig (4 % pro Jahr)</option>
+            <option value="7" selected>Aktien-Durchschnitt (7 % pro Jahr)</option>
+            <option value="hist">Wie in den letzten 10 Jahren</option>
+          </select>
+        </label>
+      </div>
+      <div id="pr-out"></div>
+
+      <h4>Was wäre, wenn du früher investiert hättest?</h4>
+      <label class="sortbox">Investiert vor
+        <select id="bt-years"><option>1</option><option>3</option><option selected>5</option><option>10</option><option>15</option><option>20</option></select> Jahren
+      </label>
+      <div id="bt-out"></div>
+    </section>
+    <p class="fineprint">Alle Rechnungen sind Modellrechnungen ohne Gebühren und ohne Garantie. „Was wäre wenn“ nutzt echte Monatskurse inklusive wieder angelegter Dividenden, in Euro umgerechnet. Die Prognose rechnet 1.000 zufällige Verläufe mit der Schwankung der jeweiligen Aktie – keine Vorhersage und keine Anlageberatung.</p>
   </section>
 
   <div class="view" id="v-brief">
@@ -653,7 +822,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     return '<li class="pick-card">' +
       '<div class="pick-head"><span class="rank">' + esc(p.rank) + "</span><div>" +
       '<div class="pick-name">' + esc(p.name) + "</div>" +
-      '<div class="pick-sub">Kurs ' + money(p.price, c) + (typeof p.target === "number" ? " · Ø-Kursziel " + money(p.target, c) : "") + "</div></div>" +
+      '<div class="pick-sub">Kurs ' + money(p.price, c) + (typeof p.target === "number" ? " · Ø-Kursziel " + money(p.target, c) : "") + "</div>" +
+      (p.symbol && px(p.symbol) ? '<div class="pick-sub">Aktuell ' + liveSpan(p.symbol, "local") + " · " + liveSpan(p.symbol, "chg") + "</div>" : "") + "</div>" +
       (typeof p.score === "number" ? '<span class="score">' + Math.round(p.score) + "/100</span>" : "") + "</div>" +
       fanSVG(p, sim) +
       '<p class="legend">Linie: Median · dunkel: mittlere 50 % der Läufe · hell: 80 % · gestrichelt: Kurs heute</p>' +
@@ -760,16 +930,18 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   // Ausgangslage: heutiger Kurs (falls passend), Schwankung, Verlauf seit dem Heft
   function akCtx(issue, p) {
     const cur = p.cur || "EUR";
-    const q = AK.quotes.q[p.sym];
-    const c = { cur, S0: p.kurs || null, sigma: 0.45, src: "none", q, hist: [], n: 0, local: null };
-    if (q && q.eur > 0 && q.sigma > 0) {
-      const f = cur === "EUR" ? 1 : q.cur === cur ? q.local / q.eur : null;
-      c.sigma = q.sigma; c.n = q.n || 0; c.local = q.local;
-      if (f) {
-        const now = q.eur * f, ratio = p.kurs ? now / p.kurs : 1;
+    const q = AK.quotes.q[p.sym], x = px(p.sym);
+    const c = { cur, S0: p.kurs || null, sigma: 0.45, src: "none", q, hist: [], n: 0, local: x ? x.local : null, day: null };
+    if (q && q.sigma > 0) { c.sigma = q.sigma; c.n = q.n || 0; }
+    if (x && x.eur > 0) {
+      const now = cur === "EUR" ? x.eur : x.cur === cur ? x.local : null;
+      if (now) {
+        const ratio = p.kurs ? now / p.kurs : 1;
         if (ratio > 0.5 && ratio < 2) {
-          c.S0 = now; c.src = "today";
-          c.hist = (q.hist || []).filter((h) => h[0] >= issue.stand).map((h) => [h[0], h[1] * f]);
+          c.S0 = now; c.src = "today"; c.day = x.day; c.live = x.live;
+          const f = now / x.eur;
+          c.hist = (q && q.hist ? q.hist : []).filter((h) => h[0] >= issue.stand).map((h) => [h[0], h[1] * f]);
+          if (!c.hist.length || c.hist[c.hist.length - 1][0] < x.day) c.hist.push([x.day, now]);
         } else c.src = "mismatch";
       }
     }
@@ -896,13 +1068,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
         "</div>";
     }
     let src;
-    if (c.src === "today") src = "Kurs heute " + amt(c.S0, cu) + " (Schluss " + shortDate(c.q.date) + ")" + (p.kurs ? " · seit Heft " + signedPct(c.S0 / p.kurs - 1) : "") +
+    if (c.src === "today") src = "Kurs aktuell " + amt(c.S0, cu) + " (" + (c.live ? "Stand " : "Schluss ") + shortDate(c.day) + ")" + (p.kurs ? " · seit Heft " + signedPct(c.S0 / p.kurs - 1) : "") +
       (p.ziel ? " · bis " + zName(p) + " " + signedPct(p.ziel / c.S0 - 1) : "") + (p.stopp ? " · bis " + sName(p) + " " + signedPct(p.stopp / c.S0 - 1) : "");
     else if (c.src === "mismatch") src = "Der Börsenkurs passt nicht zum Heft-Kurs – gerechnet wird ab dem Heft-Kurs.";
     else if (c.status !== "nodata") src = "Noch kein Börsenkurs geladen – gerechnet ab dem Heft-Kurs mit geschätzter Schwankung.";
     else src = "";
     const dv = divText(p.sym, c.local || null, c.q ? c.q.cur : null);
-    const meta = [p.seit, p.risiko ? "Risiko " + p.risiko : "", p.dr ? "Dividendenrendite laut Heft " + p.dr : ""].filter(Boolean).join(" · ");
+    const meta = [p.seit, p.risiko ? "Risiko laut Heft: " + p.risiko : "", p.dr ? "Dividendenrendite laut Heft " + p.dr : ""].filter(Boolean).join(" · ");
     body += '<p class="pick-text"><b>Laut Heft:</b> ' + esc(p.why || "") + "</p>" +
       (meta ? '<p class="pick-foot">' + esc(meta) + "</p>" : "") +
       (dv ? '<p class="div-line"><b>Dividende:</b> ' + dv + "</p>" : "") +
@@ -912,11 +1084,25 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
         (AK.sc === "trend" && p.ziel ? "Trend so, dass der mittlere Kurs das Ziel nach 12 Monaten erreicht" : "ohne Trend") + " · " +
         RUNS_AK.toLocaleString("de-DE") + " Läufe</p>" : "");
     return '<li><details class="akp"><summary>' +
-      '<div class="akp-top"><span class="akp-name">' + esc(p.name) + "</span>" + chips + "</div>" +
-      '<div class="akp-sub">' + sub.join(" · ") + "</div>" + odds + '</summary><div class="akp-body">' + body + "</div></details></li>";
+      '<div class="akp-top">' + starBtn(p.sym) + '<span class="akp-name">' + esc(p.name) + "</span>" + chips + "</div>" +
+      '<div class="akp-sub">' + sub.join(" · ") + "</div>" +
+      '<div class="akp-sub">' + esc(sectorOf(p.sym)) + (yieldOf(p.sym) != null ? " · " + (yieldOf(p.sym) > 0 ? "Div. " + nf1.format(yieldOf(p.sym) * 100) + " %" : "keine Dividende") : "") + " " + riskBadge(p.sym) + "</div>" +
+      odds + '</summary><div class="akp-body">' + body + "</div></details></li>";
   }
 
   const sortKey = (r) => (r.c.status === "ziel" ? 3 : r.c.status === "stopp" ? -1 : r.c.status === "nodata" ? -2 : r.p.ziel && r.p.stopp ? 1 + r.sim.pZ : r.sim.pUp);
+  function sortPicks(list) {
+    const m = AK.sort || "chance", yv = (r) => { const y = yieldOf(r.p.sym); return y == null ? -1 : y; };
+    const sg = (r) => sigmaOf(r.p.sym);
+    const cmp = {
+      chance: (a, b) => sortKey(b) - sortKey(a),
+      div: (a, b) => yv(b) - yv(a),
+      "risk-hi": (a, b) => (sg(b) ?? -1) - (sg(a) ?? -1),
+      "risk-lo": (a, b) => (sg(a) ?? 9) - (sg(b) ?? 9),
+      sector: (a, b) => sectorOf(a.p.sym).localeCompare(sectorOf(b.p.sym), "de") || a.p.name.localeCompare(b.p.name, "de"),
+    }[m];
+    return list.slice().sort(cmp);
+  }
   const byDate = (a, b) => (b.datum || "").localeCompare(a.datum || "");
   function magList() {
     const d = AK.data, newest = {};
@@ -950,7 +1136,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     let html = glance.length ? '<section class="ak-glance"><h3>' + esc(mag.name) + " auf einen Blick</h3><ul>" + glance.join("") + "</ul></section>" : "";
     issues.forEach((issue) => {
       const ii = d.issues.indexOf(issue);
-      const rows = res[ii].slice().sort((a, b) => sortKey(b) - sortKey(a));
+      const rows = sortPicks(res[ii]);
       html += '<article class="ak-issue">' +
         '<div class="meta-row"><span class="kind">' + esc(issue.nr) + "</span><span>" + (issue.zeitraum ? esc(issue.zeitraum) : "erschienen " + dmy(issue.datum)) +
         (issue.stand ? " · Kurse vom " + esc(shortDate(issue.stand)) : "") + "</span></div>" +
@@ -959,8 +1145,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
         '<details class="ak-more" open><summary>Was im Heft steht (' + issue.themen.length + " Themen)</summary>" +
         '<dl class="ak-themen">' + issue.themen.map((t) => "<div><dt>" + esc(t.t) + "</dt><dd>" + esc(t.s) + "</dd></div>").join("") + "</dl></details>" +
         "<h4>Empfehlungen mit Hochrechnung (" + issue.picks.length + ")</h4>" +
-        '<p class="sec-note">Sortiert nach der Chance, zuerst das Ziel statt den Stopp zu erreichen; ohne Ziel/Stopp nach der Chance auf ein Plus. Tippen für Chart, Dividende und Details.</p>' +
-        '<ol class="ak-picks">' + rows.map((r) => akRow(issue, r.p, r.c, r.sim)).join("") + "</ol>";
+        '<p class="sec-note">' + ({ chance: "Sortiert nach der Chance, zuerst das Ziel statt den Stopp zu erreichen; ohne Ziel/Stopp nach der Chance auf ein Plus.", div: "Sortiert nach Dividendenrendite (höchste zuerst).", "risk-hi": "Sortiert nach Risiko (Schwankung), höchstes zuerst.", "risk-lo": "Sortiert nach Risiko (Schwankung), niedrigstes zuerst.", sector: "Nach Branche gruppiert." }[AK.sort || "chance"]) + " Tippen für Chart, Dividende und Details.</p>" +
+        '<ol class="ak-picks">' + rows.map((r, k) => (AK.sort === "sector" && (k === 0 || sectorOf(rows[k - 1].p.sym) !== sectorOf(r.p.sym)) ? '<li class="st-group">' + esc(sectorOf(r.p.sym)) + "</li>" : "") + akRow(issue, r.p, r.c, r.sim)).join("") + "</ol>";
       if (issue.beobachten && issue.beobachten.length) html += '<details class="ak-more"><summary>Nur beobachten (' + issue.beobachten.length + ')</summary><ul class="ak-list">' +
         issue.beobachten.map((x) => "<li><b>" + esc(x.name) + "</b>" + (x.kurs ? " · " + eur(x.kurs) : "") + (x.why ? "<br><small>" + esc(x.why) + "</small>" : "") + "</li>").join("") + "</ul></details>";
       if (issue.derivate && issue.derivate.length) html += '<details class="ak-more"><summary>Hebelprodukte aus dem Heft (' + issue.derivate.length + ")</summary>" +
@@ -1023,10 +1209,434 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     akCompute();
   }));
   $("ak-resim").addEventListener("click", () => { AK.run++; akCompute(); });
+  $("ak-sort").addEventListener("change", (e) => { AK.sort = e.target.value; if (AK.data) akCompute(); });
 
-  // ---------- Öffnen, 15 Minuten offen halten, sperren ----------
-  let timerId = null, briefingStarted = false;
+  // ---------- Aktuelle Kurse, Aktien-Infos, Favoriten ----------
+  const showToast = (t) => { $("toast").textContent = t; $("toast").hidden = false; setTimeout(() => { $("toast").hidden = true; }, 3000); };
+  let STOCKS = {}, LIVE = { q: {}, fx: {}, cur: {} }, LONG = null, longPromise = null, liveTimer = null;
+  const FKEY = "bb-favs", DKEY = "bb-depot";
+  const ls = {
+    get(k, d) { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? d : v; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* privat-Modus */ } },
+  };
+  let FAVS = new Set(ls.get(FKEY, []));
+  async function loadLive() {
+    const j = await getJSON("data/live.json", null);
+    if (j && j.q) LIVE = j;
+    updateLiveSpans();
+    if (!liveTimer) liveTimer = setInterval(() => { if (siteOpen && !document.hidden) loadLive(); }, 5 * 60 * 1000);
+  }
+  function curOf(sym) {
+    const q = AK.quotes.q[sym];
+    return (LIVE.cur && LIVE.cur[sym]) || (q && q.cur) || "EUR";
+  }
+  // Aktueller Kurs: erst der Live-Stand, sonst der letzte Tagesschluss
+  function px(sym) {
+    const cur = curOf(sym), l = LIVE.q[sym], q = AK.quotes.q[sym];
+    if (l && (!q || l[2] >= q.date)) {
+      const fx = cur === "EUR" ? 1 : LIVE.fx && LIVE.fx[cur];
+      const eurV = fx ? l[0] / fx : q && q.local ? l[0] * q.eur / q.local : null;
+      return { local: l[0], eur: eurV, cur, chg: l[1] ? l[0] / l[1] - 1 : null, day: l[2], live: true };
+    }
+    if (q) {
+      const h = q.hist || [];
+      const chg = h.length > 1 ? h[h.length - 1][1] / h[h.length - 2][1] - 1 : null;
+      return { local: q.local, eur: q.eur, cur, chg, day: q.date, live: false };
+    }
+    return null;
+  }
+  const sigmaOf = (sym) => { const q = AK.quotes.q[sym]; return q && q.sigma ? q.sigma : null; };
+  function yieldOf(sym) {
+    const d = DIVS[sym], x = px(sym);
+    if (!d) return null;
+    if (d.none || !d.n12) return 0;
+    if (!(x && x.local > 0 && (d.cur || "EUR") === x.cur)) return null;
+    const y = d.sum12 / x.local;
+    return y > 0.25 ? null : y;
+  }
+  const riskClass = (sg) => (sg == null ? null : sg < 0.25 ? ["lo", "niedrig"] : sg < 0.4 ? ["mid", "mittel"] : ["hi", "hoch"]);
+  const riskBadge = (sym) => { const sg = sigmaOf(sym), r = riskClass(sg); return r ? '<span class="risk ' + r[0] + '">Risiko ' + r[1] + " " + Math.round(sg * 100) + " %</span>" : ""; };
+  const sectorOf = (sym) => (STOCKS[sym] && STOCKS[sym].sector) || "Sonstige";
+  const nameOf = (sym) => (STOCKS[sym] && STOCKS[sym].name) || sym;
+  function liveText(sym, f) {
+    const x = px(sym);
+    if (!x) return "–";
+    if (f === "chg") return x.chg == null ? "" : signedPct(x.chg) + " heute";
+    if (f === "local") return amt(x.local, x.cur);
+    if (f === "eurplus") return amt(x.eur, "EUR") + (x.cur !== "EUR" ? " · " + amt(x.local, x.cur) : "");
+    return amt(x.eur, "EUR");
+  }
+  function liveSpan(sym, f) {
+    const x = px(sym), cls = f === "chg" && x && x.chg != null ? (x.chg > 0.0005 ? "chg-up" : x.chg < -0.0005 ? "chg-down" : "chg-flat") : "";
+    return '<span data-live="' + esc(sym) + '" data-f="' + f + '" class="' + cls + '">' + esc(liveText(sym, f)) + "</span>";
+  }
+  function updateLiveSpans() {
+    document.querySelectorAll("[data-live]").forEach((el) => {
+      const sym = el.getAttribute("data-live"), f = el.getAttribute("data-f"), x = px(sym);
+      el.textContent = liveText(sym, f);
+      if (f === "chg") el.className = x && x.chg != null ? (x.chg > 0.0005 ? "chg-up" : x.chg < -0.0005 ? "chg-down" : "chg-flat") : "";
+    });
+    const up = LIVE.updated ? new Date(LIVE.updated) : null;
+    $("live-stamp").textContent = up && !isNaN(up) ? "Kurse verzögert · Stand " + up.toLocaleString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" }) + " Uhr" : "";
+  }
+  function starBtn(sym) {
+    const on = FAVS.has(sym);
+    return '<button type="button" class="star" data-fav="' + esc(sym) + '" aria-pressed="' + on + '" aria-label="' + esc(nameOf(sym)) + (on ? " aus Favoriten entfernen" : " als Favorit merken") + '">' + (on ? "★" : "☆") + "</button>";
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-fav]");
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    const sym = b.dataset.fav;
+    if (FAVS.has(sym)) FAVS.delete(sym); else FAVS.add(sym);
+    ls.set(FKEY, Array.from(FAVS));
+    document.querySelectorAll('button[data-fav="' + CSS.escape(sym) + '"]').forEach((x) => {
+      const on = FAVS.has(sym);
+      x.setAttribute("aria-pressed", String(on)); x.textContent = on ? "★" : "☆";
+      x.setAttribute("aria-label", nameOf(sym) + (on ? " aus Favoriten entfernen" : " als Favorit merken"));
+    });
+    if (currentView() === "stocks" && st.favs) renderStocks();
+    fillStockSelects();
+  }, true);
+
+  // ---------- Langfristige Kurse (Monate, inkl. Dividenden, in Euro) ----------
+  function loadLong() {
+    if (!longPromise) longPromise = getJSON("data/long.json", { q: {} }).then((j) => { LONG = j && j.q ? j : { q: {} }; return LONG; });
+    return longPromise;
+  }
+  function whatIf(sym, years) {
+    const s = LONG && LONG.q[sym];
+    const m = Math.round(years * 12);
+    if (!s || s.v.length <= m) return null;
+    const v = s.v, now = v[v.length - 1], then = v[v.length - 1 - m];
+    if (!(then > 0)) return null;
+    const f = now / then;
+    return { factor: f, cagr: Math.pow(f, 1 / years) - 1 };
+  }
+  const histCagr = (sym) => { const w = whatIf(sym, 10) || whatIf(sym, 5) || whatIf(sym, 3); return w ? w.cagr : null; };
+
+  // ---------- Diagramme für Rechner und Aktienliste ----------
+  const fmtK = (v) => (Math.abs(v) >= 10000 ? new Intl.NumberFormat("de-DE", { maximumFractionDigits: 0 }).format(v) : num(v));
+  function lineChart(series, xLabels, opt) {
+    opt = opt || {};
+    const W = 320, H = 180, L = 6, R = 78, T = 10, B = 22;
+    const all = [].concat.apply([], series.map((s) => s.v).concat(opt.bands ? [opt.bands.p10, opt.bands.p90] : [])).filter((v) => isFinite(v));
+    let lo = opt.zero ? 0 : Math.min.apply(null, all), hi = Math.max.apply(null, all);
+    const pad = (hi - lo) * 0.06 || hi * 0.05 || 1; hi += pad; if (!opt.zero) lo -= pad;
+    const n = series[0].v.length;
+    const x = (i) => L + (W - L - R) * i / Math.max(1, n - 1);
+    const y = (v) => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+    const labels = series.filter((s) => s.label).map((s) => ({ t: s.label(s.v[s.v.length - 1]), y: y(s.v[s.v.length - 1]) + 3.5, cls: s.tcls || "" }))
+      .sort((a, b) => a.y - b.y);
+    for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < 12) labels[i].y = labels[i - 1].y + 12;
+    let out = '<svg class="fan lines" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(opt.aria || "Diagramm") + '">' +
+      '<line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + (H - B) + '" y2="' + (H - B) + '"/>';
+    if (opt.bands) {
+      const b = opt.bands, P = (arr) => arr.map((v, i) => x(i).toFixed(1) + " " + y(v).toFixed(1));
+      out += '<path class="b80" d="M' + P(b.p90).join(" L") + " L" + P(b.p10).reverse().join(" L") + ' Z"/>' +
+        '<path class="b50" d="M' + P(b.p75).join(" L") + " L" + P(b.p25).reverse().join(" L") + ' Z"/>';
+    }
+    series.forEach((s) => { out += '<path class="' + s.cls + '" d="M' + s.v.map((v, i) => x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" L") + '"/>'; });
+    out += labels.map((l) => '<text class="' + l.cls + '" x="' + (W - R + 5) + '" y="' + l.y.toFixed(1) + '">' + esc(l.t) + "</text>").join("");
+    const xl = xLabels || [];
+    if (xl.length) {
+      out += '<text x="' + L + '" y="' + (H - 6) + '">' + esc(xl[0]) + "</text>";
+      if (xl.length > 2) out += '<text x="' + x(Math.floor((n - 1) / 2)).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle">' + esc(xl[1]) + "</text>";
+      out += '<text x="' + (W - R) + '" y="' + (H - 6) + '" text-anchor="end">' + esc(xl[xl.length - 1]) + "</text>";
+    }
+    return out + "</svg>";
+  }
+
+  // Monte Carlo über Jahre: Positionen [{amount, mu, sigma}], gemeinsamer Marktanteil (Korrelation 0,5)
+  function depotSim(pos, years, seed) {
+    const R = 1000, M = years * 12, rho = 0.5, a = Math.sqrt(rho), b = Math.sqrt(1 - rho);
+    const rnd = mulberry32(seed >>> 0);
+    const gauss = () => { const u = rnd() || 1e-12, v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+    const cols = []; for (let k = 0; k <= years * 4; k++) cols.push(new Float64Array(R));
+    const total0 = pos.reduce((s, p) => s + p.amount, 0);
+    let loss = 0;
+    for (let r = 0; r < R; r++) {
+      const val = pos.map((p) => p.amount);
+      cols[0][r] = total0;
+      for (let m = 1; m <= M; m++) {
+        const zm = gauss();
+        for (let i = 0; i < pos.length; i++) {
+          const sg = pos[i].sigma / Math.sqrt(12), mu = Math.log(1 + pos[i].mu) / 12 - 0.5 * sg * sg;
+          val[i] *= Math.exp(mu + sg * (a * zm + b * gauss()));
+        }
+        if (m % 3 === 0) cols[m / 3][r] = val.reduce((s, v) => s + v, 0);
+      }
+      if (cols[years * 4][r] < total0) loss++;
+    }
+    const q = (arr, pc) => { const x = pc / 100 * (arr.length - 1), lo = Math.floor(x), hi = Math.ceil(x); return arr[lo] + (arr[hi] - arr[lo]) * (x - lo); };
+    const bands = { p10: [], p25: [], p50: [], p75: [], p90: [] };
+    cols.forEach((c) => { c.sort(); [10, 25, 50, 75, 90].forEach((k) => bands["p" + k].push(q(c, k))); });
+    return { bands, pLoss: loss / R, total0 };
+  }
+
+  // ---------- Alle Aktien ----------
+  const st = { q: "", sort: "name", sector: "", favs: false };
+  const SECTORS = () => Array.from(new Set(Object.keys(STOCKS).map(sectorOf))).sort((a, b) => a.localeCompare(b, "de"));
+  function sortStocks(list, mode) {
+    const yv = (s) => { const y = yieldOf(s); return y == null ? -1 : y; };
+    const sv = (s) => { const g = sigmaOf(s); return g == null ? null : g; };
+    const byName = (a, b) => nameOf(a).localeCompare(nameOf(b), "de");
+    const cmp = {
+      name: byName,
+      div: (a, b) => yv(b) - yv(a) || byName(a, b),
+      "risk-hi": (a, b) => (sv(b) ?? -1) - (sv(a) ?? -1) || byName(a, b),
+      "risk-lo": (a, b) => (sv(a) ?? 9) - (sv(b) ?? 9) || byName(a, b),
+      sector: (a, b) => sectorOf(a).localeCompare(sectorOf(b), "de") || byName(a, b),
+      day: (a, b) => (((px(b) || {}).chg) ?? -9) - (((px(a) || {}).chg) ?? -9) || byName(a, b),
+    }[mode] || byName;
+    return list.slice().sort(cmp);
+  }
+  function stockRow(sym) {
+    const y = yieldOf(sym);
+    const sub = [esc(sectorOf(sym)), y == null ? "" : y > 0 ? "Div. " + nf1.format(y * 100) + " %" : "keine Dividende"].filter(Boolean).join(" · ");
+    return '<li><details class="akp st-row" data-sym="' + esc(sym) + '"><summary>' + starBtn(sym) +
+      '<div class="st-main"><span class="akp-name">' + esc(nameOf(sym)) + '</span><span class="akp-sub">' + sub + "</span>" + riskBadge(sym) + "</div>" +
+      '<div class="st-price"><b>' + liveSpan(sym, "eur") + "</b>" + liveSpan(sym, "chg") + "</div>" +
+      '</summary><div class="akp-body"></div></details></li>';
+  }
+  function renderStocks() {
+    const sel = $("st-sector");
+    if (sel.options.length <= 1) sel.innerHTML = '<option value="">Alle</option>' + SECTORS().map((s) => "<option>" + esc(s) + "</option>").join("");
+    const q = st.q.trim().toLowerCase();
+    let list = Object.keys(STOCKS).filter((s) => (!st.sector || sectorOf(s) === st.sector) && (!st.favs || FAVS.has(s)) &&
+      (!q || nameOf(s).toLowerCase().includes(q) || s.toLowerCase().includes(q)));
+    list = sortStocks(list, st.sort);
+    let html = "", lastSec = null;
+    list.forEach((s) => {
+      if (st.sort === "sector" && sectorOf(s) !== lastSec) { lastSec = sectorOf(s); html += '<li class="st-group">' + esc(lastSec) + "</li>"; }
+      html += stockRow(s);
+    });
+    $("st-list").innerHTML = html || '<li class="sec-note">' + (st.favs ? "Noch keine Favoriten – tippe auf ☆ bei einer Aktie." : "Keine Aktie gefunden.") + "</li>";
+    $("st-count").textContent = list.length + " von " + Object.keys(STOCKS).length;
+  }
+  function sparkHist(sym) {
+    const q = AK.quotes.q[sym], x = px(sym);
+    if (!q || !q.hist || q.hist.length < 2) return "";
+    const pts = q.hist.map((h) => h[1]);
+    if (x && x.day > q.date && x.eur) pts.push(x.eur);
+    return lineChart([{ v: pts, cls: "l1", label: (v) => num(v) + " €", tcls: "t1" }], ["vor ~3 Mon.", "heute"],
+      { aria: nameOf(sym) + ": Kursverlauf der letzten Monate in Euro" });
+  }
+  async function stockDetail(det) {
+    const sym = det.dataset.sym, body = det.querySelector(".akp-body");
+    if (body.dataset.done) return;
+    body.dataset.done = "1";
+    body.innerHTML = sparkHist(sym) + (divText(sym, (px(sym) || {}).local, curOf(sym)) ? '<p class="div-line"><b>Dividende:</b> ' + divText(sym, (px(sym) || {}).local, curOf(sym)) + "</p>" : "") +
+      '<p class="pick-foot">Kurs ' + liveSpan(sym, "eurplus") + " · " + liveSpan(sym, "chg") + "</p>" + '<div class="wi">Lade „Was wäre wenn“ …</div>' +
+      '<div class="add-row"><button class="btn" type="button" data-add="' + esc(sym) + '">Zu „Meine Aktien“ (1.000 €)</button><button class="btn ghost" type="button" data-sp="' + esc(sym) + '">Im Sparrechner</button></div>';
+    await loadLong();
+    const rows = [1, 3, 5, 10, 20].map((yrs) => { const w = whatIf(sym, yrs); return w ? "<tr><td>vor " + yrs + (yrs === 1 ? " Jahr" : " Jahren") + "</td><td>" + eur(1000 * w.factor) + "</td><td>" + signedPct(w.factor - 1) + "</td><td>" + signedPct(w.cagr) + " p. a.</td></tr>" : ""; }).join("");
+    const cg = histCagr(sym), sg = sigmaOf(sym) || 0.3;
+    const mu = Number(($("pr-assume") || {}).value);
+    const muUse = isFinite(mu) ? mu / 100 : cg != null ? clip(cg, -0.1, 0.2) : 0.07;
+    const sim = depotSim([{ amount: 1000, mu: muUse, sigma: sg }], 5, hashStr(sym + "5"));
+    const e = sim.bands, l = e.p50.length - 1;
+    body.querySelector(".wi").innerHTML =
+      (rows ? "<h4>Was wäre, wenn du 1.000 € investiert hättest?</h4><table class=\"dp-table bt-table\"><thead><tr><th>Investiert</th><th>Heute</th><th>Gesamt</th><th>Pro Jahr</th></tr></thead><tbody>" + rows + "</tbody></table>" +
+        '<p class="sec-note">Mit wieder angelegten Dividenden, in Euro.</p>' : '<p class="sec-note">Für „Was wäre wenn“ gibt es noch keine langen Kursdaten.</p>') +
+      "<h4>Prognose: 1.000 € in 5 Jahren</h4>" +
+      '<div class="stats">' + stat("Mitte", eur(e.p50[l]), signedPct(e.p50[l] / 1000 - 1)) + stat("80 % der Läufe", fmtK(e.p10[l]) + "–" + fmtK(e.p90[l]) + " €", "zwischen diesen Werten") +
+      stat("Chance auf Verlust", pctInt(sim.pLoss), "nach 5 Jahren") + "</div>" +
+      '<p class="sec-note">Annahme ' + signedPct(muUse) + " pro Jahr, Schwankung " + Math.round(sg * 100) + " % (änderbar im Rechner) · 1.000 Läufe.</p>";
+  }
+  $("st-list").addEventListener("toggle", (e) => { if (e.target.matches && e.target.matches("details.st-row") && e.target.open) stockDetail(e.target); }, true);
+  $("st-search").addEventListener("input", (e) => { st.q = e.target.value; renderStocks(); });
+  $("st-sort").addEventListener("change", (e) => { st.sort = e.target.value; renderStocks(); });
+  $("st-sector").addEventListener("change", (e) => { st.sector = e.target.value; renderStocks(); });
+  $("st-favs").addEventListener("click", (e) => { st.favs = !st.favs; e.currentTarget.setAttribute("aria-pressed", String(st.favs)); renderStocks(); });
+
+  // ---------- Rechner ----------
+  let DEPOT = ls.get(DKEY, []);
+  const saveDepot = () => ls.set(DKEY, DEPOT);
+  function fillStockSelects() {
+    const all = Object.keys(STOCKS).sort((a, b) => nameOf(a).localeCompare(nameOf(b), "de"));
+    const favs = all.filter((s) => FAVS.has(s));
+    const opts = (list) => list.map((s) => '<option value="' + esc(s) + '">' + esc(nameOf(s)) + "</option>").join("");
+    const grouped = (favs.length ? '<optgroup label="★ Favoriten">' + opts(favs) + "</optgroup>" : "") + '<optgroup label="Alle Aktien">' + opts(all) + "</optgroup>";
+    const sp = $("sp-stock"), keep = sp.value;
+    sp.innerHTML = '<option value="">– eigene Werte –</option>' + grouped; sp.value = keep;
+    const dp = $("dp-stock"), keep2 = dp.value;
+    dp.innerHTML = grouped; if (keep2) dp.value = keep2;
+  }
+  let calcReady = false;
+  function initCalc() {
+    if (calcReady) { fillStockSelects(); return; }
+    calcReady = true;
+    fillStockSelects();
+    ["sp-start", "sp-rate", "sp-years", "sp-yield", "sp-growth", "sp-reinvest", "sp-tax"].forEach((id) => $(id).addEventListener("input", renderSpar));
+    $("sp-stock").addEventListener("change", async (e) => { await applyStockToSpar(e.target.value); renderSpar(); });
+    $("dp-add").addEventListener("click", () => {
+      const sym = $("dp-stock").value, amount = Number($("dp-amount").value);
+      if (!sym || !(amount > 0)) return;
+      const ex = DEPOT.find((p) => p.sym === sym);
+      if (ex) ex.amount += amount; else DEPOT.push({ sym, amount });
+      saveDepot(); renderDepot();
+    });
+    $("cu-add").addEventListener("click", () => {
+      const name = $("cu-name").value.trim() || "Eigene Aktie", amount = Number($("cu-amount").value);
+      if (!(amount > 0)) return;
+      DEPOT.push({ sym: null, name, amount, y: Number($("cu-yield").value) / 100 || 0, g: Number($("cu-growth").value) / 100 || 0, s: Math.max(0.05, Number($("cu-sigma").value) / 100 || 0.3) });
+      saveDepot(); renderDepot();
+    });
+    $("dp-table").addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-del]");
+      if (!b) return;
+      DEPOT.splice(Number(b.dataset.del), 1); saveDepot(); renderDepot();
+    });
+    $("pr-years").addEventListener("change", renderPrognose);
+    $("pr-assume").addEventListener("change", renderPrognose);
+    $("bt-years").addEventListener("change", renderBacktest);
+    document.addEventListener("click", async (e) => {
+      const add = e.target.closest("button[data-add]"), sp = e.target.closest("button[data-sp]");
+      if (add) {
+        const sym = add.dataset.add, ex = DEPOT.find((p) => p.sym === sym);
+        if (ex) ex.amount += 1000; else DEPOT.push({ sym, amount: 1000 });
+        saveDepot(); showToast(nameOf(sym) + " mit 1.000 € zu „Meine Aktien“ hinzugefügt.");
+      } else if (sp) {
+        location.hash = "#rechner";
+        $("sp-stock").value = sp.dataset.sp;
+        await applyStockToSpar(sp.dataset.sp); renderSpar();
+      }
+    });
+  }
+  async function applyStockToSpar(sym) {
+    if (!sym) { $("sp-src").textContent = ""; return; }
+    await loadLong();
+    const y = yieldOf(sym), cg = histCagr(sym);
+    const yv = y == null ? 0 : y, g = cg == null ? 0.05 : clip(cg - yv, -0.05, 0.12);
+    $("sp-yield").value = (yv * 100).toFixed(1);
+    $("sp-growth").value = (g * 100).toFixed(1);
+    $("sp-src").textContent = nameOf(sym) + ": Dividendenrendite der letzten 12 Monate" + (cg == null ? ", Kurswachstum geschätzt (5 %)." : ", Kurswachstum wie im Schnitt der letzten Jahre (ohne Dividende, begrenzt auf −5 bis +12 %).") + " Werte kannst du ändern.";
+  }
+  function renderCalc() { initCalc(); renderSpar(); renderDepot(); }
+  function renderSpar() {
+    const start = Math.max(0, Number($("sp-start").value) || 0), rate = Math.max(0, Number($("sp-rate").value) || 0);
+    const years = clip(Math.round(Number($("sp-years").value) || 1), 1, 50);
+    const yld = (Number($("sp-yield").value) || 0) / 100, g = (Number($("sp-growth").value) || 0) / 100;
+    const reinv = $("sp-reinvest").checked, tax = $("sp-tax").checked;
+    const gm = Math.pow(1 + g, 1 / 12);
+    let V = start, Vn = start, paid = start, cash = 0, divTotal = 0, lastDiv = 0;
+    const sV = [V], sN = [Vn], sP = [paid];
+    for (let yI = 1; yI <= years; yI++) {
+      let sum = 0, sumN = 0;
+      for (let m = 0; m < 12; m++) { V = (V + rate) * gm; Vn = (Vn + rate) * gm; paid += rate; sum += V; sumN += Vn; }
+      const net = (D) => (tax ? D - Math.max(0, D - 1000) * 0.26375 : D);
+      const d = net(sum / 12 * yld), dn = net(sumN / 12 * yld);
+      divTotal += reinv ? d : dn; lastDiv = reinv ? d : dn;
+      V += d; cash += dn;
+      sV.push(V); sN.push(Vn + cash); sP.push(paid);
+    }
+    const endV = reinv ? V : Vn + cash;
+    $("sp-stats").className = "stats stats4";
+    $("sp-stats").innerHTML = stat("Depot nach " + years + " Jahren", eur(endV), reinv ? "Dividenden wieder angelegt" : "inkl. ausgezahlter Dividenden") +
+      stat("Eingezahlt", eur(paid), "Gewinn " + eur(endV - paid)) +
+      stat("Dividenden zusammen", eur(divTotal), "netto" + (tax ? " nach Steuer" : "")) +
+      stat("Dividende im letzten Jahr", eur(lastDiv), "≈ " + eur(lastDiv / 12) + " pro Monat");
+    const series = [{ v: sV, cls: "l1", label: (v) => fmtK(v) + " €", tcls: "t1" }];
+    if (reinv && yld > 0) series.push({ v: sN, cls: "l2", label: (v) => fmtK(v) + " €", tcls: "t2" });
+    series.push({ v: sP, cls: "l3", label: (v) => fmtK(v) + " €" });
+    $("sp-chart").innerHTML = lineChart(series, ["heute", "in " + Math.round(years / 2) + " J.", "in " + years + " J."], { zero: true, aria: "Depotwert über " + years + " Jahre" }) +
+      '<p class="legend">Blau: Depotwert' + (reinv ? " mit wieder angelegten Dividenden" : "") + (reinv && yld > 0 ? " · grün gestrichelt: Dividenden ausgezahlt statt angelegt" : "") + " · grau gepunktet: eingezahlt</p>";
+  }
+  function posInfo(p) {
+    if (!p.sym) return { name: p.name, y: p.y, sigma: p.s, cagr: p.g + p.y, custom: true };
+    const y = yieldOf(p.sym);
+    return { name: nameOf(p.sym), y: y == null ? 0 : y, sigma: sigmaOf(p.sym) || 0.3, cagr: histCagr(p.sym), custom: false };
+  }
+  async function renderDepot() {
+    await loadLong();
+    if (!DEPOT.length) {
+      $("dp-table").innerHTML = '<p class="sec-note">Noch keine Aktien. Wähle oben eine Aktie und einen Betrag – oder tippe in „Alle Aktien“ auf „Zu Meine Aktien“.</p>';
+      $("pr-out").innerHTML = ""; $("bt-out").innerHTML = ""; return;
+    }
+    let tot = 0, totDiv = 0;
+    const rows = DEPOT.map((p, i) => {
+      const inf = posInfo(p), d = p.amount * inf.y; tot += p.amount; totDiv += d;
+      const r = riskClass(inf.sigma);
+      return "<tr><td>" + esc(inf.name) + (inf.custom ? " <small>(eigene)</small>" : "") + "</td><td>" + eur(p.amount) + "</td><td>" + nf1.format(inf.y * 100) + " %</td><td>" + eur(d) +
+        '</td><td><span class="risk ' + r[0] + '">' + r[1] + '</span></td><td><button type="button" data-del="' + i + '" aria-label="' + esc(inf.name) + ' entfernen">✕</button></td></tr>';
+    }).join("");
+    $("dp-table").innerHTML = '<div class="tbl"><table class="dp-table"><thead><tr><th>Aktie</th><th>Betrag</th><th>Div.</th><th>pro Jahr</th><th>Risiko</th><th></th></tr></thead><tbody>' + rows +
+      "</tbody><tfoot><tr><td>Zusammen</td><td>" + eur(tot) + "</td><td>" + nf1.format(tot ? totDiv / tot * 100 : 0) + " %</td><td>" + eur(totDiv) + '</td><td colspan="2"></td></tr></tfoot></table></div>' +
+      '<p class="sec-note">Dividende pro Jahr vor Steuer ≈ ' + eur(totDiv / 12) + " pro Monat (Rendite der letzten 12 Monate).</p>";
+    renderPrognose(); renderBacktest();
+  }
+  function renderPrognose() {
+    if (!DEPOT.length) { $("pr-out").innerHTML = ""; return; }
+    const years = Number($("pr-years").value) || 5, as = $("pr-assume").value;
+    const pos = DEPOT.map((p) => {
+      const inf = posInfo(p);
+      const mu = as === "hist" ? (inf.cagr == null ? 0.07 : clip(inf.cagr, -0.1, 0.2)) : Number(as) / 100;
+      return { amount: p.amount, mu, sigma: clip(inf.sigma, 0.05, 1.5), y: inf.y };
+    });
+    const sim = depotSim(pos, years, hashStr(JSON.stringify(DEPOT) + years + as));
+    const b = sim.bands, l = b.p50.length - 1, tot = sim.total0;
+    const avgY = pos.reduce((s, p) => s + p.amount * p.y, 0) / tot;
+    const xl = ["heute", "in " + Math.round(years / 2) + " J.", "in " + years + " J."];
+    $("pr-out").innerHTML = lineChart([{ v: b.p50, cls: "med", label: (v) => fmtK(v) + " €", tcls: "t1" }, { v: b.p50.map(() => tot), cls: "l3" }], xl,
+      { bands: b, aria: "Prognose Depotwert über " + years + " Jahre" }) +
+      '<p class="legend">Linie: mittlerer Verlauf · Flächen: mittlere 50 % und 80 % der Läufe · gepunktet: heutiger Betrag</p>' +
+      '<div class="stats stats4">' + stat("Mitte in " + years + " J.", eur(b.p50[l]), signedPct(b.p50[l] / tot - 1)) +
+      stat("80 % der Läufe", fmtK(b.p10[l]) + "–" + fmtK(b.p90[l]) + " €", "zwischen diesen Werten") +
+      stat("Chance auf Verlust", pctInt(sim.pLoss), "am Ende unter " + eur(tot)) +
+      stat("Dividende dann", eur(b.p50[l] * avgY), "pro Jahr, bei gleicher Rendite") + "</div>" +
+      '<p class="sec-note">' + (as === "hist" ? "Jede Aktie wächst wie im Schnitt der letzten Jahre (begrenzt auf −10 bis +20 %)." : "Annahme " + as + " % pro Jahr inkl. Dividenden.") +
+      " Schwankung je Aktie wie im letzten Jahr, Aktien laufen teils gemeinsam (Korrelation 0,5). 1.000 Läufe.</p>";
+  }
+  function renderBacktest() {
+    if (!DEPOT.length || !LONG) { $("bt-out").innerHTML = ""; return; }
+    const years = Number($("bt-years").value) || 5, m = years * 12;
+    const ok = [], missing = [];
+    DEPOT.forEach((p) => {
+      const s = p.sym && LONG.q[p.sym];
+      if (s && s.v.length > m) ok.push({ p, v: s.v.slice(s.v.length - 1 - m) }); else missing.push(p.sym ? nameOf(p.sym) : p.name);
+    });
+    if (!ok.length) { $("bt-out").innerHTML = '<p class="sec-note">Für keine deiner Aktien gibt es so lange Kursdaten.</p>'; return; }
+    const path = [], inv = ok.reduce((s, o) => s + o.p.amount, 0);
+    for (let i = 0; i <= m; i++) path.push(ok.reduce((s, o) => s + o.p.amount * o.v[i] / o.v[0], 0));
+    const now = path[m], cagr = Math.pow(now / inv, 1 / years) - 1;
+    const rows = ok.map((o) => { const f = o.v[m] / o.v[0]; return "<tr><td>" + esc(nameOf(o.p.sym)) + "</td><td>" + eur(o.p.amount) + "</td><td>" + eur(o.p.amount * f) + "</td><td>" + signedPct(f - 1) + "</td></tr>"; }).join("");
+    $("bt-out").innerHTML = lineChart([{ v: path, cls: "l1", label: (v) => fmtK(v) + " €", tcls: "t1" }, { v: path.map(() => inv), cls: "l3" }],
+      ["vor " + years + " J.", "", "heute"], { aria: "Depotwert seit " + years + " Jahren" }) +
+      '<div class="stats">' + stat("Heute wert", eur(now), "statt " + eur(inv)) + stat("Gesamt", signedPct(now / inv - 1), signedPct(cagr) + " pro Jahr") +
+      stat("Tiefster Stand", eur(Math.min.apply(null, path)), "zwischendurch") + "</div>" +
+      '<table class="dp-table bt-table"><thead><tr><th>Aktie</th><th>Damals</th><th>Heute</th><th>Gesamt</th></tr></thead><tbody>' + rows + "</tbody></table>" +
+      (missing.length ? '<p class="sec-note">Ohne so lange Daten: ' + missing.map(esc).join(", ") + ".</p>" : "") +
+      '<p class="sec-note">Echte Monatskurse inklusive wieder angelegter Dividenden, in Euro, ohne Gebühren und Steuern.</p>';
+  }
+
+  // ---------- Öffnen: Code für die Seite (15 Min.), PIN für den gesperrten Bereich (15 Min.) ----------
+  const PKEY = "bb-pin";
+  const pinStore = {
+    get() { try { return JSON.parse(localStorage.getItem(PKEY) || "null"); } catch (e) { return null; } },
+    set(v) { try { localStorage.setItem(PKEY, JSON.stringify(v)); } catch (e) { /* privat-Modus */ } },
+    del() { try { localStorage.removeItem(PKEY); } catch (e) { /* egal */ } },
+  };
+  const blobs = {};
+  async function decryptFile(url, secret) {
+    if (!(window.crypto && crypto.subtle)) throw new Error("nocrypto");
+    if (!blobs[url]) {
+      const r = await fetch(url, { cache: "no-cache" });
+      if (!r.ok) throw new Error("net");
+      blobs[url] = await r.json();
+    }
+    const bl = blobs[url];
+    const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), "PBKDF2", false, ["deriveKey"]);
+    const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64bytes(bl.salt), iterations: bl.iter, hash: "SHA-256" },
+      base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    let plain;
+    try { plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64bytes(bl.iv) }, key, b64bytes(bl.ct)); }
+    catch (e) { throw new Error("code"); }
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+  let timerId = null, briefingStarted = false, siteOpen = false;
   function showGate(msg) {
+    siteOpen = false;
     $("site").hidden = true;
     $("gate").hidden = false;
     $("gate-err").hidden = !msg;
@@ -1035,38 +1645,73 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     const inp = $("gate-code"); inp.value = "";
     setTimeout(() => inp.focus(), 50);
   }
+  function showPinBox(msg) {
+    $("ak-open").hidden = true; $("pin-box").hidden = false; $("pin-lock").hidden = true;
+    $("pin-err").hidden = !msg; $("pin-err").textContent = msg || "";
+    const inp = $("pin-input"); inp.value = "";
+    if (currentView() === "ak") setTimeout(() => inp.focus(), 50);
+  }
+  function lockPin(msg) {
+    pinStore.del();
+    AK.data = null; AK.cache = {}; AK.busy++;
+    $("ak-content").innerHTML = "";
+    showPinBox(msg);
+  }
   function lockAll(msg) {
     store.del();
-    AK.data = null; AK.cache = {}; AK.busy++; encBlob = null;
-    $("ak-content").innerHTML = "";
+    lockPin("");
     if (timerId) { clearInterval(timerId); timerId = null; }
     showGate(msg);
   }
   function tickTimer() {
     const s = store.get();
     const left = s && s.until ? s.until - Date.now() : 0;
-    if (left <= 0) { if (AK.data) lockAll("Die 15 Minuten sind um – bitte den Code neu eingeben."); return; }
-    const min = Math.ceil(left / 60000);
-    $("timer").textContent = "🔓 noch " + min + " Min. offen";
+    if (left <= 0) { if (siteOpen) lockAll("Die 15 Minuten sind um – bitte den Code neu eingeben."); return; }
+    const p = pinStore.get();
+    const pleft = p && p.until ? p.until - Date.now() : 0;
+    if (AK.data && pleft <= 0) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
+    $("timer").textContent = "🔓 Seite noch " + Math.ceil(left / 60000) + " Min." + (AK.data ? " · Bereich noch " + Math.ceil(pleft / 60000) + " Min." : "");
+    $("pin-lock").hidden = !AK.data;
   }
   async function unlock(code, restore) {
     const go = $("gate-go");
     go.disabled = true; go.textContent = "Prüfe …";
     try {
-      const data = await decryptContent(code);
-      const [quotes, divs] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {})]);
-      AK.data = data; AK.quotes = quotes && quotes.q ? quotes : { q: {} }; DIVS = divs || {}; AK.cache = {};
-      const s = restore || { c: code, until: Date.now() + OPEN_MS };
-      store.set(s);
+      await decryptFile("data/site.enc.json", code);
+      const [quotes, divs, stocks] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {})]);
+      AK.quotes = quotes && quotes.q ? quotes : { q: {} }; DIVS = divs || {}; STOCKS = stocks || {};
+      await loadLive();
+      store.set(restore || { c: code, until: Date.now() + OPEN_MS });
+      siteOpen = true;
       $("gate").hidden = true; $("site").hidden = false;
       tickTimer();
       if (!timerId) timerId = setInterval(tickTimer, 10000);
       if (!briefingStarted) { briefingStarted = true; startBriefing(); }
+      initCalc();
       route();
     } catch (e) {
       const m = e && e.message;
       lockAll(restore ? "" : m === "code" ? "Falscher Code. Bitte noch einmal." : m === "nocrypto"
         ? "Dein Browser kann die Seite nicht öffnen. Bitte einen aktuellen Browser verwenden." : "Die Seite lässt sich gerade nicht laden. Prüfe deine Verbindung.");
+    } finally {
+      go.disabled = false; go.textContent = "Öffnen";
+    }
+  }
+  async function unlockPin(pin, restore) {
+    const s = store.get();
+    if (!s || !s.c) { lockAll(""); return; }
+    const go = $("pin-go");
+    go.disabled = true; go.textContent = "Prüfe …";
+    try {
+      AK.data = await decryptFile("data/hefte.enc.json", s.c + "|" + pin);
+      AK.cache = {};
+      pinStore.set(restore || { p: pin, until: Date.now() + OPEN_MS });
+      $("pin-box").hidden = true; $("ak-open").hidden = false;
+      tickTimer();
+      if (currentView() === "ak") akCompute();
+    } catch (e) {
+      const m = e && e.message;
+      lockPin(restore ? "" : m === "code" ? "Falscher PIN. Bitte noch einmal." : "Der Bereich lässt sich gerade nicht laden. Prüfe deine Verbindung.");
     } finally {
       go.disabled = false; go.textContent = "Öffnen";
     }
@@ -1078,23 +1723,49 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     if (!code) { showGate("Bitte den Code eingeben."); return; }
     unlock(code, null);
   });
+  $("pin-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if ($("pin-go").disabled) return;
+    const pin = $("pin-input").value.trim();
+    if (!/^\d{4}$/.test(pin)) { showPinBox("Bitte die 4 Ziffern eingeben."); return; }
+    unlockPin(pin, null);
+  });
+  $("pin-input").addEventListener("input", (e) => {
+    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+    if (v !== e.target.value) e.target.value = v;
+    if (v.length === 4 && !$("pin-go").disabled) unlockPin(v, null);
+  });
   $("lock-now").addEventListener("click", () => lockAll(""));
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) tickTimer(); });
+  $("pin-lock").addEventListener("click", () => { lockPin(""); tickTimer(); });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { tickTimer(); if (siteOpen) loadLive(); } });
   window.addEventListener("focus", tickTimer);
 
   // ---------- Bereiche umschalten ----------
-  const isAk = () => location.hash === "#gesperrt" || location.hash === "#aktionaer";
+  const VIEWS = { brief: "v-brief", stocks: "v-stocks", calc: "v-calc", ak: "v-ak" };
+  const TITLES = { brief: "Börsen-Briefing", stocks: "Alle Aktien · Börsen-Briefing", calc: "Rechner · Börsen-Briefing", ak: "Gesperrter Bereich · Börsen-Briefing" };
+  function currentView() {
+    const h = location.hash;
+    return h === "#gesperrt" || h === "#aktionaer" ? "ak" : h === "#aktien" ? "stocks" : h === "#rechner" ? "calc" : "brief";
+  }
+  const isAk = () => currentView() === "ak";
   function setView(v) {
-    $("v-ak").hidden = v !== "ak";
-    $("v-brief").hidden = v === "ak";
-    $("tab-ak").setAttribute("aria-current", v === "ak" ? "page" : "false");
-    $("tab-brief").setAttribute("aria-current", v === "ak" ? "false" : "page");
-    document.title = v === "ak" ? "Gesperrter Bereich · Börsen-Briefing" : "Börsen-Briefing";
+    Object.keys(VIEWS).forEach((k) => { $(VIEWS[k]).hidden = k !== v; });
+    document.querySelectorAll(".tabs a[data-view]").forEach((a) => a.setAttribute("aria-current", a.dataset.view === v ? "page" : "false"));
+    document.title = TITLES[v];
   }
   function route() {
-    if (!AK.data) return;
-    if (isAk()) { setView("ak"); akCompute(); }
-    else { setView("brief"); show(); }
+    if (!siteOpen) return;
+    const v = currentView();
+    setView(v);
+    if (v === "ak") {
+      if (AK.data) { $("pin-box").hidden = true; $("ak-open").hidden = false; akCompute(); }
+      else {
+        const p = pinStore.get();
+        if (p && p.p && p.until > Date.now()) unlockPin(p.p, p); else { pinStore.del(); showPinBox(""); }
+      }
+    } else if (v === "stocks") renderStocks();
+    else if (v === "calc") renderCalc();
+    else show();
   }
   $("tab-brief").addEventListener("click", (e) => {
     e.preventDefault();
@@ -1254,7 +1925,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       setStatus("Noch keine Nachricht.", " Die erste Analyse kommt am nächsten Handelstag gegen 22:30 Uhr.");
       return;
     }
-    if (!isAk()) show();
+    if (currentView() === "brief") show();
   }
 
   // Beim Laden: innerhalb von 15 Minuten nach dem letzten Öffnen direkt weiter, sonst Code abfragen

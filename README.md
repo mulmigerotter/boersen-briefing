@@ -32,12 +32,14 @@ Ausgeschlossen werden Aktien mit zu wenig Analystendaten, ohne aktuellen Kurs od
 - **Sofort neu rechnen:** Reiter **Actions** → **Börsen-Briefing aktualisieren** → **Run workflow**.
 - **Uhrzeit ändern:** in `.github/workflows/update.yml` die Zeile `cron` (Zeit in UTC).
 
-## Zugang und gesperrter Bereich
+## Zugang, Bereiche und Rechner
 
-Die Seite öffnet sich erst nach Eingabe des Zugangscodes und bleibt danach 15 Minuten offen; dann muss der Code neu eingegeben werden. Der Reiter **🔒 Gesperrter Bereich** enthält je Zeitschrift einen eigenen Bereich mit eigener, vereinfachter Zusammenfassung der Ausgaben (neueste oben), allen Empfehlungen (Kurs, Ziel, Stopp), Dividenden (wann, wie oft, wie viel – laut Yahoo) und einer Hochrechnung mit 2.000 zufälligen Kursverläufen pro Aktie.
-
-- Die Heft-Inhalte liegen nur verschlüsselt in `docs/data/hefte.enc.json` und werden im Browser mit dem Code geöffnet. Die Kurs- und Dividendendaten (`quotes.json`, `dividends.json`) und das tägliche Briefing sind öffentliche Marktdaten und liegen unverschlüsselt im Repository.
-- Neue Ausgabe einpflegen: `python scripts/lock.py inhalt.json --pin <CODE>` (der Klartext gehört nicht ins Repository). Das Skript schreibt auch `watch.json`; dafür holt der Tageslauf Kurse und Schwankungen.
+- Die Seite öffnet sich erst nach Eingabe des Zugangscodes und bleibt danach 15 Minuten offen. Der Reiter **🔒 Gesperrter Bereich** braucht zusätzlich einen PIN (ebenfalls 15 Minuten).
+- **Alle Aktien:** alle Werte der Seite mit aktuellem Kurs, Dividende, Risiko (Schwankung) und Branche, sortier- und filterbar, mit Favoriten (gespeichert im Browser).
+- **Rechner:** Dividenden- und Sparrechner mit Kurve, „Meine Aktien“ mit Prognose (Monte Carlo) und „Was wäre, wenn“ mit echten Monatskursen seit 2000 (`long.json`).
+- **Aktuelle Kurse:** `.github/workflows/live.yml` holt Mo–Fr alle 30 Minuten verzögerte Kurse von Yahoo nach `docs/data/live.json` und veröffentlicht die Seite neu (die Datei wird nicht ins Repository geschrieben).
+- Die Heft-Inhalte liegen nur verschlüsselt in `docs/data/hefte.enc.json` (Schlüssel aus Zugangscode und PIN). Kurse, Dividenden und das Briefing sind öffentliche Marktdaten und liegen unverschlüsselt im Repository.
+- Neue Ausgabe einpflegen: `python scripts/lock.py inhalt.json --pin "<CODE>|<PIN>"`; der Klartext gehört nicht ins Repository. Neue Kürzel zusätzlich in `docs/data/stocks.json` (Name, Branche) eintragen.
 
 ## Falls es mal nicht läuft
 
