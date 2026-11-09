@@ -321,6 +321,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .fd-sum { margin: 0 0 8px; color: var(--muted, inherit); font-size: 14px; }
 .fd-m { border-top: 1px solid var(--line); padding: 8px 0 2px; font-size: 14px; }
 .fd-m .fd-h { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+button.fd-m { display: block; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); color: inherit; font: inherit; font-size: 14px; cursor: pointer; padding: 10px 0 8px; }
+button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.fd-go { display: block; margin-top: 4px; color: var(--accent); font-weight: 600; }
+.flash { animation: flashbg 2.4s ease-out; }
+@keyframes flashbg { 0%, 60% { background: color-mix(in srgb, var(--accent) 22%, transparent); } 100% { background: transparent; } }
 .fd-m small { opacity: .8; }
 .eye { padding: 9px 12px; font-size: 14px; }
 .gate-code:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
@@ -1096,7 +1101,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
         (c.src === "none" ? " (geschätzt)" : " (aus " + c.n + " Handelstagen)") + " · " +
         (AK.sc === "trend" && p.ziel ? "Trend so, dass der mittlere Kurs das Ziel nach 12 Monaten erreicht" : "ohne Trend") + " · " +
         RUNS_AK.toLocaleString("de-DE") + " Läufe</p>" : "");
-    return '<li><details class="akp"><summary>' +
+    return '<li data-pick="' + esc(issue.id + "|" + p.sym) + '"><details class="akp"><summary>' +
       '<div class="akp-top">' + starBtn(p.sym) + '<span class="akp-name">' + esc(p.name) + "</span>" + chips + "</div>" +
       '<div class="akp-sub">' + sub.join(" · ") + "</div>" +
       '<div class="akp-sub">' + esc(sectorOf(p.sym)) + (yieldOf(p.sym) != null ? " · " + (yieldOf(p.sym) > 0 ? "Div. " + nf1.format(yieldOf(p.sym) * 100) + " %" : "keine Dividende") : "") + " " + riskBadge(p.sym) + "</div>" +
@@ -1150,7 +1155,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     issues.forEach((issue) => {
       const ii = d.issues.indexOf(issue);
       const rows = sortPicks(res[ii]);
-      html += '<article class="ak-issue">' +
+      html += '<article class="ak-issue" data-issue="' + esc(issue.id) + '">' +
         '<div class="meta-row"><span class="kind">' + esc(issue.nr) + "</span><span>" + (issue.zeitraum ? esc(issue.zeitraum) : "erschienen " + dmy(issue.datum)) +
         (issue.stand ? " · Kurse vom " + esc(shortDate(issue.stand)) : "") + "</span></div>" +
         "<h3>" + esc(issue.titel) + "</h3>" +
@@ -1173,6 +1178,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       html += "</article>";
     });
     $("ak-content").innerHTML = html;
+    if (AK.goto) {
+      const g = AK.goto; AK.goto = null;
+      const el = $("ak-content").querySelector('[data-pick="' + CSS.escape(g.issue + "|" + g.sym) + '"]') || $("ak-content").querySelector('[data-issue="' + CSS.escape(g.issue) + '"]');
+      if (el) {
+        const dt = el.querySelector("details.akp"); if (dt) dt.open = true;
+        el.classList.add("flash");
+        setTimeout(() => el.scrollIntoView({ block: "start", behavior: "smooth" }), 50);
+        setTimeout(() => el.classList.remove("flash"), 2500);
+      }
+    }
     const qd = AK.quotes.updated ? new Date(AK.quotes.updated) : null;
     $("ak-note").innerHTML = "Für jede Aktie " + RUNS_AK.toLocaleString("de-DE") + " zufällige Kursverläufe über " + monAcc(AK.H) + ", Schwankung wie im letzten Jahr. " +
       "Gezählt wird, ob zuerst das <strong>Ziel</strong> oder zuerst der <strong>Stopp</strong> aus dem Heft erreicht wird; ohne diese Angaben, wie oft am Ende ein Plus steht. " +
@@ -1218,7 +1233,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     const add = (name, sym, m) => { let g = find(name, sym); if (!g) { g = { name, sym, ms: [] }; groups.push(g); } if (sym && !g.sym) g.sym = sym; g.ms.push(m); };
     const issues = d.issues.slice().sort(byDate);
     issues.forEach((i) => {
-      const base = { mag: magName(i.mag), nr: i.nr, datum: i.datum, stand: i.stand };
+      const base = { magId: i.mag, issueId: i.id, mag: magName(i.mag), nr: i.nr, datum: i.datum, stand: i.stand };
       i.picks.forEach((p) => { if (hit(p.name, p.sym)) add(p.name, p.sym, Object.assign({ kind: "Empfehlung", p }, base)); });
       (i.beobachten || []).forEach((x) => { if (hit(x.name)) add(x.name, null, Object.assign({ kind: "Nur beobachten", x }, base)); });
       (i.derivate || []).forEach((x) => { if (hit(x.name, x.wkn)) add(x.name, null, Object.assign({ kind: "Hebelprodukt", x }, base)); });
@@ -1247,12 +1262,19 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
           if (x.risiko) bits.push("Risiko: " + esc(x.risiko));
           if (x.seit) bits.push("empfohlen seit " + esc(x.seit));
           const txt = x.why || m.txt || x.note || "";
-          return '<div class="fd-m"><div class="fd-h"><b>' + esc(m.mag) + "</b><span>" + esc(m.nr) + " · " + dmy(m.datum) + "</span><span class=\"chip\">" + esc(m.kind) + "</span></div>" +
-            (bits.length ? "<div>" + bits.join(" · ") + "</div>" : "") + (txt ? "<small>" + esc(txt) + "</small>" : "") + "</div>";
+          return '<button type="button" class="fd-m" data-gomag="' + esc(m.magId) + '" data-goissue="' + esc(m.issueId) + '" data-gosym="' + esc(m.p ? m.p.sym : "") + '"><div class="fd-h"><b>' + esc(m.mag) + "</b><span>" + esc(m.nr) + " · " + dmy(m.datum) + "</span><span class=\"chip\">" + esc(m.kind) + "</span></div>" +
+            (bits.length ? "<div>" + bits.join(" · ") + "</div>" : "") + (txt ? "<small>" + esc(txt) + "</small>" : "") + '<span class="fd-go">Zur Beschreibung im Heft →</span></button>';
         }).join("") + "</article>";
     }).join("");
   }
   $("ak-search").addEventListener("input", renderFound);
+  $("ak-found").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-gomag]"); if (!b) return;
+    AK.goto = { issue: b.dataset.goissue, sym: b.dataset.gosym };
+    AK.mag = b.dataset.gomag;
+    $("ak-search").value = ""; renderFound();
+    akCompute();
+  });
   $("mag-tabs").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-mag]");
     if (!b || b.dataset.mag === AK.mag) return;
