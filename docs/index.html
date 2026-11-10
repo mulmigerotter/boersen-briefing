@@ -646,7 +646,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 
       <h4>Was wäre, wenn du früher investiert hättest?</h4>
       <label class="sortbox">Investiert vor
-        <select id="bt-years"><option>1</option><option>3</option><option selected>5</option><option>10</option><option>15</option><option>20</option></select> Jahren
+        <select id="bt-years"><optgroup label="Wochen"><option value="d7">1 Woche</option><option value="d14">2 Wochen</option><option value="d21">3 Wochen</option></optgroup><optgroup label="Monate"><option value="m1">1 Monat</option><option value="m3">3 Monaten</option><option value="m6">6 Monaten</option></optgroup><optgroup label="Jahre"><option value="1">1 Jahr</option><option value="3">3 Jahren</option><option value="5" selected>5 Jahren</option><option value="10">10 Jahren</option><option value="15">15 Jahren</option><option value="20">20 Jahren</option></optgroup></select>
       </label>
       <div id="bt-out"></div>
     </section>
@@ -1408,6 +1408,20 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     const f = now / then;
     return { factor: f, cagr: Math.pow(f, 1 / years) - 1 };
   }
+  // kurze Zeiträume (Tage) aus den Tageskursen in Euro; null, wenn der Verlauf nicht so weit zurückreicht
+  function shortSeries(sym, days) {
+    const q = AK.quotes.q[sym], h = q && q.hist;
+    if (!h || h.length < 2) return null;
+    const x = px(sym), lastD = x && x.day && x.day > q.date ? x.day : q.date;
+    const t = new Date(lastD + "T12:00:00Z"); t.setUTCDate(t.getUTCDate() - days);
+    const target = t.toISOString().slice(0, 10);
+    if (h[0][0] > target) return null;
+    let i0 = 0; for (let i = 0; i < h.length; i++) { if (h[i][0] <= target) i0 = i; else break; }
+    const v = h.slice(i0).map((r) => r[1]);
+    if (x && x.day > q.date && x.eur) v.push(x.eur);
+    return v.length > 1 && v[0] > 0 ? v : null;
+  }
+  const SHORT = [[7, "1 Woche"], [14, "2 Wochen"], [21, "3 Wochen"], [30, "1 Monat"], [91, "3 Monate"], [182, "6 Monate"]];
   const histCagr = (sym) => { const w = whatIf(sym, 10) || whatIf(sym, 5) || whatIf(sym, 3); return w ? w.cagr : null; };
 
   // ---------- Diagramme für Rechner und Aktienliste ----------
@@ -1512,7 +1526,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   function sparkHist(sym) {
     const q = AK.quotes.q[sym], x = px(sym);
     if (!q || !q.hist || q.hist.length < 2) return "";
-    const pts = q.hist.map((h) => h[1]);
+    const pts = q.hist.slice(-70).map((h) => h[1]);
     if (x && x.day > q.date && x.eur) pts.push(x.eur);
     return lineChart([{ v: pts, cls: "l1", label: (v) => num(v) + " €", tcls: "t1" }], ["vor ~3 Mon.", "heute"],
       { aria: nameOf(sym) + ": Kursverlauf der letzten Monate in Euro" });
@@ -1525,7 +1539,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       '<p class="pick-foot">Kurs ' + liveSpan(sym, "eurplus") + " · " + liveSpan(sym, "chg") + "</p>" + '<div class="wi">Lade „Was wäre wenn“ …</div>' +
       '<div class="add-row"><button class="btn" type="button" data-add="' + esc(sym) + '">Zu „Meine Aktien“ (1.000 €)</button><button class="btn ghost" type="button" data-sp="' + esc(sym) + '">Im Sparrechner</button></div>';
     await loadLong();
-    const rows = [1, 3, 5, 10, 20].map((yrs) => { const w = whatIf(sym, yrs); return w ? "<tr><td>vor " + yrs + (yrs === 1 ? " Jahr" : " Jahren") + "</td><td>" + eur(1000 * w.factor) + "</td><td>" + signedPct(w.factor - 1) + "</td><td>" + signedPct(w.cagr) + " p. a.</td></tr>" : ""; }).join("");
+    const srows = SHORT.map(([d, lab]) => { const v = shortSeries(sym, d); if (!v) return ""; const f = v[v.length - 1] / v[0]; return "<tr><td>vor " + lab + "</td><td>" + eur(1000 * f) + "</td><td>" + signedPct(f - 1) + "</td><td>–</td></tr>"; }).join("");
+    const rows = srows + [1, 3, 5, 10, 20].map((yrs) => { const w = whatIf(sym, yrs); return w ? "<tr><td>vor " + yrs + (yrs === 1 ? " Jahr" : " Jahren") + "</td><td>" + eur(1000 * w.factor) + "</td><td>" + signedPct(w.factor - 1) + "</td><td>" + signedPct(w.cagr) + " p. a.</td></tr>" : ""; }).join("");
     const cg = histCagr(sym), sg = sigmaOf(sym) || 0.3;
     const mu = Number(($("pr-assume") || {}).value);
     const muUse = isFinite(mu) ? mu / 100 : cg != null ? clip(cg, -0.1, 0.2) : 0.07;
@@ -1728,9 +1743,28 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
         "Annahme " + as + " % pro Jahr inkl. Dividenden.") +
       " Schwankung je Aktie wie im letzten Jahr, Aktien laufen teils gemeinsam (Korrelation 0,5). 1.000 Läufe.</p>";
   }
+  function renderBacktestShort(days, label) {
+    if (!DEPOT.length) { $("bt-out").innerHTML = ""; return; }
+    const ok = [], missing = [];
+    DEPOT.forEach((p) => { const v = p.sym && shortSeries(p.sym, days); if (v) ok.push({ p, v }); else missing.push(p.sym ? nameOf(p.sym) : p.name); });
+    if (!ok.length) { $("bt-out").innerHTML = '<p class="sec-note">Für diesen Zeitraum gibt es noch keine Kursdaten – sie kommen mit dem nächsten Tageslauf.</p>'; return; }
+    const n = Math.max.apply(null, ok.map((o) => o.v.length)), inv = ok.reduce((s, o) => s + o.p.amount, 0);
+    const path = [];
+    for (let i = 0; i < n; i++) path.push(ok.reduce((s, o) => { const k = Math.min(o.v.length - 1, Math.round(i * (o.v.length - 1) / (n - 1))); return s + o.p.amount * o.v[k] / o.v[0]; }, 0));
+    const now = path[n - 1];
+    const rows = ok.map((o) => { const f = o.v[o.v.length - 1] / o.v[0]; return "<tr><td>" + esc(nameOf(o.p.sym)) + "</td><td>" + eur(o.p.amount) + "</td><td>" + eur(o.p.amount * f) + "</td><td>" + signedPct(f - 1) + "</td></tr>"; }).join("");
+    $("bt-out").innerHTML = lineChart([{ v: path, cls: "l1", label: (v) => fmtK(v) + " €", tcls: "t1" }, { v: path.map(() => inv), cls: "l3" }],
+      ["vor " + label.replace("Monaten", "Mon.").replace("Wochen", "Wo."), "", "heute"], { aria: "Depotwert seit " + label }) +
+      '<div class="stats"><div class="stat"></div></div>'.replace('<div class="stat"></div>', stat("Heute wert", eur(now), "statt " + eur(inv)) + stat("Gesamt", signedPct(now / inv - 1), "in " + label) + stat("Tiefster Stand", eur(Math.min.apply(null, path)), "zwischendurch")) +
+      '<table class="dp-table bt-table"><thead><tr><th>Aktie</th><th>Damals</th><th>Heute</th><th>Gesamt</th></tr></thead><tbody>' + rows + "</tbody></table>" +
+      (missing.length ? '<p class="sec-note">Ohne Kursdaten für diesen Zeitraum: ' + missing.map(esc).join(", ") + ".</p>" : "") +
+      '<p class="sec-note">Echte Tageskurse in Euro, ohne Gebühren und Steuern. Kurze Zeiträume schwanken stark und sagen wenig über die Zukunft.</p>';
+  }
   function renderBacktest() {
+    const sel = $("bt-years").value, sh = /^([dm])(\d+)$/.exec(sel);
+    if (sh) { renderBacktestShort(sh[1] === "d" ? +sh[2] : Math.round(+sh[2] * 30.4), sh[1] === "d" ? +sh[2] / 7 + (+sh[2] === 7 ? " Woche" : " Wochen") : sh[2] + (+sh[2] === 1 ? " Monat" : " Monaten")); return; }
     if (!DEPOT.length || !LONG) { $("bt-out").innerHTML = ""; return; }
-    const years = Number($("bt-years").value) || 5, m = years * 12;
+    const years = Number(sel) || 5, m = years * 12;
     const ok = [], missing = [];
     DEPOT.forEach((p) => {
       const s = p.sym && LONG.q[p.sym];

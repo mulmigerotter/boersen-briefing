@@ -537,7 +537,7 @@ def write_quotes(hist):
         out[sym] = {
             "eur": rnd(closes[-1]), "date": ser[-1][0].isoformat(), "cur": cur,
             "local": rnd(local_last), "sigma": round(float(rets.std(ddof=1) * math.sqrt(252)), 4),
-            "n": int(len(rets)), "hist": [[d.isoformat(), rnd(v)] for d, v in ser[-70:]],
+            "n": int(len(rets)), "hist": [[d.isoformat(), rnd(v)] for d, v in ser[-135:]],
         }
     if not out and not watch_symbols():
         return
