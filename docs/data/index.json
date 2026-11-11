@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-10T11:45:12Z",
+ "updated": "2026-11-11T22:39:36Z",
  "days": [
+  {
+   "date": "2026-11-11",
+   "kind": "tag",
+   "headline": "DAX steigt um 1,2 % – Siemens Energy vorn, Rheinmetall hinten",
+   "dax": 1.2
+  },
   {
    "date": "2026-11-10",
    "kind": "tag",
