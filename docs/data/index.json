@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-11T22:39:36Z",
+ "updated": "2026-11-12T22:18:34Z",
  "days": [
+  {
+   "date": "2026-11-12",
+   "kind": "tag",
+   "headline": "DAX steigt um 0,4 % – Münchener Rück vorn, GEA Group hinten",
+   "dax": 0.41
+  },
   {
    "date": "2026-11-11",
    "kind": "tag",
