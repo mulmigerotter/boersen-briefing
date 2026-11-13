@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-12T22:18:34Z",
+ "updated": "2026-11-13T22:16:44Z",
  "days": [
+  {
+   "date": "2026-11-13",
+   "kind": "tag",
+   "headline": "DAX kaum verändert – Brenntag vorn, Infineon hinten",
+   "dax": -0.08
+  },
   {
    "date": "2026-11-12",
    "kind": "tag",
