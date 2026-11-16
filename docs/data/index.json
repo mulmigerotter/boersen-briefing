@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-13T22:16:44Z",
+ "updated": "2026-11-16T22:22:05Z",
  "days": [
+  {
+   "date": "2026-11-16",
+   "kind": "tag",
+   "headline": "DAX fällt um 0,6 % – Deutsche Telekom vorn, Siemens hinten",
+   "dax": -0.57
+  },
   {
    "date": "2026-11-13",
    "kind": "tag",
