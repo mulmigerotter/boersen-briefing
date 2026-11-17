@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-16T22:22:05Z",
+ "updated": "2026-11-17T22:27:16Z",
  "days": [
+  {
+   "date": "2026-11-17",
+   "kind": "tag",
+   "headline": "DAX fällt um 2,1 % – Zalando vorn, Deutsche Bank hinten",
+   "dax": -2.08
+  },
   {
    "date": "2026-11-16",
    "kind": "tag",
