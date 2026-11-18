@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-17T22:27:16Z",
+ "updated": "2026-11-18T22:24:46Z",
  "days": [
+  {
+   "date": "2026-11-18",
+   "kind": "tag",
+   "headline": "DAX fällt um 1,2 % – Zalando vorn, SAP hinten",
+   "dax": -1.19
+  },
   {
    "date": "2026-11-17",
    "kind": "tag",
