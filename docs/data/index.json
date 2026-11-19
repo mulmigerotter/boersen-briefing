@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-18T22:24:46Z",
+ "updated": "2026-11-19T22:21:58Z",
  "days": [
+  {
+   "date": "2026-11-19",
+   "kind": "tag",
+   "headline": "DAX fällt um 1,1 % – Deutsche Bank vorn, Fresenius Medical Care hinten",
+   "dax": -1.06
+  },
   {
    "date": "2026-11-18",
    "kind": "tag",
