@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-19T22:21:58Z",
+ "updated": "2026-11-20T22:20:44Z",
  "days": [
+  {
+   "date": "2026-11-20",
+   "kind": "tag",
+   "headline": "DAX fällt um 2,6 % – Fresenius Medical Care vorn, Scout24 hinten",
+   "dax": -2.6
+  },
   {
    "date": "2026-11-19",
    "kind": "tag",
