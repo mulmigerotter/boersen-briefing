@@ -1,6 +1,7 @@
 // Konten: Registrierung mit E-Mail-Bestätigungslink, danach Passwort festlegen. Läuft über Google Firebase.
 const CFG = window.BB_FIREBASE;
-const $ = (id) => document.getElementById(id);
+// Fehlt ein Element (z. B. alte, zwischengespeicherte Seite), wird ein unsichtbarer Platzhalter genommen statt abzustürzen
+const $ = (id) => document.getElementById(id) || Object.assign(document.createElement(id.startsWith("k-") && /form|login|reg|reset|confirm|setpw/.test(id) ? "form" : "div"), { hidden: true });
 // SHA-256 der Admin-E-Mail (die Rechte selbst prüft Firebase in den Firestore-Regeln)
 const ADMIN_HASH = "38d8fd845c8945f4493ba284fccd02990f83ccf67e463e2f22483a0c01e52daf";
 const SYNC_KEYS = ["bb-favs", "bb-depot", "bb-alerts", "bb-theme"];
