@@ -142,7 +142,6 @@ if (!CFG) {
     $("k-mail").textContent = me.email;
     const realAdmin = me.emailVerified && (await sha(me.email.toLowerCase())) === ADMIN_HASH;
     const admin = realAdmin && !asUser();
-    $("k-asuser-box").hidden = !realAdmin; $("k-asuser").checked = asUser();
     $("k-admin").hidden = !admin; $("k-adminbox").hidden = !admin;
     if (admin) loadUsers();
   }
@@ -152,14 +151,18 @@ if (!CFG) {
   function applyRole() {
     isAdm = realAdm && !needPw && !asUser();
     $("tab-stat").hidden = !isAdm;
+    $("tab-eye").hidden = !(realAdm && !needPw);
+    $("tab-eye").textContent = asUser() ? "👁 Wieder als Admin ansehen" : "👁 Als normaler Nutzer ansehen";
     access = !!me && !needPw && !myData.blocked && (isAdm || myData.heftAccess === true);
     if (window.BB_onAuth) window.BB_onAuth(access);
     if (location.hash === "#statistik" && !isAdm) location.hash = "";
   }
-  $("k-asuser").addEventListener("change", (e) => {
-    try { localStorage.setItem("bb-asuser", JSON.stringify(e.target.checked)); } catch (er) { /* egal */ }
-    applyRole(); showIn();
-    say(e.target.checked ? "Du siehst die Seite jetzt wie ein normaler Nutzer." : "Du siehst wieder alles als Admin.", "ok");
+  $("tab-eye").addEventListener("click", (e) => {
+    e.preventDefault();
+    const on = !asUser();
+    try { localStorage.setItem("bb-asuser", JSON.stringify(on)); } catch (er) { /* egal */ }
+    applyRole(); if (me && !needPw && location.hash === "#konto") showIn();
+    if (window.BB_toast) window.BB_toast(on ? "Du siehst die Seite jetzt wie ein normaler Nutzer." : "Du siehst wieder alles als Admin.");
   });
   const admKnown = new Promise((r) => { admDone = r; });
   function renderOverview(rows) {
@@ -199,11 +202,11 @@ if (!CFG) {
     F.updateDoc(F.doc(db, "users", me.uid), upd).catch(() => {});
   };
   const saveStats = async (on) => {
-    statsOk = on; $("k-stats-ok").checked = on;
+    statsOk = on;
     if (me && !needPw) { try { await F.updateDoc(F.doc(db, "users", me.uid), { statsOk: on }); } catch (er) { /* später erneut */ } }
   };
   window.BB_setConsent = (all) => saveStats(all);
-  $("k-stats-ok").addEventListener("change", async (e) => {
+  if ($("k-stats-ok")) $("k-stats-ok").addEventListener("change", async (e) => {
     statsOk = e.target.checked;
     try { localStorage.setItem("bb-consent", JSON.stringify(statsOk ? "all" : "necessary")); } catch (er) { /* egal */ }
     try { await F.updateDoc(F.doc(db, "users", me.uid), { statsOk }); say(statsOk ? "Danke! Deine Nutzung wird ab jetzt gezählt." : "Deine Nutzung wird nicht mehr gezählt.", "ok"); }
@@ -313,14 +316,14 @@ if (!CFG) {
     me = u;
     authReady();
     fbView();
-    if (!u) { access = false; isAdm = false; realAdm = false; myData = {}; $("tab-stat").hidden = true; admDone(); if (location.hash === "#statistik") location.hash = ""; if (window.BB_onAuth) window.BB_onAuth(false); }
+    if (!u) { access = false; isAdm = false; realAdm = false; myData = {}; $("tab-eye").hidden = true; $("tab-stat").hidden = true; admDone(); if (location.hash === "#statistik") location.hash = ""; if (window.BB_onAuth) window.BB_onAuth(false); }
     if (!u) { if ($("k-link").hidden || $("k-confirm").hidden) showBox("k-out"); return; }
     const ref = F.doc(db, "users", u.uid);
     let data = {};
     try { const d = await F.getDoc(ref); data = d.exists() ? d.data() : {}; } catch (er) { /* offline */ }
     if (data.blocked) { await A.signOut(auth); say("Dein Konto wurde gesperrt.", "err"); return; }
     const first = !data.created;
-    statsOk = data.statsOk === true; $("k-stats-ok").checked = statsOk;
+    statsOk = data.statsOk === true;
     let consent = ""; try { consent = JSON.parse(localStorage.getItem("bb-consent") || '""'); } catch (er) { /* egal */ }
     if (consent === "all" && !statsOk && !needPw) saveStats(true);
     if (consent === "necessary" && statsOk) saveStats(false);

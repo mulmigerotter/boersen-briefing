@@ -587,6 +587,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <a href="#rechner" id="tab-calc" data-view="calc">🧮 Rechner</a>
     <a href="#konto" id="tab-konto" data-view="konto">👤 Konto</a>
     <a href="#statistik" id="tab-stat" data-view="stat" hidden>📊 Statistik (Admin)</a>
+    <a href="#" id="tab-eye" hidden>👁 Als normaler Nutzer ansehen</a>
     <a href="#feedback" id="tab-fb" data-view="fb">💬 Fehler &amp; Wünsche</a>
     <a href="#einstellungen" id="tab-set" data-view="set">⚙️ Einstellungen</a>
     <a href="#gesperrt" id="tab-ak" data-view="ak" hidden>🔒 Gesperrter Bereich</a>
@@ -762,7 +763,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <p>Für Konten nutzen wir Firebase Authentication und Cloud Firestore von Google (Google Ireland Ltd. bzw. Google LLC, USA). Gespeichert werden: E-Mail-Adresse, dein gewählter Name, dein Passwort (nur verschlüsselt bei Google), Zeitpunkt der Registrierung und der letzten Anmeldung, deine Einstellungen auf der Seite und Nachrichten, die du über „Fehler &amp; Wünsche“ schickst. Die Bestätigungs-E-Mails verschickt Firebase. Die Datenbank liegt in Frankfurt; Anmeldedaten verarbeitet Google auch in den USA. Google ist nach dem EU-US Data Privacy Framework zertifiziert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Bereitstellung des Kontos, das du anlegst). Beim Laden der Seite werden dafür Programmteile von Google (gstatic.com) geladen; dabei sieht Google deine IP-Adresse.</p>
     <p>Die Daten bleiben gespeichert, bis du dein Konto löschst (☰ → Konto → „Konto löschen“). Dann werden sie entfernt.</p>
     <h3>5a. Nutzungsstatistik (nur mit deiner Zustimmung)</h3>
-    <p>Wenn du angemeldet bist und unter „Konto“ zustimmst, wird in deinem Konto gezählt, wie lange du die Seite nutzt, welche Bereiche du öffnest und welche Aktien du dir ansiehst. Das sieht nur der Admin. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG). Du gibst sie mit „Akzeptieren“ im Cookie-Hinweis oder mit dem Haken im Konto und kannst sie jederzeit unter Einstellungen → Cookie-Einstellungen oder im Konto widerrufen. Besucher ohne Konto werden nicht gezählt.</p>
+    <p>Wenn du angemeldet bist und im Cookie-Hinweis zustimmst, wird in deinem Konto gezählt, wie lange du die Seite nutzt, welche Bereiche du öffnest und welche Aktien du dir ansiehst. Das sieht nur der Admin. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG). Du gibst sie mit „Akzeptieren“ im Cookie-Hinweis und kannst sie jederzeit unter Einstellungen → Cookie-Einstellungen widerrufen. Besucher ohne Konto werden nicht gezählt.</p>
     <h3>6. Kurse und Nachrichten</h3>
     <p>Kurse, Kennzahlen und Schlagzeilen holt ein Programm auf dem Server (über GitHub) von Yahoo Finance und Google News. Dabei werden keine Daten von dir übertragen. Links zu Nachrichten öffnen fremde Seiten; dort gilt deren Datenschutz.</p>
     <h3>7. Handy-Meldungen (ntfy, freiwillig)</h3>
@@ -841,13 +842,6 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <div class="k-box" id="k-in" hidden>
       <p class="k-msg">Hallo <b id="k-me"></b>!<span class="badge" id="k-admin" hidden>Admin</span><br><small id="k-mail"></small></p>
       <p class="k-msg">Deine Favoriten, „Meine Aktien“ und Meldungs-Einstellungen werden mit deinem Konto gespeichert und sind auf jedem Gerät da.</p>
-      <div class="k-box" id="k-stats">
-        <p class="k-msg"><b>📊 Nutzungsstatistik</b><br>Darf gezählt werden, wie lange du auf der Seite bist, welche Bereiche du nutzt und welche Aktien du dir ansiehst? Das sieht nur der Admin, sonst niemand.</p>
-        <label class="al-row"><input type="checkbox" id="k-stats-ok"> Ja, Nutzung zählen</label>
-      </div>
-      <div class="k-box" id="k-asuser-box" hidden>
-        <label class="al-row"><input type="checkbox" id="k-asuser"> <span><b>👁 Seite wie ein normaler Nutzer ansehen</b><br><small>Admin-Bereich, Statistik und gesperrter Bereich werden ausgeblendet. Hier kannst du es jederzeit wieder ausschalten.</small></span></label>
-      </div>
       <a class="btn" id="k-hefte" href="#gesperrt" hidden>🔒 Gesperrter Bereich öffnen</a>
       <div class="btn-row"><button class="btn ghost" id="k-logout" type="button">Abmelden</button><button class="btn ghost" id="k-delete" type="button">Konto löschen</button></div>
       <div id="k-adminbox" hidden>
@@ -1724,6 +1718,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     const pick = d.closest("[data-pick]");
     trackStock(d.dataset.sym || (pick ? pick.dataset.pick.split("|")[1] : ""));
   }, true);
+  window.BB_toast = (t) => toast(t);
   window.BB_stockName = (sym) => (STOCKS[sym] && STOCKS[sym].name) || sym;
 
   // ---------- Hinweis zur Speicherung (nur Info, keine Einwilligung nötig) ----------
