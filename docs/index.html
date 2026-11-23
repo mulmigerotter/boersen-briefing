@@ -316,6 +316,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .gate[hidden] { display: none; }
 .gate p { margin: 0; color: var(--muted); max-width: 44ch; }
 .gate-code { font-family: var(--font-num); font-size: 18px; width: 12em; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.ak-fazit { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px; padding: 10px 14px; margin: 0 0 14px; background: var(--surface); }
+.ak-fazit h4 { margin: 0 0 6px; font-size: 15px; }
+.ak-fazit p { margin: 0 0 8px; font-size: 14px; line-height: 1.5; }
+.ak-best { border-top: 1px solid var(--line); padding-top: 8px; }
 .fd-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 0 0 12px; background: var(--surface); }
 .fd-card h3 { margin: 0 0 4px; font-size: 17px; }
 .fd-sum { margin: 0 0 8px; color: var(--muted, inherit); font-size: 14px; }
@@ -1151,6 +1155,20 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       esc(m.name) + "<small>neueste: " + dmy(m.newest) + "</small></button>").join("");
   }
 
+  // Zusammenfassung in 5 Sätzen und beste Aktie je Heft (beste = höchste Chance aufs Ziel laut Simulation)
+  function fazitBox(issue, rows) {
+    if (!issue.fazit && !rows.length) return "";
+    const cand = rows.filter((r) => r.c.status === "offen" && r.p.ziel && r.p.stopp).sort((a, b) => b.sim.pZ - a.sim.pZ);
+    const best = cand[0] || rows.slice().sort((a, b) => sortKey(b) - sortKey(a))[0];
+    let bestHtml = "";
+    if (best) {
+      const p = best.p, cu = p.cur || "EUR", why = cand[0] ? "Beste Chance aufs Ziel (" + pctInt(best.sim.pZ) + " laut Simulation)" : "Beste Chance auf ein Plus (" + pctInt(best.sim.pUp) + " laut Simulation)";
+      bestHtml = '<p class="ak-best"><b>⭐ Beste Aktie dieses Hefts:</b> ' + esc(p.name) + (p.sym ? " <small>" + esc(p.sym) + "</small>" : "") + "<br>" + why +
+        (p.kurs ? " · Kurs im Heft " + amt(p.kurs, cu) : "") + (p.ziel ? " · Ziel " + amt(p.ziel, cu) : "") + (p.stopp ? " · Stopp " + amt(p.stopp, cu) : "") +
+        (p.why ? "<br><small>" + esc(p.why) + "</small>" : "") + "</p>";
+    }
+    return '<section class="ak-fazit"><h4>Das Heft in 5 Sätzen</h4>' + (issue.fazit ? "<p>" + esc(issue.fazit) + "</p>" : "") + bestHtml + "</section>";
+  }
   function akRender(res) {
     const d = AK.data, issues = d.issues.filter((i) => i.mag === AK.mag).sort(byDate);
     const mag = d.mags.find((m) => m.id === AK.mag) || { name: "" };
@@ -1175,7 +1193,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
         '<div class="meta-row"><span class="kind">' + esc(issue.nr) + "</span><span>" + (issue.zeitraum ? esc(issue.zeitraum) : "erschienen " + dmy(issue.datum)) +
         (issue.stand ? " · Kurse vom " + esc(shortDate(issue.stand)) : "") + "</span></div>" +
         "<h3>" + esc(issue.titel) + "</h3>" +
-        '<p class="ak-kern">' + esc(issue.kern) + "</p>" +
+        '<p class="ak-kern">' + esc(issue.kern) + "</p>" + fazitBox(issue, res[ii]) +
         '<details class="ak-more" open><summary>Was im Heft steht (' + issue.themen.length + " Themen)</summary>" +
         '<dl class="ak-themen">' + issue.themen.map((t) => "<div><dt>" + esc(t.t) + "</dt><dd>" + esc(t.s) + "</dd></div>").join("") + "</dl></details>" +
         "<h4>Empfehlungen mit Hochrechnung (" + issue.picks.length + ")</h4>" +
