@@ -131,6 +131,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .k-box[hidden] { display: none; }
 .k-form { display: grid; gap: 8px; }
 .k-form[hidden] { display: none; }
+.tabs a[hidden], .go[hidden], #k-hefte[hidden] { display: none !important; }
 .k-form label { font-size: 13px; font-weight: 600; }
 .k-form input { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); }
 .k-switch { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -539,7 +540,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <a href="#aktien" id="tab-stocks" data-view="stocks">📊 Alle Aktien</a>
     <a href="#rechner" id="tab-calc" data-view="calc">🧮 Rechner</a>
     <a href="#konto" id="tab-konto" data-view="konto">👤 Konto</a>
-    <a href="#gesperrt" id="tab-ak" data-view="ak">🔒 Gesperrter Bereich</a>
+    <a href="#gesperrt" id="tab-ak" data-view="ak" hidden>🔒 Gesperrter Bereich</a>
   </nav>
   </header>
   
@@ -618,7 +619,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <a class="go" href="#rechner"><b>🧮 Rechner</b><span>Sparplan, Meine Aktien, Was wäre wenn</span></a>
       <a class="go" href="#meldungen" id="go-bell"><b>🔔 Meldungen</b><span>Eilmeldungen ein- und ausschalten</span></a>
       <a class="go" href="#konto"><b>👤 Konto</b><span>Anmelden oder registrieren</span></a>
-      <a class="go" href="#gesperrt"><b>🔒 Gesperrter Bereich</b><span>Heft-Empfehlungen, mit PIN</span></a>
+      <a class="go" href="#gesperrt" id="go-ak" hidden><b>🔒 Gesperrter Bereich</b><span>Heft-Empfehlungen, nur für freigeschaltete Konten</span></a>
     </nav>
   </section>
 
@@ -663,6 +664,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <div class="k-box" id="k-in" hidden>
       <p class="k-msg">Hallo <b id="k-me"></b>!<span class="badge" id="k-admin" hidden>Admin</span><br><small id="k-mail"></small></p>
       <p class="k-msg">Deine Favoriten, „Meine Aktien“ und Meldungs-Einstellungen werden mit deinem Konto gespeichert und sind auf jedem Gerät da.</p>
+      <a class="btn" id="k-hefte" href="#gesperrt" hidden>🔒 Gesperrter Bereich öffnen</a>
       <div class="btn-row"><button class="btn ghost" id="k-logout" type="button">Abmelden</button><button class="btn ghost" id="k-delete" type="button">Konto löschen</button></div>
       <div id="k-adminbox" hidden>
         <h3>Admin: Registrierte Nutzer <span id="k-count"></span></h3>
@@ -2267,7 +2269,11 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     akOpening = true; showPinBox("wait");
     try {
       const r = await window.BB_hefteKey();
-      if (!r || !r.key) { showPinBox((r && r.reason) || "error"); return; }
+      if (!r || !r.key) {
+        const why = (r && r.reason) || "error";
+        if ((why === "login" || why === "noaccess") && currentView() === "ak") { history.replaceState(null, "", location.pathname); route(); return; }
+        showPinBox(why); return;
+      }
       AK.data = await decryptFile("data/hefte.enc.json", r.key);
       AK.cache = {};
       if (currentView() === "ak") { $("pin-box").hidden = true; $("ak-open").hidden = false; akCompute(); }
@@ -2275,9 +2281,15 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     finally { akOpening = false; }
   }
   // Wird von konto.js aufgerufen, wenn sich die Anmeldung ändert
+  // Der gesperrte Bereich ist nur für den Admin und freigeschaltete Konten sichtbar
+  let HAS_HEFTE = false;
   window.BB_onAuth = (hasAccess) => {
-    if (!hasAccess && AK.data) lockPin("login");
-    if (siteOpen && currentView() === "ak") openHefte();
+    HAS_HEFTE = !!hasAccess;
+    ["tab-ak", "go-ak", "k-hefte"].forEach((id) => { if ($(id)) $(id).hidden = !HAS_HEFTE; });
+    if (!HAS_HEFTE && AK.data) lockPin("login");
+    if (siteOpen && currentView() === "ak") {
+      if (HAS_HEFTE) openHefte(); else { history.replaceState(null, "", location.pathname); route(); }
+    }
   };
   async function openSite() {
     const [quotes, divs, stocks, isins, wkns] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {}), getJSON("data/isin.json", {}), getJSON("data/wkn.json", {})]);

@@ -116,7 +116,7 @@ if (!CFG) {
       await A.updatePassword(auth.currentUser, p1);
       await A.updateProfile(auth.currentUser, { displayName: name });
       await F.setDoc(F.doc(db, "users", auth.currentUser.uid), { hasPassword: true, name }, { merge: true });
-      if (window.BB_onAuth) window.BB_onAuth(true);
+      if (window.BB_onAuth) window.BB_onAuth(me.emailVerified && (await sha(me.email.toLowerCase())) === ADMIN_HASH);
       needPw = false; $("k-p1").value = $("k-p2").value = "";
       say("✅ Fertig! Dein Konto ist eingerichtet. Ab jetzt meldest du dich mit E-Mail und Passwort an.", "ok");
       showIn();
@@ -190,7 +190,8 @@ if (!CFG) {
       needPw = true; showBox("k-link"); $("k-confirm").hidden = true; $("k-setpw").hidden = false;
       if (location.hash !== "#konto") location.hash = "#konto";
     } else showIn();
-    access = !needPw && !data.blocked;
+    const admin = u.emailVerified && (await sha((u.email || "").toLowerCase())) === ADMIN_HASH;
+    access = !needPw && !data.blocked && (admin || data.heftAccess === true);
     if (window.BB_onAuth) window.BB_onAuth(access);
     // Einstellungen: vom Konto übernehmen, sonst hochladen
     const remote = data.prefs || {};
