@@ -163,6 +163,7 @@ if (!CFG) {
     const on = !asUser();
     try { localStorage.setItem("bb-asuser", JSON.stringify(on)); } catch (er) { /* egal */ }
     applyRole(); if (me && !needPw && location.hash === "#konto") showIn();
+    if (location.hash === "#feedback") fbView();
     if (window.BB_toast) window.BB_toast(on ? "Du siehst die Seite jetzt wie ein normaler Nutzer." : "Du siehst wieder alles als Admin.");
   });
   const admKnown = new Promise((r) => { admDone = r; });
@@ -256,9 +257,12 @@ if (!CFG) {
       msgs.sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
       const open = msgs.filter((m) => !m.done).length;
       $("k-fbcount").textContent = msgs.length ? "(" + open + " offen)" : "";
+      $("k-fbcount2").textContent = open ? "(" + open + ")" : "";
       const fmtIso = (t) => { const d = new Date(t); return isNaN(d) ? "" : d.toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) + " Uhr"; };
       const hh = (t) => String(t || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
       $("k-msgs").innerHTML = msgs.length ? msgs.map((m) => '<div class="k-msgitem' + (m.done ? " done" : "") + '"><div><span class="fbt ' + (m.type === "wunsch" ? "wunsch" : "fehler") + '">' + (m.type === "wunsch" ? "💡 Wunsch" : "🐞 Fehler") + "</span> <b>" + hh(m.from) + "</b> <small>" + hh(m.mail) + " · " + fmtIso(m.ts) + "</small></div><p>" + hh(m.text) + "</p>" +
+        (m.reply ? '<div class="k-reply"><b>Deine Antwort · ' + fmtIso(m.replyTs) + "</b>" + hh(m.reply) + "</div>" : "") +
+        '<form class="k-replyform" data-ruid="' + m.uid + '" data-rts="' + hh(m.ts) + '"><input type="text" maxlength="1000" placeholder="' + (m.reply ? "Antwort ändern …" : "Antworten …") + '" aria-label="Antwort"><button class="btn" type="submit">Senden</button></form>' +
         '<div class="k-acts"><button class="btn ghost" type="button" data-mdone="' + m.uid + '" data-mts="' + hh(m.ts) + '">' + (m.done ? "Wieder offen" : "✓ Erledigt") + '</button><button class="btn ghost" type="button" data-mdel="' + m.uid + '" data-mts="' + hh(m.ts) + '">Löschen</button></div></div>').join("")
         : '<p class="k-msg">Noch keine Nachrichten.</p>';
       MSG_ROWS = rows;
@@ -285,6 +289,13 @@ if (!CFG) {
     try { await F.updateDoc(F.doc(db, "users", b.dataset.access), { heftAccess: b.dataset.a !== "1" }); loadUsers(); }
     catch (er) { say(errText(er), "err"); b.disabled = false; }
   });
+  $("k-msgs").addEventListener("submit", (e) => {
+    const f = e.target.closest(".k-replyform"); if (!f) return;
+    e.preventDefault();
+    const txt = f.querySelector("input").value.trim(); if (!txt) return;
+    f.querySelector("button").disabled = true;
+    changeMsg(f.dataset.ruid, f.dataset.rts, (l, i) => { if (i >= 0) { l[i].reply = txt.slice(0, 1000); l[i].replyTs = new Date().toISOString(); l[i].done = true; } return l; });
+  });
   $("k-msgs").addEventListener("click", (e) => {
     const d = e.target.closest("[data-mdone]"), x = e.target.closest("[data-mdel]");
     if (d) changeMsg(d.dataset.mdone, d.dataset.mts, (l, i) => { if (i >= 0) l[i].done = !l[i].done; return l; });
@@ -295,7 +306,25 @@ if (!CFG) {
   document.querySelectorAll("[data-fbt]").forEach((b) => b.addEventListener("click", () => {
     fbType = b.dataset.fbt; document.querySelectorAll("[data-fbt]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
   }));
-  const fbView = () => { $("fb-login").hidden = !!(me && !needPw); $("fb-form").hidden = !(me && !needPw); };
+  async function fbView() {
+    const inn = !!(me && !needPw);
+    $("fb-login").hidden = inn;
+    $("fb-form").hidden = !inn || isAdm;
+    $("fb-admin").hidden = !(inn && isAdm);
+    $("fb-mine").hidden = !inn || isAdm;
+    $("fb-intro").hidden = inn && isAdm;
+    if (!inn) return;
+    if (isAdm) { loadUsers(); return; }
+    try {
+      const d = await F.getDoc(F.doc(db, "users", me.uid));
+      const list = ((d.exists() && d.data().msgs) || []).slice().sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
+      const hh = (t) => String(t || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+      const f = (t) => { const x = new Date(t); return isNaN(x) ? "" : x.toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) + " Uhr"; };
+      $("fb-mine").hidden = !list.length;
+      $("fb-mine-list").innerHTML = list.map((m) => '<div class="k-msgitem"><div><span class="fbt ' + (m.type === "wunsch" ? "wunsch" : "fehler") + '">' + (m.type === "wunsch" ? "💡 Wunsch" : "🐞 Fehler") + "</span> <small>" + f(m.ts) + "</small></div><p>" + hh(m.text) + "</p>" +
+        (m.reply ? '<div class="k-reply"><b>🦦 Antwort vom Admin · ' + f(m.replyTs) + "</b>" + hh(m.reply) + "</div>" : '<small>Noch keine Antwort.</small>') + "</div>").join("");
+    } catch (er) { /* offline */ }
+  }
   $("fb-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const text = $("fb-text").value.trim(), st = $("fb-status");
@@ -304,6 +333,7 @@ if (!CFG) {
     try {
       await F.updateDoc(F.doc(db, "users", me.uid), { msgs: F.arrayUnion({ type: fbType, text: text.slice(0, 1000), ts: new Date().toISOString() }) });
       $("fb-text").value = ""; st.textContent = "✅ Danke! Deine Nachricht ist beim Admin angekommen."; st.className = "k-msg ok";
+      fbView();
     } catch (er) { st.textContent = errText(er); st.className = "k-msg err"; }
   });
   $("k-logout").addEventListener("click", () => A.signOut(auth));
@@ -337,6 +367,7 @@ if (!CFG) {
     realAdm = u.emailVerified && (await sha((u.email || "").toLowerCase())) === ADMIN_HASH;
     myData = data;
     applyRole(); admDone();
+    if (location.hash === "#feedback") fbView();
     if (location.hash === "#statistik" && isAdm) loadUsers();
     // Einstellungen: vom Konto übernehmen, sonst hochladen
     const remote = data.prefs || {};

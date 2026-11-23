@@ -175,6 +175,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .use-bar { height: 6px; border-radius: 3px; background: var(--accent); opacity: .7; margin-top: 3px; }
 .k-msgitem p { margin: 0; white-space: pre-wrap; word-break: break-word; }
 .k-msgitem small { color: var(--muted); }
+.k-reply { border-left: 3px solid var(--accent); padding: 4px 0 4px 10px; background: var(--soft); border-radius: 0 8px 8px 0; }
+.k-reply b { font-size: 12.5px; color: var(--accent); display: block; }
+.k-replyform { display: flex; gap: 6px; }
+.k-replyform input { flex: 1; min-width: 0; font: inherit; font-size: 14px; padding: 7px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
 .fbt { font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 6px; color: #fff; }
 .fbt.fehler { background: var(--down); } .fbt.wunsch { background: var(--accent); }
 .badge { font-size: 11px; font-weight: 700; background: #8A5A2B; color: #fff; border-radius: 6px; padding: 1px 6px; margin-left: 6px; }
@@ -730,7 +734,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 
   <section class="view" id="v-fb" hidden aria-labelledby="fb-title">
     <div class="sec-head"><h2 id="fb-title">💬 Fehler &amp; Wünsche</h2></div>
-    <p>Hast du einen Fehler gefunden oder wünschst dir etwas für die Seite? Schreib es hier, die Nachricht geht direkt an den Admin.</p>
+    <p id="fb-intro">Hast du einen Fehler gefunden oder wünschst dir etwas für die Seite? Schreib es hier, die Nachricht geht direkt an den Admin. Seine Antwort siehst du dann hier unter „Deine Nachrichten“.</p>
     <div class="k-box" id="fb-login">
       <p class="k-msg">Um eine Nachricht zu schicken, melde dich bitte an. So kann niemand die Seite mit Spam fluten.</p>
       <a class="btn" href="#konto">Zum Konto</a>
@@ -745,6 +749,14 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <button class="btn" type="submit">Nachricht schicken</button>
       <p class="k-msg" id="fb-status" role="status"></p>
     </form>
+    <div id="fb-mine" hidden>
+      <h3>Deine Nachrichten</h3>
+      <div class="k-users" id="fb-mine-list"></div>
+    </div>
+    <div id="fb-admin" hidden>
+      <h3>📥 Eingegangene Nachrichten <span id="k-fbcount"></span></h3>
+      <div class="k-users" id="k-msgs"><p class="k-msg">Lade …</p></div>
+    </div>
   </section>
 
 
@@ -845,9 +857,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <a class="btn" id="k-hefte" href="#gesperrt" hidden>🔒 Gesperrter Bereich öffnen</a>
       <div class="btn-row"><button class="btn ghost" id="k-logout" type="button">Abmelden</button><button class="btn ghost" id="k-delete" type="button">Konto löschen</button></div>
       <div id="k-adminbox" hidden>
-        <p><a class="btn ghost" href="#statistik">📊 Zur Statistik</a></p>
-        <h3>Admin: Fehler &amp; Wünsche <span id="k-fbcount"></span></h3>
-        <div class="k-users" id="k-msgs"></div>
+        <p><a class="btn ghost" href="#statistik">📊 Zur Statistik</a> <a class="btn ghost" href="#feedback">💬 Fehler &amp; Wünsche <span id="k-fbcount2"></span></a></p>
         <h3>Admin: Registrierte Nutzer <span id="k-count"></span></h3>
         <div class="k-users" id="k-users"></div>
       </div>
@@ -2746,6 +2756,6 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 })();
 </script>
 <script src="firebase-config.js?v=2"></script>
-<script type="module" src="konto.js?v=20261123-2300"></script>
+<script type="module" src="konto.js?v=20261123-2310"></script>
 </body>
 </html>
