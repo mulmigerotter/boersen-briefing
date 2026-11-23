@@ -607,94 +607,68 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 
   <section class="view home" id="v-home" aria-labelledby="home-title">
     <div class="hero">
-      <svg class="otter" viewBox="0 0 200 220" role="img" aria-label="Der Mulmigerotter" xmlns="http://www.w3.org/2000/svg">
+      <svg class="otter" viewBox="0 0 210 250" role="img" aria-label="Der Mulmigerotter" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <filter id="ot-rough" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/>
-      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
-    </filter>
-    <filter id="ot-paper" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="g"/>
-      <feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.12 0" result="ga"/>
-      <feComposite in="ga" in2="SourceGraphic" operator="in" result="gi"/>
-      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="gi"/></feMerge>
-    </filter>
-    <radialGradient id="ot-fur" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#B9844C"/><stop offset="1" stop-color="#8E5C2E"/></radialGradient>
-    <radialGradient id="ot-belly" cx="50%" cy="40%" r="65%"><stop offset="0" stop-color="#F7E6CC"/><stop offset="1" stop-color="#E4C79F"/></radialGradient>
+    <clipPath id="mo-eyeL"><ellipse cx="80" cy="62" rx="15" ry="12"/></clipPath>
+    <clipPath id="mo-eyeR"><ellipse cx="124" cy="62" rx="15" ry="12"/></clipPath>
   </defs>
-  <!-- Schatten -->
-  <ellipse cx="100" cy="208" rx="70" ry="8" fill="#000" opacity=".10"/>
-  <g filter="url(#ot-rough)" stroke="#3B2414" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+  <g stroke="#2A2230" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="102" cy="241" rx="64" ry="7" fill="#000" opacity=".1" stroke="none"/>
     <!-- Schwanz -->
-    <path d="M138 182 C178 186 192 160 182 140 C176 128 166 134 170 146 C174 160 158 170 136 166 Z" fill="url(#ot-fur)" filter="url(#ot-paper)"/>
-    <path d="M150 172 l8 -3 M162 166 l7 -5 M172 156 l5 -6" stroke="#6E4520" stroke-width="1.4" fill="none"/>
-    <!-- Körper -->
-    <path d="M58 150 C52 112 70 92 100 92 C130 92 148 112 142 150 C138 184 122 200 100 200 C78 200 62 184 58 150 Z" fill="url(#ot-fur)" filter="url(#ot-paper)"/>
-    <path d="M74 152 C72 124 84 110 100 110 C116 110 128 124 126 152 C124 176 114 190 100 190 C86 190 76 176 74 152 Z" fill="url(#ot-belly)" stroke-width="1.8"/>
-    <!-- Füße -->
-    <path d="M70 196 C62 196 58 204 66 207 C74 210 86 208 88 202 C89 197 80 194 70 196 Z" fill="#7A4C24"/>
-    <path d="M130 196 C138 196 142 204 134 207 C126 210 114 208 112 202 C111 197 120 194 130 196 Z" fill="#7A4C24"/>
-    <path d="M66 203 l0 3 M72 204 l0 3 M78 204 l0 3 M134 203 l0 3 M128 204 l0 3 M122 204 l0 3" stroke-width="1.2"/>
-    <!-- Ohren -->
-    <circle cx="56" cy="44" r="13" fill="#8E5C2E"/><circle cx="144" cy="44" r="13" fill="#8E5C2E"/>
-    <circle cx="56" cy="45" r="6.5" fill="#E9B98F" stroke-width="1.4"/><circle cx="144" cy="45" r="6.5" fill="#E9B98F" stroke-width="1.4"/>
-    <!-- Kopf -->
-    <path d="M40 72 C38 40 66 22 100 22 C134 22 162 40 160 72 C158 100 134 114 100 114 C66 114 42 100 40 72 Z" fill="url(#ot-fur)" filter="url(#ot-paper)"/>
-    <!-- Gesichtsmaske -->
-    <path d="M62 84 C60 66 78 60 100 62 C122 60 140 66 138 84 C136 100 120 108 100 108 C80 108 64 100 62 84 Z" fill="url(#ot-belly)" stroke-width="1.8"/>
-  </g>
-  <!-- Fellstriche -->
-  <g stroke="#6E4520" stroke-width="1.3" stroke-linecap="round" fill="none" filter="url(#ot-rough)">
-    <path d="M86 30 l4 -6 M98 27 l1 -7 M110 29 l3 -6 M122 33 l5 -5"/>
-    <path d="M52 66 l-6 1 M50 76 l-6 3 M148 66 l6 1 M150 76 l6 3"/>
-    <path d="M64 122 l-5 4 M62 136 l-6 3 M136 122 l5 4 M138 136 l6 3 M64 166 l-5 3 M136 166 l5 3"/>
-    <path d="M92 126 q8 -3 16 0 M90 142 q10 -3 20 0 M92 160 q8 -3 16 0" stroke="#C9A57A"/>
-  </g>
-  <!-- Wangen -->
-  <ellipse cx="70" cy="86" rx="9" ry="5" fill="#E88A7A" opacity=".45"/>
-  <ellipse cx="130" cy="86" rx="9" ry="5" fill="#E88A7A" opacity=".45"/>
-  <g filter="url(#ot-rough)" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Augenbrauen -->
-    <path d="M70 52 q9 -6 18 -1 M112 51 q9 -5 18 1" stroke="#3B2414" stroke-width="2.6" fill="none"/>
-    <!-- Augen -->
-    <ellipse cx="80" cy="66" rx="6.5" ry="7.5" fill="#1B1B1B"/><ellipse cx="120" cy="66" rx="6.5" ry="7.5" fill="#1B1B1B"/>
-    <circle cx="82.5" cy="63" r="2.4" fill="#fff"/><circle cx="122.5" cy="63" r="2.4" fill="#fff"/>
-    <circle cx="78" cy="69.5" r="1" fill="#fff"/><circle cx="118" cy="69.5" r="1" fill="#fff"/>
-    <!-- Runde Brille -->
-    <circle cx="80" cy="66" r="14" fill="#fff" fill-opacity=".12" stroke="#2B2B2B" stroke-width="2.4"/>
-    <circle cx="120" cy="66" r="14" fill="#fff" fill-opacity=".12" stroke="#2B2B2B" stroke-width="2.4"/>
-    <path d="M94 64 q6 -4 12 0" stroke="#2B2B2B" stroke-width="2.4" fill="none"/>
-    <path d="M66 63 l-12 -4 M134 63 l12 -4" stroke="#2B2B2B" stroke-width="2.2"/>
-    <!-- Nase und Mund -->
-    <path d="M92 80 C92 75 108 75 108 80 C108 85 102 88 100 88 C98 88 92 85 92 80 Z" fill="#3B2414" stroke="#3B2414" stroke-width="1.5"/>
-    <ellipse cx="97" cy="79" rx="2.6" ry="1.4" fill="#fff" opacity=".55"/>
-    <path d="M100 88 l0 5 M100 93 q-7 6 -13 1 M100 93 q7 6 13 1" stroke="#3B2414" stroke-width="2.2" fill="none"/>
-    <path d="M94 96 q6 6 12 0 q-6 3 -12 0 Z" fill="#D9675A" stroke="#3B2414" stroke-width="1.2"/>
-    <!-- Barthaare -->
-    <circle cx="86" cy="88" r="1.1" fill="#3B2414"/><circle cx="82" cy="92" r="1.1" fill="#3B2414"/><circle cx="114" cy="88" r="1.1" fill="#3B2414"/><circle cx="118" cy="92" r="1.1" fill="#3B2414"/>
-    <path d="M80 88 L54 82 M80 93 L55 95 M120 88 L146 82 M120 93 L145 95" stroke="#4A2E18" stroke-width="1.3" fill="none"/>
-    <!-- Fliege -->
-    <path d="M100 116 L86 108 L86 124 Z M100 116 L114 108 L114 124 Z" fill="#C0392B" stroke="#3B2414" stroke-width="2"/>
-    <circle cx="100" cy="116" r="3.6" fill="#962D22" stroke="#3B2414" stroke-width="1.6"/>
-  </g>
-  <!-- Tablet mit Kurs -->
-  <g filter="url(#ot-rough)" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="104" y="130" width="62" height="44" rx="6" transform="rotate(-6 135 152)" fill="#FDFDFB" stroke="#22262E" stroke-width="2.6"/>
-    <g transform="rotate(-6 135 152)">
-      <path d="M112 166 L112 138 M112 166 L158 166" stroke="#B5BCC8" stroke-width="1.2" fill="none"/>
-      <path d="M115 136 h40 M115 146 h40 M115 156 h40" stroke="#E3E7EE" stroke-width="1" fill="none"/>
-      <rect x="116" y="155" width="5" height="10" fill="#9BD3B9" stroke="none"/><rect x="125" y="150" width="5" height="15" fill="#9BD3B9" stroke="none"/><rect x="134" y="153" width="5" height="12" fill="#9BD3B9" stroke="none"/><rect x="143" y="145" width="5" height="20" fill="#9BD3B9" stroke="none"/>
-      <polyline points="115,158 124,150 133,154 145,140 156,136" fill="none" stroke="#08744F" stroke-width="3"/>
-      <path d="M156 136 l-7 0 M156 136 l-2 6" stroke="#08744F" stroke-width="3" fill="none"/>
+    <path d="M144 200 C176 204 192 180 184 160 C180 152 171 154 173 164 C175 178 162 188 144 186 Z" fill="#B8622E"/>
+    <path d="M160 194 l6 -5 M172 184 l5 -6" stroke-width="2.4" fill="none"/>
+    <!-- Beine und Schuhe -->
+    <path d="M74 198 L72 226 L99 226 L100 198 Z" fill="#26346B"/>
+    <path d="M104 198 L105 226 L132 226 L130 198 Z" fill="#26346B"/>
+    <path d="M66 237 C64 227 72 222 84 222 C96 222 101 227 101 237 Z" fill="#3A3640"/>
+    <path d="M104 237 C104 227 109 222 121 222 C133 222 141 227 139 237 Z" fill="#3A3640"/>
+    <!-- Sakko -->
+    <path d="M58 128 C60 114 80 106 102 106 C124 106 144 114 146 128 L150 198 C150 206 140 208 102 208 C64 208 54 206 54 198 Z" fill="#2B3C82"/>
+    <path d="M86 108 L102 146 L118 108 Z" fill="#FFFFFF"/>
+    <path d="M97 113 L107 113 L105 121 L111 156 L102 168 L93 156 L99 121 Z" fill="#1E8E5A"/>
+    <path d="M97 113 L107 113 L105 121 L99 121 Z" fill="#167048"/>
+    <path d="M86 108 L77 128 L88 134 L81 142 L102 172" fill="none"/>
+    <path d="M118 108 L127 128 L116 134 L123 142 L102 172" fill="none"/>
+    <circle cx="102" cy="188" r="3.2" fill="#2B3C82"/>
+    <path d="M120 156 h15" stroke-width="3"/>
+    <!-- Linker Arm mit Tablet -->
+    <path d="M60 130 C46 140 42 166 54 178 L72 176 C64 166 66 150 70 142 Z" fill="#2B3C82"/>
+    <g transform="rotate(-8 84 172)">
+      <rect x="54" y="150" width="60" height="44" rx="6" fill="#FFFFFF"/>
+      <path d="M62 184 L62 158 M62 184 L106 184" stroke="#9AA3B5" stroke-width="2"/>
+      <polyline points="66,177 76,168 86,172 98,158 106,154" fill="none" stroke="#1E8E5A" stroke-width="4.5"/>
+      <path d="M106 154 l-8 0 M106 154 l-2 8" stroke="#1E8E5A" stroke-width="4.5" fill="none"/>
     </g>
-    <!-- Pfoten am Tablet -->
-    <path d="M100 142 C108 134 120 138 118 148 C116 156 104 156 100 150 Z" fill="#8E5C2E" stroke="#3B2414" stroke-width="2.4"/>
-    <path d="M108 140 l2 4 M113 141 l1 4" stroke="#3B2414" stroke-width="1.2" fill="none"/>
-    <path d="M160 168 C168 162 176 168 172 176 C168 182 158 180 156 174 Z" fill="#8E5C2E" stroke="#3B2414" stroke-width="2.4"/>
-    <!-- Linker Arm mit Münze -->
-    <path d="M66 130 C54 136 50 150 58 156 C66 162 76 152 76 142" fill="#8E5C2E" stroke="#3B2414" stroke-width="2.4"/>
-    <circle cx="56" cy="150" r="10" fill="#F2C94C" stroke="#7A5A00" stroke-width="2.2"/>
-    <text x="56" y="154.5" text-anchor="middle" font-size="12" font-weight="700" fill="#7A5A00" font-family="Georgia, serif">&#8364;</text>
+    <path d="M54 176 C48 178 48 188 56 190 C64 192 70 186 68 180 Z" fill="#B8622E"/>
+    <!-- Kopf: Fell-Umriss mit Zacken -->
+    <path d="M40 66 L32 60 L41 54 C42 32 66 18 102 18 C138 18 162 32 163 54 L172 60 L164 66 C164 76 170 80 162 84 C156 100 134 112 102 112 C70 112 48 100 42 84 C34 80 40 76 40 66 Z" fill="#C96F37"/>
+    <!-- Ohren -->
+    <path d="M52 34 C44 30 42 18 52 16 C60 14 66 22 64 28" fill="#B8622E"/>
+    <path d="M152 34 C160 30 162 18 152 16 C144 14 138 22 140 28" fill="#B8622E"/>
+    <path d="M94 26 l3 6 M102 24 l1 7 M110 26 l-2 6" stroke-width="3" fill="none"/>
+    <!-- Gesicht hell -->
+    <path d="M58 80 C56 64 76 60 102 62 C128 60 148 64 146 80 C144 98 126 108 102 108 C78 108 60 98 58 80 Z" fill="#F3D9B0"/>
+    <!-- Augen, halb geschlossen -->
+    <ellipse cx="80" cy="62" rx="15" ry="12" fill="#FFFFFF" stroke="none"/>
+    <ellipse cx="124" cy="62" rx="15" ry="12" fill="#FFFFFF" stroke="none"/>
+    <circle cx="84" cy="66" r="7" fill="#D98A1F" stroke="none"/><circle cx="128" cy="66" r="7" fill="#D98A1F" stroke="none"/>
+    <circle cx="84" cy="66" r="3.4" fill="#1A1420" stroke="none"/><circle cx="128" cy="66" r="3.4" fill="#1A1420" stroke="none"/>
+    <rect x="60" y="44" width="40" height="15" fill="#C96F37" stroke="none" clip-path="url(#mo-eyeL)"/>
+    <rect x="104" y="44" width="40" height="15" fill="#C96F37" stroke="none" clip-path="url(#mo-eyeR)"/>
+    <ellipse cx="80" cy="62" rx="15" ry="12" fill="none"/>
+    <ellipse cx="124" cy="62" rx="15" ry="12" fill="none"/>
+    <path d="M65 59 L95 59 M109 59 L139 59" stroke-width="4"/>
+    <!-- Augenbrauen -->
+    <path d="M64 44 L94 48 M110 48 L140 43" stroke-width="5"/>
+    <!-- Nase, Grinsen, Barthaare -->
+    <path d="M93 78 C93 73 111 73 111 78 C111 83 105 86 102 86 C99 86 93 83 93 78 Z" fill="#2A2230"/>
+    <path d="M102 86 L102 90 M90 92 Q102 99 116 88" fill="none" stroke-width="3.2"/>
+    <path d="M72 86 L50 82 M72 92 L52 95 M132 86 L154 82 M132 92 L152 95" stroke-width="2.2"/>
+    <!-- Rechter Arm, Pfote mit erhobenem Zeigefinger -->
+    <path d="M144 132 C160 132 172 116 172 100 L160 96 C158 108 150 116 140 118 Z" fill="#2B3C82"/>
+    <path d="M158 97 L173 99" stroke="#FFFFFF" stroke-width="5"/>
+    <path d="M157 64 C157 58 165 58 165 64 L165 80 C175 78 182 84 180 92 C178 100 168 102 160 99 C154 96 154 88 157 82 Z" fill="#B8622E"/>
+    <path d="M166 86 q6 -2 10 2 M165 93 q6 -1 10 2" fill="none" stroke-width="2.4"/>
   </g>
 </svg>
       <div class="bubble" id="hello"><b id="home-title">Hallo, ich bin der Mulmigerotter!</b><br>Ich kenne mich mit Aktien aus. Frag mich, wie der DAX läuft, was heute an der Börse los ist oder was eine Aktie macht.</div>
