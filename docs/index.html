@@ -1398,10 +1398,10 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     $("live-stamp").textContent = up && !isNaN(up) ? "Kurse verzögert · Stand " + up.toLocaleString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" }) + " Uhr" : "";
   }
   // WKN/ISIN kopieren: deutsche ISIN enthält die WKN (DE000 + WKN + Prüfziffer)
-  let ISIN = {};
+  let ISIN = {}, WKNS = {};
   const idOf = (sym) => {
     const isin = (ISIN && ISIN[sym]) || "";
-    const wkn = /^DE000[A-Z0-9]{6}\d$/.test(isin) ? isin.slice(5, 11) : "";
+    const wkn = /^DE000[A-Z0-9]{6}\d$/.test(isin) ? isin.slice(5, 11) : (WKNS && WKNS[sym]) || "";
     return { isin, wkn };
   };
   function copyBtn(sym, name) {
@@ -1426,7 +1426,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     const sym = b.dataset.copy, id = idOf(sym), nm = nameOf(sym);
     const txt = id.wkn || id.isin || sym, label = id.wkn ? "WKN" : id.isin ? "ISIN" : "Kürzel";
     const ok = await copyText(txt);
-    toast(ok ? nm + ": " + label + " " + txt + " kopiert" + (id.wkn && id.isin ? " (ISIN " + id.isin + ")" : "") + (!id.isin ? " – die ISIN wird mit dem nächsten Tageslauf ergänzt" : "")
+    toast(ok ? nm + ": " + label + " " + txt + " kopiert" + (id.wkn && id.isin ? " (ISIN " + id.isin + ")" : "") + (!id.isin && !id.wkn ? " – für diese Aktie liegt noch keine WKN/ISIN vor" : "")
               : "Kopieren nicht möglich – " + label + ": " + txt);
   }, true);
   function starBtn(sym) {
@@ -1930,8 +1930,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     go.disabled = true; go.textContent = "Prüfe …";
     try {
       await decryptFile("data/site.enc.json", code);
-      const [quotes, divs, stocks, isins] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {}), getJSON("data/isin.json", {})]);
-      ISIN = isins || {};
+      const [quotes, divs, stocks, isins, wkns] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {}), getJSON("data/isin.json", {}), getJSON("data/wkn.json", {})]);
+      ISIN = isins || {}; WKNS = wkns || {};
       AK.quotes = quotes && quotes.q ? quotes : { q: {} }; DIVS = divs || {}; STOCKS = stocks || {};
       await loadLive();
       store.set({ c: restore ? restore.c : code, last: Date.now() });
