@@ -141,6 +141,18 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .k-user small { color: var(--muted); display: block; }
 .badge { font-size: 11px; font-weight: 700; background: #8A5A2B; color: #fff; border-radius: 6px; padding: 1px 6px; margin-left: 6px; }
 
+
+.masthead { position: relative; }
+.burger { display: inline-grid; gap: 4px; padding: 9px 10px; }
+.burger span { display: block; width: 20px; height: 2.5px; background: var(--ink); border-radius: 2px; transition: transform .2s, opacity .2s; }
+.burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.tabs.menu { position: absolute; right: 0; top: 54px; z-index: 50; display: grid; gap: 2px; min-width: 230px; margin: 0;
+  background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 6px; box-shadow: 0 10px 30px rgba(15,23,38,.15); }
+.tabs.menu[hidden] { display: none; }
+.tabs.menu a { border: 0; border-radius: 10px; padding: 11px 12px; font-size: 16px; text-align: left; }
+
 /* Status */
 .status {
   background: var(--surface);
@@ -517,16 +529,17 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <h1 class="brand">Börsen<span>-</span>Briefing</h1>
       <p class="tagline">Mit dem Mulmigerotter · jeden Handelstag neu</p>
     </div>
-    <div class="mast-btns"><button class="btn ghost" id="bell" type="button" aria-expanded="false" aria-controls="alert-panel">🔔<span id="bell-n" class="bell-n" hidden></span><span class="sr-only"> Meldungen</span></button><button class="btn ghost" id="share" type="button">Link teilen</button></div>
-  </header>
-  <nav class="tabs" aria-label="Bereiche">
-    <a href="./" id="tab-home" data-view="home" aria-current="page">Start</a>
-    <a href="#briefing" id="tab-brief" data-view="brief">Briefing</a>
-    <a href="#aktien" id="tab-stocks" data-view="stocks">Alle Aktien</a>
-    <a href="#rechner" id="tab-calc" data-view="calc">Rechner</a>
+    <div class="mast-btns"><button class="btn ghost" id="bell" type="button" aria-expanded="false" aria-controls="alert-panel">🔔<span id="bell-n" class="bell-n" hidden></span><span class="sr-only"> Meldungen</span></button><button class="btn ghost" id="share" type="button">Link teilen</button><button class="btn ghost burger" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menü öffnen"><span></span><span></span><span></span></button></div>
+  <nav class="tabs menu" id="menu" aria-label="Bereiche" hidden>
+    <a href="./" id="tab-home" data-view="home" aria-current="page">🏠 Start</a>
+    <a href="#briefing" id="tab-brief" data-view="brief">📰 Briefing</a>
+    <a href="#aktien" id="tab-stocks" data-view="stocks">📊 Alle Aktien</a>
+    <a href="#rechner" id="tab-calc" data-view="calc">🧮 Rechner</a>
     <a href="#konto" id="tab-konto" data-view="konto">👤 Konto</a>
-    <a href="#gesperrt" id="tab-ak" data-view="ak">🔒 Gesperrt</a>
+    <a href="#gesperrt" id="tab-ak" data-view="ak">🔒 Gesperrter Bereich</a>
   </nav>
+  </header>
+  
   <div class="statusbar">
     <span class="live-stamp" id="live-stamp"></span>
     <div id="toast" role="status" aria-live="polite" hidden></div>
@@ -1486,6 +1499,14 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   };
   let FAVS = new Set(ls.get(FKEY, []));
 
+
+
+  // ---------- Menü (drei Striche oben rechts) ----------
+  function setMenu(open) { $("menu").hidden = !open; $("menu-btn").setAttribute("aria-expanded", String(open)); $("menu-btn").setAttribute("aria-label", open ? "Menü schließen" : "Menü öffnen"); }
+  $("menu-btn").addEventListener("click", (e) => { e.stopPropagation(); setMenu($("menu").hidden); });
+  $("menu").addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
+  document.addEventListener("click", (e) => { if (!$("menu").hidden && !e.target.closest("#menu")) setMenu(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("menu").hidden) { setMenu(false); $("menu-btn").focus(); } });
 
   // ---------- Startseite: große Märkte und der Mulmigerotter ----------
   const HOME_IDX = [
