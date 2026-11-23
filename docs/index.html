@@ -374,6 +374,10 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 .fav-filter[aria-pressed="true"] { background: var(--accent); color: var(--surface); border-color: var(--accent); }
 .st-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .st-group { font-family: var(--font-display); font-weight: 600; font-size: 15px; margin: 8px 0 0; color: var(--muted); }
+.copy { font: inherit; font-size: 13px; line-height: 1; background: none; border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; margin-left: 6px; cursor: pointer; color: var(--muted); vertical-align: middle; }
+.copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 50; max-width: 90vw; text-align: center; }
+#toast[hidden] { display: none; }
 .star { font: inherit; font-size: 20px; line-height: 1; background: none; border: 0; padding: 2px 4px; cursor: pointer; color: var(--muted); }
 .star[aria-pressed="true"] { color: #d99a00; }
 .st-row > summary { grid-template-columns: auto 1fr auto; align-items: center; column-gap: 8px; display: grid; }
@@ -499,6 +503,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   </nav>
   <div class="statusbar">
     <span class="live-stamp" id="live-stamp"></span>
+    <div id="toast" role="status" aria-live="polite" hidden></div>
     <span class="timer" id="timer" role="timer" aria-live="off"></span>
     <button class="btn ghost lock-btn" id="lock-now" type="button">Abmelden</button>
   </div>
@@ -859,7 +864,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     const b = sim.bands, last = b.p50.length - 1, c = p.currency;
     return '<li class="pick-card">' +
       '<div class="pick-head"><span class="rank">' + esc(p.rank) + "</span><div>" +
-      '<div class="pick-name">' + esc(p.name) + "</div>" +
+      '<div class="pick-name">' + esc(p.name) + copyBtn(p.symbol, p.name) + "</div>" +
       '<div class="pick-sub">Kurs ' + money(p.price, c) + (typeof p.target === "number" ? " · Ø-Kursziel " + money(p.target, c) : "") + "</div>" +
       (p.symbol && px(p.symbol) ? '<div class="pick-sub">Aktuell ' + liveSpan(p.symbol, "local") + " · " + liveSpan(p.symbol, "chg") + "</div>" : "") + "</div>" +
       (typeof p.score === "number" ? '<span class="score">' + Math.round(p.score) + "/100</span>" : "") + "</div>" +
@@ -1122,7 +1127,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
         (AK.sc === "trend" && p.ziel ? "Trend so, dass der mittlere Kurs das Ziel nach 12 Monaten erreicht" : "ohne Trend") + " · " +
         RUNS_AK.toLocaleString("de-DE") + " Läufe</p>" : "");
     return '<li data-pick="' + esc(issue.id + "|" + p.sym) + '"><details class="akp"><summary>' +
-      '<div class="akp-top">' + starBtn(p.sym) + '<span class="akp-name">' + esc(p.name) + "</span>" + chips + "</div>" +
+      '<div class="akp-top">' + starBtn(p.sym) + '<span class="akp-name">' + esc(p.name) + "</span>" + copyBtn(p.sym, p.name) + chips + "</div>" +
       '<div class="akp-sub">' + sub.join(" · ") + "</div>" +
       '<div class="akp-sub">' + esc(sectorOf(p.sym)) + (yieldOf(p.sym) != null ? " · " + (yieldOf(p.sym) > 0 ? "Div. " + nf1.format(yieldOf(p.sym) * 100) + " %" : "keine Dividende") : "") + " " + riskBadge(p.sym) + "</div>" +
       odds + '</summary><div class="akp-body">' + body + "</div></details></li>";
@@ -1287,7 +1292,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       const nrec = Object.keys(mags).length, tot = a.ms.filter((m) => m.kind === "Empfehlung").length;
       const nein = a.ms.filter((m) => m.kind === "Kein Kauf").length;
       const sum = (nrec ? "Empfohlen von " + nrec + " Zeitschrift" + (nrec > 1 ? "en" : "") + " (" + Object.keys(mags).map(esc).join(", ") + "), " + tot + "× in den Ausgaben" : "Keine Kaufempfehlung, nur erwähnt") + (nein ? " · " + nein + "× „Kein Kauf“" : "");
-      return '<article class="fd-card"><h3>' + esc(a.name) + (a.sym ? " <small>" + esc(a.sym) + "</small>" : "") + '</h3><p class="fd-sum">' + sum + "</p>" +
+      return '<article class="fd-card"><h3>' + esc(a.name) + (a.sym ? " <small>" + esc(a.sym) + "</small>" + copyBtn(a.sym, a.name) : "") + '</h3><p class="fd-sum">' + sum + "</p>" +
         a.ms.map((m) => {
           const x = m.p || m.x || {}, cu = x.cur || (m.p && m.p.cur) || "EUR", bits = [];
           if (x.kurs) bits.push("Kurs im Heft " + amt(x.kurs, cu));
@@ -1392,6 +1397,38 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     const up = LIVE.updated ? new Date(LIVE.updated) : null;
     $("live-stamp").textContent = up && !isNaN(up) ? "Kurse verzögert · Stand " + up.toLocaleString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" }) + " Uhr" : "";
   }
+  // WKN/ISIN kopieren: deutsche ISIN enthält die WKN (DE000 + WKN + Prüfziffer)
+  let ISIN = {};
+  const idOf = (sym) => {
+    const isin = (ISIN && ISIN[sym]) || "";
+    const wkn = /^DE000[A-Z0-9]{6}\d$/.test(isin) ? isin.slice(5, 11) : "";
+    return { isin, wkn };
+  };
+  function copyBtn(sym, name) {
+    if (!sym) return "";
+    return '<button type="button" class="copy" data-copy="' + esc(sym) + '" aria-label="WKN oder ISIN von ' + esc(name || sym) + ' kopieren" title="WKN/ISIN kopieren">📋 Nr.</button>';
+  }
+  let toastT = null;
+  function toast(msg) {
+    const t = $("toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600);
+  }
+  async function copyText(txt) {
+    try { await navigator.clipboard.writeText(txt); return true; } catch (e) { /* alter Browser */ }
+    try {
+      const ta = document.createElement("textarea"); ta.value = txt; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select(); const ok = document.execCommand("copy"); document.body.removeChild(ta); return ok;
+    } catch (e) { return false; }
+  }
+  document.addEventListener("click", async (e) => {
+    const b = e.target.closest("button[data-copy]"); if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    const sym = b.dataset.copy, id = idOf(sym), nm = nameOf(sym);
+    const txt = id.wkn || id.isin || sym, label = id.wkn ? "WKN" : id.isin ? "ISIN" : "Kürzel";
+    const ok = await copyText(txt);
+    toast(ok ? nm + ": " + label + " " + txt + " kopiert" + (id.wkn && id.isin ? " (ISIN " + id.isin + ")" : "") + (!id.isin ? " – die ISIN wird mit dem nächsten Tageslauf ergänzt" : "")
+              : "Kopieren nicht möglich – " + label + ": " + txt);
+  }, true);
   function starBtn(sym) {
     const on = FAVS.has(sym);
     return '<button type="button" class="star" data-fav="' + esc(sym) + '" aria-pressed="' + on + '" aria-label="' + esc(nameOf(sym)) + (on ? " aus Favoriten entfernen" : " als Favorit merken") + '">' + (on ? "★" : "☆") + "</button>";
@@ -1522,7 +1559,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     const y = yieldOf(sym);
     const sub = [esc(sectorOf(sym)), y == null ? "" : y > 0 ? "Div. " + nf1.format(y * 100) + " %" : "keine Dividende"].filter(Boolean).join(" · ");
     return '<li><details class="akp st-row" data-sym="' + esc(sym) + '"><summary>' + starBtn(sym) +
-      '<div class="st-main"><span class="akp-name">' + esc(nameOf(sym)) + '</span><span class="akp-sub">' + sub + "</span>" + riskBadge(sym) + "</div>" +
+      '<div class="st-main"><span class="akp-name">' + esc(nameOf(sym)) + "</span>" + copyBtn(sym) + '<span class="akp-sub">' + sub + "</span>" + riskBadge(sym) + "</div>" +
       '<div class="st-price"><b>' + liveSpan(sym, "eur") + "</b>" + liveSpan(sym, "chg") + "</div>" +
       '</summary><div class="akp-body"></div></details></li>';
   }
@@ -1725,7 +1762,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     const rows = DEPOT.map((p, i) => {
       const inf = posInfo(p), d = p.amount * inf.y; tot += p.amount; totDiv += d;
       const r = riskClass(inf.sigma);
-      return "<tr><td>" + esc(inf.name) + (inf.custom ? " <small>(eigene)</small>" : "") + "</td><td>" + eur(p.amount) + "</td><td>" + nf1.format(inf.y * 100) + " %</td><td>" + eur(d) +
+      return "<tr><td>" + esc(inf.name) + (inf.custom ? " <small>(eigene)</small>" : copyBtn(p.sym, inf.name)) + "</td><td>" + eur(p.amount) + "</td><td>" + nf1.format(inf.y * 100) + " %</td><td>" + eur(d) +
         '</td><td><span class="risk ' + r[0] + '">' + r[1] + '</span></td><td><button type="button" data-del="' + i + '" aria-label="' + esc(inf.name) + ' entfernen">✕</button></td></tr>';
     }).join("");
     $("dp-table").innerHTML = '<div class="tbl"><table class="dp-table"><thead><tr><th>Aktie</th><th>Betrag</th><th>Div.</th><th>pro Jahr</th><th>Risiko</th><th></th></tr></thead><tbody>' + rows +
@@ -1893,7 +1930,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     go.disabled = true; go.textContent = "Prüfe …";
     try {
       await decryptFile("data/site.enc.json", code);
-      const [quotes, divs, stocks] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {})]);
+      const [quotes, divs, stocks, isins] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {}), getJSON("data/isin.json", {})]);
+      ISIN = isins || {};
       AK.quotes = quotes && quotes.q ? quotes : { q: {} }; DIVS = divs || {}; STOCKS = stocks || {};
       await loadLive();
       store.set({ c: restore ? restore.c : code, last: Date.now() });

@@ -551,6 +551,7 @@ def write_quotes(hist):
 
 # ---------------------------------------------------------------- Dividenden (Yahoo, Ex-Tage)
 DIV_FILE = DATA / "dividends.json"
+ISIN_FILE = DATA / "isin.json"
 FREQ = {1: "jährlich", 2: "halbjährlich", 3: "vierteljährlich", 4: "vierteljährlich", 12: "monatlich"}
 
 
@@ -574,6 +575,25 @@ def summarize_dividends(rows, today):
     else:
         out["freq"] = "zuletzt keine"
     return out
+
+
+def refresh_isins(symbols, cache, max_new=150):
+    """ISIN je Kürzel (einmal holen, dann aus dem Cache) -> isin.json; die WKN steckt in deutschen ISINs."""
+    import yfinance as yf
+
+    todo = [x for x in symbols if not cache.get(x)][:max_new]
+    ok = 0
+    for sym in todo:
+        try:
+            v = yf.Ticker(sym).isin
+            if isinstance(v, str) and len(v) == 12 and v[:2].isalpha():
+                cache[sym] = v
+                ok += 1
+        except Exception as e:
+            log(f"  ISIN {sym}: {e}")
+        time.sleep(0.3)
+    log(f"ISIN: {ok} von {len(todo)} neu")
+    return cache
 
 
 def refresh_dividends(symbols, today, cache, max_new=200, max_old=40):
@@ -669,6 +689,12 @@ def main():
             DIV_FILE.write_text(json.dumps(div, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         except Exception as e:
             log(f"Dividenden fehlgeschlagen: {e}")
+        try:
+            isin = json.loads(ISIN_FILE.read_text(encoding="utf-8")) if ISIN_FILE.exists() else {}
+            isin = refresh_isins(list(dict.fromkeys(all_stock_symbols())), isin)
+            ISIN_FILE.write_text(json.dumps(isin, ensure_ascii=False, separators=(",", ":"), sort_keys=True), encoding="utf-8")
+        except Exception as e:
+            log(f"ISIN fehlgeschlagen: {e}")
     build(hist, meta, today, force=a.force)
 
 
