@@ -131,6 +131,17 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .idx-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 @media (min-width: 560px) { .idx-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .idx { border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; display: grid; gap: 2px; background: var(--surface); }
+button.idx { font: inherit; color: var(--ink); text-align: left; cursor: pointer; width: 100%; }
+button.idx:hover, button.idx.on { border-color: var(--accent); }
+button.idx.on { box-shadow: 0 0 0 2px var(--accent) inset; }
+.idx-i { font-size: 11px; opacity: .55; }
+.idx-info { border: 1px solid var(--accent); border-radius: 14px; padding: 12px 14px; background: var(--soft); font-size: 14.5px; }
+.idx-info[hidden] { display: none; }
+.idx-info p { margin: 6px 0 0; }
+.idx-info-h { display: flex; align-items: center; gap: 8px; }
+.idx-info-h b { font-family: var(--font-display); font-size: 17px; }
+.idx-x { margin-left: auto; border: 0; background: none; font-size: 16px; cursor: pointer; color: var(--muted); }
+.idx-today { font-weight: 600; }
 .idx-name { font-size: 13px; color: var(--muted); font-weight: 600; }
 .idx-val { font-family: var(--font-num); font-size: 17px; font-weight: 600; }
 .idx-chg { font-family: var(--font-num); font-size: 13px; font-weight: 600; }
@@ -710,6 +721,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     </div>
     <h2 class="home-h">Die großen Märkte</h2>
     <div class="idx-grid" id="idx-grid"></div>
+    <div class="idx-info" id="idx-info" hidden role="region" aria-live="polite"></div>
     <p class="chat-note" id="idx-stamp"></p>
     <h2 class="home-h">Wohin möchtest du?</h2>
     <nav class="go-grid" aria-label="Bereiche">
@@ -1780,13 +1792,54 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       const d = idxData(i, day);
       if (!d) return "";
       const cls = d.pct > 0 ? "up" : d.pct < 0 ? "down" : "";
-      return '<div class="idx"><span class="idx-name">' + esc(i.n) + '</span><span class="idx-val">' + esc(d.text || nfd(d.val, d.val < 1000 ? 2 : 0)) +
+      return '<button type="button" class="idx' + (idxOpen === i.s ? " on" : "") + '" data-idx="' + esc(i.s) + '" aria-expanded="' + (idxOpen === i.s) + '" aria-controls="idx-info"><span class="idx-name">' + esc(i.n) + ' <span class="idx-i" aria-hidden="true">ⓘ</span></span><span class="idx-val">' + esc(d.text || nfd(d.val, d.val < 1000 ? 2 : 0)) +
         '</span><span class="idx-chg ' + cls + '">' + (typeof d.pct === "number" ? (d.pct > 0 ? "▲ " : d.pct < 0 ? "▼ " : "") + fmtPct(d.pct) : "") +
-        '</span><span class="idx-day">' + esc(d.day ? "Stand " + dShort(d.day) : "") + "</span></div>";
+        '</span><span class="idx-day">' + esc(d.day ? "Stand " + dShort(d.day) : "") + "</span></button>";
     }).join("");
+    if (idxOpen) showIdxInfo(idxOpen, day);
     $("idx-grid").innerHTML = cards || '<p class="chat-note">Die Kurse werden geladen …</p>';
     $("idx-stamp").textContent = LIVE.updated ? "Kurse leicht verzögert, zuletzt geholt " + new Date(LIVE.updated).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) + " Uhr." : "";
   }
+
+  // Kurze Erklärungen zu den Märkten auf der Startseite
+  const IDX_INFO = {
+    "^GDAXI": ["Deutschland", "Der DAX ist der wichtigste deutsche Aktienindex. Er enthält die 40 größten Firmen an der Frankfurter Börse, zum Beispiel SAP, Siemens, Allianz und Mercedes-Benz. Wenn in den Nachrichten von „der Börse“ die Rede ist, ist meist der DAX gemeint."],
+    "^MDAXI": ["Deutschland", "Der MDAX enthält die 50 Firmen, die in der Größe direkt nach den DAX-Firmen kommen, also mittelgroße Unternehmen wie Lufthansa, Hensoldt oder Puma. Er zeigt gut, wie es der deutschen Wirtschaft in der Breite geht."],
+    "^STOXX50E": ["Eurozone", "Der Euro Stoxx 50 enthält die 50 größten Firmen aus den Ländern mit dem Euro, zum Beispiel ASML, LVMH, SAP und TotalEnergies. Er ist sozusagen der DAX für ganz Europa."],
+    "^DJI": ["USA", "Der Dow Jones ist der älteste US-Aktienindex, es gibt ihn seit 1896. Er enthält nur 30 große US-Firmen wie Apple, Coca-Cola und JPMorgan. Besonders ist, dass teure Aktien darin mehr zählen als günstige."],
+    "^GSPC": ["USA", "Der S&P 500 enthält die 500 größten US-Firmen und gilt als bester Spiegel der amerikanischen Börse. Viele beliebte ETFs bilden genau diesen Index nach."],
+    "^IXIC": ["USA", "Der Nasdaq (Composite) enthält über 3.000 Firmen der Technologie-Börse Nasdaq, vor allem Tech-Werte wie Apple, Microsoft, Nvidia und Amazon. Er schwankt meist stärker als der Dow Jones."],
+    "^N225": ["Japan", "Der Nikkei 225 ist der wichtigste Aktienindex Japans mit 225 Firmen der Börse Tokio, zum Beispiel Toyota, Sony und Nintendo. Weil Japan uns zeitlich voraus ist, ist er morgens oft schon fertig gehandelt."],
+    "^FTSE": ["Großbritannien", "Der FTSE 100 enthält die 100 größten Firmen der Londoner Börse, zum Beispiel Shell, AstraZeneca und HSBC. Viele davon verdienen ihr Geld weltweit, nicht nur in Großbritannien."],
+    "EUNL.DE": ["Welt", "Das ist ein ETF auf den MSCI World, also ein Fonds, der rund 1.400 große Firmen aus 23 Industrieländern auf einmal enthält, gut zwei Drittel davon aus den USA. Mit einem einzigen Kauf ist man so breit gestreut – deshalb ist er bei Sparplänen sehr beliebt."],
+  };
+  let idxOpen = null;
+  function showIdxInfo(sym, day) {
+    const i = HOME_IDX.find((x) => x.s === sym), info = IDX_INFO[sym], box = $("idx-info");
+    if (!i || !info) { box.hidden = true; return; }
+    const d = idxData(i, day);
+    let today = "";
+    if (d && typeof d.pct === "number") {
+      const a = Math.abs(d.pct);
+      today = "Heute: " + fmtPct(d.pct) + " – " + (a < 0.3 ? "kaum bewegt." : a < 1 ? (d.pct > 0 ? "leicht im Plus." : "leicht im Minus.") : a < 2 ? (d.pct > 0 ? "ein guter Tag." : "ein schwächerer Tag.") : d.pct > 0 ? "ein sehr starker Tag! 📈" : "ein deutlicher Rückgang. 📉");
+    }
+    box.innerHTML = '<div class="idx-info-h"><b>' + esc(i.n) + '</b><span class="chip">' + esc(info[0]) + '</span><button type="button" class="idx-x" aria-label="Erklärung schließen">✕</button></div><p>' + esc(info[1]) + "</p>" + (today ? '<p class="idx-today">' + esc(today) + "</p>" : "") +
+      '<p class="chat-note">🦦 Frag den Mulmigerotter oben, wenn du mehr wissen willst.</p>';
+    box.hidden = false;
+  }
+  $("idx-grid").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-idx]"); if (!b) return;
+    idxOpen = idxOpen === b.dataset.idx ? null : b.dataset.idx;
+    document.querySelectorAll("#idx-grid [data-idx]").forEach((x) => { const on = x.dataset.idx === idxOpen; x.classList.toggle("on", on); x.setAttribute("aria-expanded", String(on)); });
+    if (!idxOpen) { $("idx-info").hidden = true; return; }
+    showIdxInfo(idxOpen, await getLatestDay());
+    $("idx-info").scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
+  $("idx-info").addEventListener("click", (e) => {
+    if (!e.target.closest(".idx-x")) return;
+    idxOpen = null; $("idx-info").hidden = true;
+    document.querySelectorAll("#idx-grid [data-idx]").forEach((x) => { x.classList.remove("on"); x.setAttribute("aria-expanded", "false"); });
+  });
 
   const onorm = (t) => String(t || "").toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z0-9&+ ]/g, " ").replace(/\s+/g, " ").trim();
   const GLOSSAR = [
