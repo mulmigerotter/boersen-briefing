@@ -435,7 +435,8 @@ def build(hist, meta, today, force=False):
 
 # ---------------------------------------------------------------- Merkliste (geschützter Bereich)
 WATCH_FILE = ROOT / "watch.json"
-FX = {"USD": "EURUSD=X", "HKD": "EURHKD=X", "AUD": "EURAUD=X", "GBP": "EURGBP=X", "CHF": "EURCHF=X", "SEK": "EURSEK=X"}
+FX = {"USD": "EURUSD=X", "HKD": "EURHKD=X", "AUD": "EURAUD=X", "GBP": "EURGBP=X", "CHF": "EURCHF=X", "SEK": "EURSEK=X",
+      "DKK": "EURDKK=X", "CAD": "EURCAD=X", "HUF": "EURHUF=X"}
 
 
 def watch_symbols():
@@ -448,7 +449,7 @@ def watch_symbols():
 def currency_of(sym):
     suffix = sym.rsplit(".", 1)[-1].upper() if "." in sym else ""
     return {"DE": "EUR", "F": "EUR", "AS": "EUR", "PA": "EUR", "MI": "EUR", "VI": "EUR",
-            "MC": "EUR", "HK": "HKD", "AX": "AUD", "SW": "CHF", "ST": "SEK"}.get(suffix, "USD")
+            "MC": "EUR", "HK": "HKD", "AX": "AUD", "SW": "CHF", "ST": "SEK", "CO": "DKK", "TO": "CAD", "BD": "HUF"}.get(suffix, "USD")
 
 
 def all_stock_symbols():
