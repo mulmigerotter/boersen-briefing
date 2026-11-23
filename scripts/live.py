@@ -17,7 +17,7 @@ def main():
     import yfinance as yf
 
     stocks = u.all_stock_symbols()
-    idx = [i["symbol"] for i in u.CONFIG["indices"]]
+    idx = [i["symbol"] for i in u.CONFIG["indices"] + u.CONFIG.get("home_indices", [])]
     fx_syms = sorted(set(u.FX.values()))
     syms = idx + stocks + fx_syms
     data = yf.download(syms, period="5d", interval="1d", auto_adjust=False,

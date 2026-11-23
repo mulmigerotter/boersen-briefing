@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Börsen-Briefing</title>
+<title>Börsen-Briefing mit dem Mulmigerotter</title>
 <meta name="description" content="Jeden Handelstag automatisch: DAX, Wall Street, Top & Flop und ein Rechner mit fünf Aktien samt simulierter Kursspanne.">
-<meta name="theme-color" content="#1F4FD6">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -17,7 +17,7 @@
 <style>
 :root {
   /* Layout: eine schmale Lesespalte. Kurszeile oben, Analyse in der Mitte, Archiv am Ende. */
-  --bg: #EDF0F4;
+  --bg: #FFFFFF;
   --surface: #FFFFFF;
   --ink: #0F1726;
   --muted: #5A6577;
@@ -33,37 +33,6 @@
   --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0B1019;
-    --surface: #131A26;
-    --ink: #E6EBF2;
-    --muted: #96A1B3;
-    --line: #253043;
-    --accent: #8AAAFF;
-    --up: #4FCB98;
-    --up-bg: rgba(79, 203, 152, 0.13);
-    --down: #FF8075;
-    --down-bg: rgba(255, 128, 117, 0.13);
-    --flat-bg: rgba(150, 161, 179, 0.14);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0B1019;
-  --surface: #131A26;
-  --ink: #E6EBF2;
-  --muted: #96A1B3;
-  --line: #253043;
-  --accent: #8AAAFF;
-  --up: #4FCB98;
-  --up-bg: rgba(79, 203, 152, 0.13);
-  --down: #FF8075;
-  --down-bg: rgba(255, 128, 117, 0.13);
-  --flat-bg: rgba(150, 161, 179, 0.14);
-  color-scheme: dark;
-}
-
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
@@ -121,6 +90,56 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .al-push summary { cursor: pointer; }
 .al-push code { background: rgba(127,127,127,.15); padding: 1px 5px; border-radius: 4px; word-break: break-all; }
 .masthead .btn { font-size: 13px; padding: 6px 12px; white-space: nowrap; }
+
+
+/* Startseite mit dem Mulmigerotter */
+.home { display: grid; gap: 18px; }
+.hero { display: grid; grid-template-columns: 112px 1fr; gap: 12px; align-items: end; }
+.otter { width: 112px; height: auto; }
+.bubble { position: relative; background: #F4F7FB; border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; font-size: 15px; }
+.bubble::after { content: ""; position: absolute; left: -9px; bottom: 18px; border: 9px solid transparent; border-right-color: #F4F7FB; border-left: 0; }
+.bubble b { font-family: var(--font-display); }
+.chat { border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: grid; gap: 10px; }
+.chat-log { display: grid; gap: 8px; max-height: 360px; overflow-y: auto; }
+.chat-log:empty { display: none; }
+.msg { max-width: 88%; padding: 8px 12px; border-radius: 14px; font-size: 15px; line-height: 1.45; }
+.msg.me { justify-self: end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+.msg.bot { justify-self: start; background: #F4F7FB; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.msg.bot .msg-who { display: block; font-size: 12px; font-weight: 600; color: #8A5A2B; margin-bottom: 2px; }
+.msg.bot .btn { margin-top: 6px; font-size: 13px; padding: 5px 10px; }
+.chat-form { display: flex; gap: 8px; }
+.chat-form input { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; color: var(--ink); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font: inherit; font-size: 13px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 11px; cursor: pointer; color: var(--ink); }
+.chat-note { font-size: 12px; color: var(--muted); margin: 0; }
+.idx-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (min-width: 560px) { .idx-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.idx { border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; display: grid; gap: 2px; background: #fff; }
+.idx-name { font-size: 13px; color: var(--muted); font-weight: 600; }
+.idx-val { font-family: var(--font-num); font-size: 17px; font-weight: 600; }
+.idx-chg { font-family: var(--font-num); font-size: 13px; font-weight: 600; }
+.idx-chg.up { color: var(--up); } .idx-chg.down { color: var(--down); }
+.idx-day { font-size: 11.5px; color: var(--muted); }
+.home-h { font-family: var(--font-display); font-size: 19px; margin: 0; }
+.go-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.go { display: grid; gap: 2px; text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 14px; padding: 14px 12px; background: #fff; font-size: 13px; }
+.go b { font-size: 16px; font-family: var(--font-display); }
+.go span { color: var(--muted); }
+.go:hover { border-color: var(--accent); }
+/* Konto */
+.k-box { border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; }
+.k-box[hidden] { display: none; }
+.k-form { display: grid; gap: 8px; }
+.k-form label { font-size: 13px; font-weight: 600; }
+.k-form input { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); }
+.k-switch { display: flex; gap: 6px; flex-wrap: wrap; }
+.k-switch button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.k-msg { font-size: 14px; margin: 0; }
+.k-msg.err { color: var(--down); } .k-msg.ok { color: var(--up); }
+.k-users { display: grid; gap: 6px; }
+.k-user { display: flex; justify-content: space-between; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); padding: 6px 0; font-size: 14px; }
+.k-user small { color: var(--muted); display: block; }
+.badge { font-size: 11px; font-weight: 700; background: #8A5A2B; color: #fff; border-radius: 6px; padding: 1px 6px; margin-left: 6px; }
 
 /* Status */
 .status {
@@ -492,37 +511,26 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 </head>
 <body>
 <main class="wrap">
-  <section class="gate" id="gate" aria-labelledby="gate-title">
-    <h1 class="brand" id="gate-title">Börsen<span>-</span>Briefing</h1>
-    <p>Bitte den Zugangscode eingeben. Danach bleibt die Seite offen, solange du sie nutzt – erst 15 Minuten nachdem du sie verlassen hast, wird sie wieder gesperrt.</p>
-    <form class="ak-form" id="gate-form" autocomplete="off">
-      <label for="gate-code">Code</label>
-      <input class="gate-code" id="gate-code" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-describedby="gate-err">
-      <button class="btn ghost eye" type="button" data-eye="gate-code" aria-label="Code anzeigen" aria-pressed="false">Anzeigen</button>
-      <button class="btn" id="gate-go" type="submit">Öffnen</button>
-    </form>
-    <p class="ak-err" id="gate-err" role="alert" hidden></p>
-  </section>
-
-  <div class="view" id="site" hidden>
+  <div class="view" id="site">
 <header class="masthead">
     <div>
       <h1 class="brand">Börsen<span>-</span>Briefing</h1>
-      <p class="tagline">Jeden Handelstag automatisch neu, Mo–Fr gegen 22:30 Uhr</p>
+      <p class="tagline">Mit dem Mulmigerotter · jeden Handelstag neu</p>
     </div>
     <div class="mast-btns"><button class="btn ghost" id="bell" type="button" aria-expanded="false" aria-controls="alert-panel">🔔<span id="bell-n" class="bell-n" hidden></span><span class="sr-only"> Meldungen</span></button><button class="btn ghost" id="share" type="button">Link teilen</button></div>
   </header>
   <nav class="tabs" aria-label="Bereiche">
-    <a href="./" id="tab-brief" data-view="brief" aria-current="page">Briefing</a>
+    <a href="./" id="tab-home" data-view="home" aria-current="page">Start</a>
+    <a href="#briefing" id="tab-brief" data-view="brief">Briefing</a>
     <a href="#aktien" id="tab-stocks" data-view="stocks">Alle Aktien</a>
     <a href="#rechner" id="tab-calc" data-view="calc">Rechner</a>
-    <a href="#gesperrt" id="tab-ak" data-view="ak">🔒 Gesperrter Bereich</a>
+    <a href="#konto" id="tab-konto" data-view="konto">👤 Konto</a>
+    <a href="#gesperrt" id="tab-ak" data-view="ak">🔒 Gesperrt</a>
   </nav>
   <div class="statusbar">
     <span class="live-stamp" id="live-stamp"></span>
     <div id="toast" role="status" aria-live="polite" hidden></div>
     <span class="timer" id="timer" role="timer" aria-live="off"></span>
-    <button class="btn ghost lock-btn" id="lock-now" type="button">Abmelden</button>
   </div>
   <p class="toast" id="toast" role="status" hidden></p>
   <section class="alert-panel" id="alert-panel" hidden aria-label="Börsen-Meldungen">
@@ -544,6 +552,108 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <ul id="al-topics"></ul>
       <p class="al-hint">Die Themen sind nicht geheim. Die Meldungen sind öffentlich, es gibt aber keine Kauf-Empfehlungen. Die Prüfung läuft alle 30 Minuten zu Handelszeiten, kann also leicht verzögert sein.</p>
     </details>
+  </section>
+
+  <section class="view home" id="v-home" aria-labelledby="home-title">
+    <div class="hero">
+      <svg class="otter" viewBox="0 0 120 130" role="img" aria-label="Der Mulmigerotter">
+  <ellipse cx="60" cy="112" rx="40" ry="16" fill="#9C6B3F"/>
+  <ellipse cx="60" cy="98" rx="34" ry="28" fill="#A8743F"/>
+  <ellipse cx="60" cy="104" rx="20" ry="18" fill="#E9D2B0"/>
+  <circle cx="24" cy="30" r="9" fill="#8A5A2B"/><circle cx="96" cy="30" r="9" fill="#8A5A2B"/>
+  <circle cx="24" cy="30" r="4.5" fill="#E9B98F"/><circle cx="96" cy="30" r="4.5" fill="#E9B98F"/>
+  <ellipse cx="60" cy="50" rx="38" ry="33" fill="#A8743F"/>
+  <ellipse cx="60" cy="62" rx="24" ry="17" fill="#F1DFC4"/>
+  <circle cx="45" cy="45" r="5" fill="#1B1B1B"/><circle cx="75" cy="45" r="5" fill="#1B1B1B"/>
+  <circle cx="46.6" cy="43.4" r="1.6" fill="#fff"/><circle cx="76.6" cy="43.4" r="1.6" fill="#fff"/>
+  <ellipse cx="60" cy="55" rx="6.5" ry="4.5" fill="#3B2414"/>
+  <path d="M52 63 Q60 70 68 63" stroke="#3B2414" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <path d="M40 58 L22 55 M40 62 L23 64 M80 58 L98 55 M80 62 L97 64" stroke="#5A3A1E" stroke-width="1.4" stroke-linecap="round"/>
+  <rect x="70" y="84" width="40" height="30" rx="5" fill="#fff" stroke="#0F1726" stroke-width="2"/>
+  <polyline points="75,108 84,100 91,104 104,90" fill="none" stroke="#08744F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="104,90 97,91 103,97" fill="#08744F"/>
+  <ellipse cx="74" cy="99" rx="7" ry="6" fill="#8A5A2B"/>
+  <ellipse cx="38" cy="100" rx="7" ry="6" fill="#8A5A2B"/>
+</svg>
+      <div class="bubble" id="hello"><b id="home-title">Hallo, ich bin der Mulmigerotter!</b><br>Ich kenne mich mit Aktien aus. Frag mich, wie der DAX läuft, was heute an der Börse los ist oder was eine Aktie macht.</div>
+    </div>
+    <div class="chat">
+      <div class="chat-log" id="chat-log" aria-live="polite"></div>
+      <div class="chips" id="chat-chips">
+        <button class="chip" type="button">Was ist heute los?</button>
+        <button class="chip" type="button">Wie läuft der DAX?</button>
+        <button class="chip" type="button">Top-5 heute</button>
+        <button class="chip" type="button">Was ist ein ETF?</button>
+        <button class="chip" type="button">Was macht SAP?</button>
+      </div>
+      <form class="chat-form" id="chat-form" autocomplete="off">
+        <input id="chat-q" type="text" placeholder="Frag den Mulmigerotter …" aria-label="Frage an den Mulmigerotter" enterkeyhint="send">
+        <button class="btn" type="submit">Fragen</button>
+      </form>
+      <p class="chat-note">Der Mulmigerotter antwortet aus den Kursen, Nachrichten und Meldungen dieser Seite. Er ist keine echte KI und gibt keine Kauf-Empfehlungen.</p>
+    </div>
+    <h2 class="home-h">Die großen Märkte</h2>
+    <div class="idx-grid" id="idx-grid"></div>
+    <p class="chat-note" id="idx-stamp"></p>
+    <h2 class="home-h">Wohin möchtest du?</h2>
+    <nav class="go-grid" aria-label="Bereiche">
+      <a class="go" href="#briefing"><b>📰 Briefing</b><span>Tagesanalyse und Top-5 mit Prognose</span></a>
+      <a class="go" href="#aktien"><b>📊 Alle Aktien</b><span>Kurse, Suche und Favoriten</span></a>
+      <a class="go" href="#rechner"><b>🧮 Rechner</b><span>Sparplan, Meine Aktien, Was wäre wenn</span></a>
+      <a class="go" href="#meldungen" id="go-bell"><b>🔔 Meldungen</b><span>Eilmeldungen ein- und ausschalten</span></a>
+      <a class="go" href="#konto"><b>👤 Konto</b><span>Anmelden oder registrieren</span></a>
+      <a class="go" href="#gesperrt"><b>🔒 Gesperrter Bereich</b><span>Heft-Empfehlungen, mit PIN</span></a>
+    </nav>
+  </section>
+
+  <section class="view" id="v-konto" hidden aria-labelledby="k-title">
+    <div class="sec-head"><h2 id="k-title">👤 Konto</h2></div>
+    <div class="k-box" id="k-off"><p class="k-msg">Konten werden gerade eingerichtet und sind bald verfügbar.</p></div>
+    <div class="k-box" id="k-out" hidden>
+      <div class="k-switch">
+        <button class="btn ghost" type="button" data-k="login" aria-pressed="true">Anmelden</button>
+        <button class="btn ghost" type="button" data-k="reg" aria-pressed="false">Registrieren</button>
+        <button class="btn ghost" type="button" data-k="reset" aria-pressed="false">Passwort vergessen</button>
+      </div>
+      <form class="k-form" id="k-login">
+        <label for="k-l-mail">E-Mail</label><input id="k-l-mail" type="email" autocomplete="email" required>
+        <label for="k-l-pw">Passwort</label><input id="k-l-pw" type="password" autocomplete="current-password" required>
+        <button class="btn" type="submit">Anmelden</button>
+      </form>
+      <form class="k-form" id="k-reg" hidden>
+        <p class="k-msg">Gib deine E-Mail ein. Du bekommst einen Bestätigungs-Link, damit wir wissen, dass die Adresse echt ist. Danach legst du dein Passwort fest.</p>
+        <label for="k-r-mail">E-Mail</label><input id="k-r-mail" type="email" autocomplete="email" required>
+        <button class="btn" type="submit">Bestätigungs-Link schicken</button>
+      </form>
+      <form class="k-form" id="k-reset" hidden>
+        <label for="k-x-mail">E-Mail</label><input id="k-x-mail" type="email" autocomplete="email" required>
+        <button class="btn" type="submit">Link zum Zurücksetzen schicken</button>
+      </form>
+    </div>
+    <div class="k-box" id="k-link" hidden>
+      <form class="k-form" id="k-confirm" hidden>
+        <p class="k-msg">Bitte gib zur Sicherheit noch einmal die E-Mail ein, mit der du dich registriert hast.</p>
+        <label for="k-c-mail">E-Mail</label><input id="k-c-mail" type="email" autocomplete="email" required>
+        <button class="btn" type="submit">Bestätigen</button>
+      </form>
+      <form class="k-form" id="k-setpw" hidden>
+        <p class="k-msg ok">✅ Deine E-Mail ist bestätigt. Lege jetzt dein Passwort fest.</p>
+        <label for="k-p1">Neues Passwort (mindestens 8 Zeichen)</label><input id="k-p1" type="password" autocomplete="new-password" minlength="8" required>
+        <label for="k-p2">Passwort wiederholen</label><input id="k-p2" type="password" autocomplete="new-password" minlength="8" required>
+        <button class="btn" type="submit">Passwort speichern</button>
+      </form>
+    </div>
+    <div class="k-box" id="k-in" hidden>
+      <p class="k-msg">Angemeldet als <b id="k-me"></b><span class="badge" id="k-admin" hidden>Admin</span></p>
+      <p class="k-msg">Deine Favoriten, „Meine Aktien“ und Meldungs-Einstellungen werden mit deinem Konto gespeichert und sind auf jedem Gerät da.</p>
+      <div class="btn-row"><button class="btn ghost" id="k-logout" type="button">Abmelden</button><button class="btn ghost" id="k-delete" type="button">Konto löschen</button></div>
+      <div id="k-adminbox" hidden>
+        <h3>Admin: Registrierte Nutzer <span id="k-count"></span></h3>
+        <div class="k-users" id="k-users"></div>
+      </div>
+    </div>
+    <p class="k-msg" id="k-status" role="status"></p>
+    <p class="chat-note">Die Konten laufen über Google Firebase. Gespeichert werden deine E-Mail-Adresse und deine Einstellungen auf der Seite, sonst nichts.</p>
   </section>
 
   <section class="view ak" id="v-ak" hidden aria-labelledby="ak-title">
@@ -699,7 +809,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <p class="fineprint">Alle Rechnungen sind Modellrechnungen ohne Gebühren und ohne Garantie. „Was wäre wenn“ nutzt echte Monatskurse inklusive wieder angelegter Dividenden, in Euro umgerechnet. Die Prognose rechnet 1.000 zufällige Verläufe mit der Schwankung der jeweiligen Aktie – keine Vorhersage und keine Anlageberatung.</p>
   </section>
 
-  <div class="view" id="v-brief">
+  <div class="view" id="v-brief" hidden>
   <div class="status" id="status" role="status">
     <span class="pulse" aria-hidden="true"></span>Die neueste Nachricht wird geladen …
   </div>
@@ -1369,12 +1479,169 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   // ---------- Aktuelle Kurse, Aktien-Infos, Favoriten ----------
   const showToast = (t) => { $("toast").textContent = t; $("toast").hidden = false; setTimeout(() => { $("toast").hidden = true; }, 3000); };
   let STOCKS = {}, LIVE = { q: {}, fx: {}, cur: {} }, LONG = null, longPromise = null, liveTimer = null;
-  const FKEY = "bb-favs", DKEY = "bb-depot";
+  const FKEY = "bb-favs", DKEY = "bb-depot", SYNC_KEYS = ["bb-favs", "bb-depot", "bb-alerts"];
   const ls = {
     get(k, d) { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? d : v; } catch (e) { return d; } },
-    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* privat-Modus */ } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* privat-Modus */ } if (window.BB_sync && SYNC_KEYS.includes(k)) window.BB_sync(); },
   };
   let FAVS = new Set(ls.get(FKEY, []));
+
+
+  // ---------- Startseite: große Märkte und der Mulmigerotter ----------
+  const HOME_IDX = [
+    { s: "^GDAXI", n: "DAX", k: /\bdax\b/ }, { s: "^MDAXI", n: "MDAX", k: /\bmdax\b/ },
+    { s: "^STOXX50E", n: "Euro Stoxx 50", k: /euro ?stoxx|\bstoxx\b|europa/ },
+    { s: "^DJI", n: "Dow Jones", k: /\bdow\b/ }, { s: "^GSPC", n: "S&P 500", k: /s ?& ?p|sp ?500|s und p/ },
+    { s: "^IXIC", n: "Nasdaq", k: /nasdaq/ }, { s: "^N225", n: "Nikkei 225", k: /nikkei|japan/ },
+    { s: "^FTSE", n: "FTSE 100", k: /\bftse\b|london/ }, { s: "EUNL.DE", n: "MSCI World (ETF)", k: /msci|\bworld\b|welt ?etf/ },
+  ];
+  const nfd = (v, d) => Number(v).toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const fmtPct = (p) => (p > 0 ? "+" : "") + nfd(p, 2) + " %";
+  let latestDay = null;
+  async function getLatestDay() {
+    if (latestDay) return latestDay;
+    if (!entries.length) return null;
+    try { latestDay = await loadDay(entries[0].date); } catch (e) { latestDay = null; }
+    return latestDay;
+  }
+  function idxData(i, day) {
+    const q = LIVE.q && LIVE.q[i.s];
+    if (Array.isArray(q) && q[0] && q[1]) return { val: q[0], pct: (q[0] / q[1] - 1) * 100, day: q[2] };
+    const d = day && Array.isArray(day.indices) ? day.indices.find((x) => x && x.name === i.n) : null;
+    if (d) return { text: d.value, pct: d.change, day: day.date };
+    return null;
+  }
+  const dShort = (iso) => (iso ? iso.slice(8, 10) + "." + iso.slice(5, 7) + "." : "");
+  async function renderHome() {
+    const day = await getLatestDay();
+    const cards = HOME_IDX.map((i) => {
+      const d = idxData(i, day);
+      if (!d) return "";
+      const cls = d.pct > 0 ? "up" : d.pct < 0 ? "down" : "";
+      return '<div class="idx"><span class="idx-name">' + esc(i.n) + '</span><span class="idx-val">' + esc(d.text || nfd(d.val, d.val < 1000 ? 2 : 0)) +
+        '</span><span class="idx-chg ' + cls + '">' + (typeof d.pct === "number" ? (d.pct > 0 ? "▲ " : d.pct < 0 ? "▼ " : "") + fmtPct(d.pct) : "") +
+        '</span><span class="idx-day">' + esc(d.day ? "Stand " + dShort(d.day) : "") + "</span></div>";
+    }).join("");
+    $("idx-grid").innerHTML = cards || '<p class="chat-note">Die Kurse werden geladen …</p>';
+    $("idx-stamp").textContent = LIVE.updated ? "Kurse leicht verzögert, zuletzt geholt " + new Date(LIVE.updated).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) + " Uhr." : "";
+  }
+
+  const onorm = (t) => String(t || "").toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z0-9&+ ]/g, " ").replace(/\s+/g, " ").trim();
+  const GLOSSAR = [
+    [/\betf/, "Ein <b>ETF</b> ist ein Fonds, der an der Börse gehandelt wird und meist einfach einen Index nachbaut, zum Beispiel den MSCI World mit rund 1.500 Firmen. Du kaufst also viele Aktien auf einmal, das streut das Risiko, und die Kosten sind meist niedrig."],
+    [/dividende/, "Eine <b>Dividende</b> ist ein Teil des Gewinns, den eine Firma an ihre Aktionäre auszahlt, meist einmal im Jahr. Die Dividendenrendite sagt, wie viel Prozent vom Aktienkurs das ausmacht."],
+    [/\bkgv\b|kurs gewinn/, "Das <b>KGV</b> (Kurs-Gewinn-Verhältnis) ist der Aktienkurs geteilt durch den Gewinn pro Aktie. Ein KGV von 20 heißt: Du zahlst das 20-Fache des Jahresgewinns. Niedrig kann günstig bedeuten, aber auch, dass der Markt wenig Wachstum erwartet."],
+    [/\bindex\b|indizes|indices/, "Ein <b>Index</b> misst, wie sich eine Gruppe von Aktien entwickelt. Der DAX enthält zum Beispiel die 40 größten deutschen Firmen, der Dow Jones 30 große US-Firmen."],
+    [/leitzins|\bzins/, "Der <b>Leitzins</b> wird von der Notenbank festgelegt (EZB in Europa, Fed in den USA). Sinkt er, wird Geld billiger, das hilft oft den Aktien. Steigt er, werden Sparzinsen attraktiver und Aktien geraten oft unter Druck."],
+    [/bulle|baer|bull|bear/, "<b>Bulle</b> steht für steigende Kurse (er stößt mit den Hörnern nach oben), <b>Bär</b> für fallende (er schlägt mit der Tatze nach unten)."],
+    [/volatil|schwank/, "<b>Volatilität</b> zeigt, wie stark ein Kurs schwankt. Hohe Volatilität heißt größere Chancen, aber auch größere Verluste in kurzer Zeit."],
+    [/stop ?loss|stopp/, "Ein <b>Stop-Loss</b> ist ein Verkaufsauftrag, der automatisch auslöst, wenn der Kurs unter eine Grenze fällt. So begrenzt man mögliche Verluste."],
+    [/sparplan/, "Bei einem <b>Sparplan</b> legst du jeden Monat automatisch einen festen Betrag an, zum Beispiel in einen ETF. Im Rechner auf dieser Seite kannst du ausprobieren, was dabei herauskommen könnte."],
+    [/\bdepot/, "Ein <b>Depot</b> ist dein Konto für Wertpapiere bei einer Bank oder einem Broker. Dort liegen deine Aktien und ETFs."],
+    [/\bshort|leerverkauf/, "<b>Short</b> gehen heißt, auf fallende Kurse zu wetten. Das ist riskant, weil die Verluste theoretisch unbegrenzt sind."],
+    [/inflation/, "<b>Inflation</b> heißt, dass die Preise steigen und Geld weniger wert wird. Hohe Inflation führt oft zu höheren Zinsen, was für Aktien eher schlecht ist."],
+    [/rendite/, "<b>Rendite</b> ist der Ertrag einer Anlage in Prozent pro Jahr, also Kursgewinn plus Dividenden."],
+    [/diversifi|streu/, "<b>Diversifikation</b> heißt, das Geld auf viele Aktien, Branchen und Länder zu verteilen. Geht eine Firma pleite, trifft es dich dann nur wenig."],
+    [/\bisin\b|\bwkn\b/, "<b>ISIN</b> und <b>WKN</b> sind Kennnummern für Wertpapiere. Damit findest du eine Aktie beim Broker eindeutig. Auf dieser Seite kannst du sie bei jeder Aktie mit dem 📋-Knopf kopieren."],
+    [/marktkapital|boersenwert/, "Die <b>Marktkapitalisierung</b> ist der Börsenwert einer Firma: Aktienkurs mal Anzahl der Aktien."],
+    [/was ist (eine )?aktie|\baktie\b.*\bwas\b/, "Eine <b>Aktie</b> ist ein kleiner Anteil an einer Firma. Läuft die Firma gut, steigt meist der Kurs, und oft gibt es eine Dividende. Läuft es schlecht, kann der Kurs auch stark fallen."],
+    [/\bboerse\b.*was|was ist (die )?boerse/, "Die <b>Börse</b> ist ein Marktplatz, auf dem Aktien und andere Wertpapiere gehandelt werden. Angebot und Nachfrage bestimmen dort den Preis."],
+  ];
+  function findStock(qn) {
+    let best = null, bestLen = 0;
+    const hay = " " + qn + " ";
+    for (const [sym, info] of Object.entries(STOCKS)) {
+      const nm = onorm(info && info.name);
+      const base = onorm(sym.split(".")[0]);
+      const cands = [nm, base.length >= 3 ? base : ""].concat(nm.split(" ")[0].length >= 5 ? [nm.split(" ")[0]] : []);
+      for (const c of cands) {
+        if (c && c.length >= 2 && hay.includes(" " + c + " ") && c.length > bestLen) { best = sym; bestLen = c.length; }
+      }
+    }
+    return best;
+  }
+  function stockAnswer(sym, day) {
+    const info = STOCKS[sym] || {}, q = LIVE.q && LIVE.q[sym], aq = AK.quotes.q[sym];
+    const name = info.name || sym;
+    let t = "<b>" + esc(name) + "</b>" + (info.sector ? " (" + esc(info.sector) + ")" : "") + ": ";
+    if (Array.isArray(q) && q[0] && q[1]) {
+      const pct = (q[0] / q[1] - 1) * 100;
+      t += "Kurs " + nfd(q[0], 2) + " " + esc(curOf(sym)) + ", " + fmtPct(pct) + " zum Vortag (Stand " + dShort(q[2]) + "). ";
+      t += Math.abs(pct) >= 5 ? (pct > 0 ? "Das ist ein kräftiger Sprung nach oben. " : "Das ist ein deutlicher Rückgang. ") : "";
+    } else if (aq && aq.eur) t += "Zuletzt " + nfd(aq.eur, 2) + " € (Stand " + dShort(aq.date) + "). ";
+    else t += "Zu dieser Aktie habe ich gerade keinen Kurs. ";
+    if (aq && aq.sigma) t += "Sie schwankt im Jahr typischerweise um etwa " + nfd(aq.sigma * 100, 0) + " %. ";
+    const p = day && Array.isArray(day.picks5) ? day.picks5.find((x) => x && x.symbol === sym) : null;
+    if (p) t += "Im heutigen Briefing steht sie auf Platz " + p.rank + " der Top-5" + (typeof p.score === "number" ? " mit " + Math.round(p.score) + " von 100 Punkten" : "") + ". ";
+    const al = AITEMS.find((x) => x.sym === sym);
+    if (al) t += "Aktuelle Meldung: " + esc(al.title) + ". ";
+    const id = idOf(sym);
+    if (id.wkn || id.isin) t += (id.wkn ? "WKN " + esc(id.wkn) : "ISIN " + esc(id.isin)) + ". ";
+    return { html: t, btn: { label: "In „Alle Aktien“ ansehen", sym } };
+  }
+  async function otterAnswer(raw) {
+    const qn = onorm(raw), day = await getLatestDay();
+    if (!qn) return { html: "Frag mich einfach etwas, zum Beispiel „Wie läuft der DAX?“." };
+    if (/^(hallo|hi|hey|moin|servus|guten (morgen|tag|abend))\b/.test(qn) && qn.split(" ").length <= 3)
+      return { html: "Hallo! 🦦 Schön, dass du da bist. Frag mich nach einem Index, einer Aktie oder was heute an der Börse los ist." };
+    if (/danke/.test(qn)) return { html: "Gern geschehen! 🦦" };
+    if (/wer bist|was kannst|hilfe|\bhelp\b/.test(qn))
+      return { html: "Ich bin der Mulmigerotter 🦦. Ich kann dir sagen, wie DAX, Dow Jones & Co. stehen, was eine Aktie gerade macht, was heute los war, welche Aktien in den Top-5 sind, und ich erkläre Börsen-Wörter wie ETF, KGV oder Dividende." };
+    const sym = findStock(qn);
+    const wantBuy = /kaufen|verkaufen|investieren|einsteigen|lohnt/.test(qn);
+    for (const i of HOME_IDX) {
+      if (i.k.test(qn) && !sym) {
+        const d = idxData(i, day);
+        if (!d) return { html: "Zum " + esc(i.n) + " habe ich gerade keine Daten." };
+        return { html: "Der <b>" + esc(i.n) + "</b> steht bei " + esc(d.text || nfd(d.val, d.val < 1000 ? 2 : 0)) + (typeof d.pct === "number" ? ", das sind " + fmtPct(d.pct) + " zum Vortag" : "") + (d.day ? " (Stand " + dShort(d.day) + ")" : "") + ". " +
+          (d.pct >= 2 ? "Ein richtig starker Tag! 📈" : d.pct <= -2 ? "Ein schwacher Tag, da wurde einiges verkauft. 📉" : d.pct > 0 ? "Leicht im Plus." : d.pct < 0 ? "Leicht im Minus." : "") };
+      }
+    }
+    if (sym) {
+      const a = stockAnswer(sym, day);
+      if (wantBuy) a.html += "<br>Ob du kaufen solltest, kann ich dir nicht sagen, das ist deine Entscheidung. Schau dir Risiko und Schwankung an und kauf nur, was du verstehst.";
+      return a;
+    }
+    if (/top|beste|empfehl|tipp|pick/.test(qn)) {
+      const ps = day && Array.isArray(day.picks5) ? day.picks5.filter((x) => x && x.name) : [];
+      if (!ps.length) return { html: "Heute gibt es noch keine Top-5. Sie kommen jeden Handelstag gegen 22:30 Uhr." };
+      return { html: "Die Top-5 aus dem Briefing vom " + esc(dShort(day.date)) + ":<br>" + ps.map((p) => p.rank + ". " + esc(p.name) + (typeof p.score === "number" ? " (" + Math.round(p.score) + " Punkte)" : "")).join("<br>") + "<br>Das ist eine Punkte-Formel, keine Kauf-Empfehlung.", btn: { label: "Zum Briefing", hash: "#briefing" } };
+    }
+    if (wantBuy) return { html: "Kauf-Empfehlungen gebe ich nicht. Nenn mir aber eine Aktie, dann sage ich dir, was sie gerade macht. Und ein breiter ETF ist für viele ein ruhiger Einstieg." };
+    if (/heute|los|news|neu|markt|passiert|lage|aktuell|nachricht|meldung/.test(qn)) {
+      let t = day ? "Das Briefing vom " + esc(dShort(day.date)) + ": <b>" + esc(day.headline || "") + "</b><br>" : "";
+      const ups = HOME_IDX.slice(0, 6).map((i) => [i, idxData(i, day)]).filter((x) => x[1] && typeof x[1].pct === "number");
+      if (ups.length) t += ups.map(([i, d]) => esc(i.n) + " " + fmtPct(d.pct)).join(" · ") + "<br>";
+      const al = aVisible().slice(0, 3);
+      if (al.length) t += "Neueste Meldungen:<br>" + al.map((x) => "• " + esc(x.title)).join("<br>");
+      else t += "Eilmeldungen gibt es gerade keine, es ist eher ruhig.";
+      return { html: t || "Gerade habe ich keine Neuigkeiten.", btn: { label: "Ganzes Briefing lesen", hash: "#briefing" } };
+    }
+    for (const [rx, txt] of GLOSSAR) if (rx.test(qn)) return { html: txt };
+    return { html: "Hmm, da bin ich mir nicht sicher. 🦦 Frag mich nach einem Index (DAX, Dow Jones, Nasdaq …), einer Aktie (zum Beispiel SAP oder Apple), „Was ist heute los?“ oder nach einem Börsen-Wort wie ETF oder Dividende." };
+  }
+  function chatAdd(cls, html, btn) {
+    const d = document.createElement("div");
+    d.className = "msg " + cls;
+    d.innerHTML = (cls === "bot" ? '<span class="msg-who">🦦 Mulmigerotter</span>' : "") + html;
+    if (btn) {
+      const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.textContent = btn.label;
+      b.addEventListener("click", () => {
+        if (btn.sym) { const nm = (STOCKS[btn.sym] && STOCKS[btn.sym].name) || btn.sym; st.q = nm; $("st-search").value = nm; location.hash = "#aktien"; }
+        else location.hash = btn.hash;
+      });
+      d.appendChild(b);
+    }
+    $("chat-log").appendChild(d); $("chat-log").scrollTop = $("chat-log").scrollHeight;
+  }
+  async function ask(text) {
+    if (!text.trim()) return;
+    chatAdd("me", esc(text));
+    const a = await otterAnswer(text);
+    chatAdd("bot", a.html, a.btn);
+  }
+  $("chat-form").addEventListener("submit", (e) => { e.preventDefault(); const i = $("chat-q"); const t = i.value; i.value = ""; ask(t); });
+  $("chat-chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (b) ask(b.textContent); });
 
   // ---------- Meldungen (Eilmeldungen) ----------
   const AKEY = "bb-alerts", ACATS = ["index", "aktie", "zinsen", "crash", "rekord"];
@@ -1408,6 +1675,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     AITEMS.forEach((x) => aKnown.add(x.id));
     aRender();
   }
+  function openBell() { const p = $("alert-panel"); if (p.hidden) $("bell").click(); else p.scrollIntoView({ block: "nearest" }); }
   $("bell").addEventListener("click", () => {
     const p = $("alert-panel"); p.hidden = !p.hidden; $("bell").setAttribute("aria-expanded", String(!p.hidden));
     if (!p.hidden) { aRender(); ASET.seen = (AITEMS[0] && AITEMS[0].ts) || ASET.seen; aSave(); $("bell-n").hidden = true; p.scrollIntoView({ block: "nearest" }); }
@@ -1428,6 +1696,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     if (j && j.q) LIVE = j;
     updateLiveSpans();
     loadAlerts();
+    if (siteOpen && currentView() === "home") renderHome();
     if (!liveTimer) liveTimer = setInterval(() => { if (siteOpen && !document.hidden) loadLive(); }, 5 * 60 * 1000);
   }
   function curOf(sym) {
@@ -1950,16 +2219,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     return JSON.parse(new TextDecoder().decode(plain));
   }
   let timerId = null, briefingStarted = false, siteOpen = false;
-  function showGate(msg) {
-    siteOpen = false;
-    $("site").hidden = true;
-    $("gate").hidden = false;
-    $("gate-err").hidden = !msg;
-    $("gate-err").textContent = msg || "";
-    document.title = "Börsen-Briefing";
-    hideAllEyes(); const inp = $("gate-code"); inp.value = "";
-    setTimeout(() => inp.focus(), 50);
-  }
+  const HEFT_PREFIX = "+100%Aktien|";
   function showPinBox(msg) {
     $("ak-open").hidden = true; $("pin-box").hidden = false; $("pin-lock").hidden = true;
     $("pin-err").hidden = !msg; $("pin-err").textContent = msg || "";
@@ -1972,77 +2232,41 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     $("ak-content").innerHTML = "";
     showPinBox(msg);
   }
-  function lockAll(msg) {
-    store.del();
-    lockPin("");
-    if (timerId) { clearInterval(timerId); timerId = null; }
-    showGate(msg);
-  }
-  // Seite: bleibt offen, solange man sie nutzt; 15 Minuten nach dem Verlassen ist sie gesperrt.
-  const lastSeen = (s) => (s ? s.last || (s.until ? s.until - OPEN_MS : 0) : 0);
-  const awayTooLong = (s) => !s || !s.c || Date.now() - lastSeen(s) > OPEN_MS;
   const pinExpired = () => { const p = pinStore.get(); return !p || !(p.until > Date.now()); };
-  function heartbeat() {
-    const s = store.get();
-    if (s && siteOpen && !document.hidden) { s.last = Date.now(); delete s.until; store.set(s); }
-  }
   function tickTimer() {
     if (!siteOpen) return;
-    const s = store.get();
-    if (awayTooLong(s)) { lockAll("Du warst länger als 15 Minuten weg – bitte den Code neu eingeben."); return; }
-    heartbeat();
     if (AK.data && pinExpired() && currentView() !== "ak") lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
     const p = pinStore.get(), pleft = p && p.until ? p.until - Date.now() : 0;
-    $("timer").textContent = "🔓 Angemeldet" + (AK.data ? (pleft > 0 ? " · Bereich ohne PIN noch " + Math.ceil(pleft / 60000) + " Min." : " · beim Verlassen PIN neu") : "");
+    $("timer").textContent = AK.data ? (pleft > 0 ? "🔓 Gesperrter Bereich ohne PIN noch " + Math.ceil(pleft / 60000) + " Min." : "🔓 Beim Verlassen PIN neu") : "";
     $("pin-lock").hidden = !AK.data;
   }
-  // Seite verlassen (App gewechselt, Tab im Hintergrund, Seite geschlossen)
   function onLeave() {
     if (!siteOpen) return;
-    const s = store.get();
-    if (s) { s.last = Date.now(); delete s.until; store.set(s); }
     if (AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
   }
-  // Zurück auf der Seite
   function onReturn() {
     if (!siteOpen) return;
-    if (awayTooLong(store.get())) { lockAll("Du warst länger als 15 Minuten weg – bitte den Code neu eingeben."); return; }
     if (AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
     tickTimer();
     loadLive();
   }
-  async function unlock(code, restore) {
-    const go = $("gate-go");
-    go.disabled = true; go.textContent = "Prüfe …";
-    try {
-      await decryptFile("data/site.enc.json", code);
-      const [quotes, divs, stocks, isins, wkns] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {}), getJSON("data/isin.json", {}), getJSON("data/wkn.json", {})]);
-      ISIN = isins || {}; WKNS = wkns || {};
-      AK.quotes = quotes && quotes.q ? quotes : { q: {} }; DIVS = divs || {}; STOCKS = stocks || {};
-      await loadLive();
-      store.set({ c: restore ? restore.c : code, last: Date.now() });
-      siteOpen = true;
-      $("gate").hidden = true; $("site").hidden = false;
-      tickTimer();
-      if (!timerId) timerId = setInterval(tickTimer, 10000);
-      if (!briefingStarted) { briefingStarted = true; startBriefing(); }
-      initCalc();
-      route();
-    } catch (e) {
-      const m = e && e.message;
-      lockAll(restore ? "" : m === "code" ? "Falscher Code. Bitte noch einmal." : m === "nocrypto"
-        ? "Dein Browser kann die Seite nicht öffnen. Bitte einen aktuellen Browser verwenden." : "Die Seite lässt sich gerade nicht laden. Prüfe deine Verbindung.");
-    } finally {
-      go.disabled = false; go.textContent = "Öffnen";
-    }
+  async function openSite() {
+    const [quotes, divs, stocks, isins, wkns] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {}), getJSON("data/isin.json", {}), getJSON("data/wkn.json", {})]);
+    ISIN = isins || {}; WKNS = wkns || {};
+    AK.quotes = quotes && quotes.q ? quotes : { q: {} }; DIVS = divs || {}; STOCKS = stocks || {};
+    siteOpen = true;
+    await loadLive();
+    tickTimer();
+    if (!timerId) timerId = setInterval(tickTimer, 10000);
+    if (!briefingStarted) { briefingStarted = true; startBriefing(); }
+    initCalc();
+    route();
   }
   async function unlockPin(pin, restore) {
-    const s = store.get();
-    if (!s || !s.c) { lockAll(""); return; }
     const go = $("pin-go");
     go.disabled = true; go.textContent = "Prüfe …";
     try {
-      AK.data = await decryptFile("data/hefte.enc.json", s.c + "|" + pin);
+      AK.data = await decryptFile("data/hefte.enc.json", HEFT_PREFIX + pin);
       AK.cache = {};
       pinStore.set(restore || { p: pin, until: Date.now() + OPEN_MS });
       $("pin-box").hidden = true; $("ak-open").hidden = false;
@@ -2065,13 +2289,6 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     });
   });
   function hideAllEyes(){ document.querySelectorAll("[data-eye]").forEach((b) => { $(b.dataset.eye).type = "password"; b.textContent = "Anzeigen"; b.setAttribute("aria-pressed","false"); }); }
-  $("gate-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    if ($("gate-go").disabled) return;
-    const code = $("gate-code").value;
-    if (!code) { showGate("Bitte den Code eingeben."); return; }
-    unlock(code, null);
-  });
   $("pin-form").addEventListener("submit", (e) => {
     e.preventDefault();
     if ($("pin-go").disabled) return;
@@ -2084,7 +2301,6 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     if (v !== e.target.value) e.target.value = v;
     if (v.length === 4 && !$("pin-go").disabled) unlockPin(v, null);
   });
-  $("lock-now").addEventListener("click", () => lockAll(""));
   $("pin-lock").addEventListener("click", () => { lockPin(""); tickTimer(); });
   document.addEventListener("visibilitychange", () => { if (document.hidden) onLeave(); else onReturn(); });
   window.addEventListener("pagehide", onLeave);
@@ -2092,11 +2308,12 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   window.addEventListener("focus", tickTimer);
 
   // ---------- Bereiche umschalten ----------
-  const VIEWS = { brief: "v-brief", stocks: "v-stocks", calc: "v-calc", ak: "v-ak" };
-  const TITLES = { brief: "Börsen-Briefing", stocks: "Alle Aktien · Börsen-Briefing", calc: "Rechner · Börsen-Briefing", ak: "Gesperrter Bereich · Börsen-Briefing" };
+  const VIEWS = { home: "v-home", brief: "v-brief", stocks: "v-stocks", calc: "v-calc", konto: "v-konto", ak: "v-ak" };
+  const TITLES = { home: "Börsen-Briefing mit dem Mulmigerotter", brief: "Briefing · Börsen-Briefing", stocks: "Alle Aktien · Börsen-Briefing", calc: "Rechner · Börsen-Briefing", konto: "Konto · Börsen-Briefing", ak: "Gesperrter Bereich · Börsen-Briefing" };
   function currentView() {
     const h = location.hash;
-    return h === "#gesperrt" || h === "#aktionaer" ? "ak" : h === "#aktien" ? "stocks" : h === "#rechner" ? "calc" : "brief";
+    return h === "#gesperrt" || h === "#aktionaer" ? "ak" : h === "#aktien" ? "stocks" : h === "#rechner" ? "calc"
+      : h === "#konto" ? "konto" : h === "#briefing" || h.startsWith("#tag-") ? "brief" : "home";
   }
   const isAk = () => currentView() === "ak";
   function setView(v) {
@@ -2107,7 +2324,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   let prevView = null;
   function route() {
     if (!siteOpen) return;
-    const v = currentView();
+    let v = currentView();
+    if (location.hash === "#meldungen") { history.replaceState(null, "", location.pathname); v = "home"; openBell(); }
     // Gesperrten Bereich verlassen, nachdem die 15 Minuten um sind -> PIN beim nächsten Mal nötig
     if (prevView === "ak" && v !== "ak" && AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
     prevView = v;
@@ -2121,9 +2339,11 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       }
     } else if (v === "stocks") renderStocks();
     else if (v === "calc") renderCalc();
-    else show();
+    else if (v === "brief") show();
+    else if (v === "home") renderHome();
+    if (window.BB_konto) window.BB_konto(v);
   }
-  $("tab-brief").addEventListener("click", (e) => {
+  $("tab-home").addEventListener("click", (e) => {
     e.preventDefault();
     if (location.hash) history.pushState(null, "", location.pathname);
     route();
@@ -2224,12 +2444,12 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     const b = e.target.closest(".arch-btn");
     if (!b) return;
     const id = b.getAttribute("data-id");
-    const target = id === (entries[0] && entries[0].date) ? "" : "#tag-" + id;
-    if (location.hash !== target) history.pushState(null, "", target || location.pathname);
+    const target = id === (entries[0] && entries[0].date) ? "#briefing" : "#tag-" + id;
+    if (location.hash !== target) history.pushState(null, "", target);
     show();
     window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   });
-  $("back").addEventListener("click", () => { history.pushState(null, "", location.pathname); show(); });
+  $("back").addEventListener("click", () => { history.pushState(null, "", "#briefing"); show(); });
   window.addEventListener("popstate", route);
 
   $("share").addEventListener("click", async () => {
@@ -2282,15 +2502,13 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       return;
     }
     if (currentView() === "brief") show();
+    if (currentView() === "home") renderHome();
   }
 
-  // Beim Laden: innerhalb von 15 Minuten nach dem letzten Öffnen direkt weiter, sonst Code abfragen
-  (function boot() {
-    const s = store.get();
-    if (!awayTooLong(s)) unlock(s.c, s);
-    else { store.del(); pinStore.del(); showGate(""); }
-  })();
+  openSite();
 })();
 </script>
+<script src="firebase-config.js"></script>
+<script type="module" src="konto.js"></script>
 </body>
 </html>

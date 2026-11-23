@@ -11,6 +11,13 @@
     {"symbol": "^GSPC", "name": "S&P 500"},
     {"symbol": "^IXIC", "name": "Nasdaq"}
   ],
+  "home_indices": [
+    {"symbol": "^MDAXI", "name": "MDAX"},
+    {"symbol": "^STOXX50E", "name": "Euro Stoxx 50"},
+    {"symbol": "^N225", "name": "Nikkei 225"},
+    {"symbol": "^FTSE", "name": "FTSE 100"},
+    {"symbol": "EUNL.DE", "name": "MSCI World (ETF)"}
+  ],
   "dax": [
     {"symbol": "ADS.DE", "name": "adidas"},
     {"symbol": "AIR.DE", "name": "Airbus"},

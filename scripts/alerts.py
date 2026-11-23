@@ -59,7 +59,7 @@ def price_alerts(live):
         names = json.loads((u.DATA / "stocks.json").read_text(encoding="utf-8"))
     except Exception:
         pass
-    idx = {i["symbol"]: i.get("name", i["symbol"]) for i in u.CONFIG["indices"]}
+    idx = {i["symbol"]: i.get("name", i["symbol"]) for i in u.CONFIG["indices"] + u.CONFIG.get("home_indices", [])}
     for sym, v in live.get("q", {}).items():
         try:
             last, prev, day = v
