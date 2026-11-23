@@ -53,7 +53,7 @@ Keine Anlageberatung. Daten können fehlen, verspätet oder fehlerhaft sein.
 
 - Kein Start-Code mehr: die Seite ist offen. Der gesperrte Bereich bleibt mit PIN geschützt.
 - Startseite: der Mulmigerotter beantwortet Fragen aus den Daten der Seite (keine echte KI), darunter die großen Märkte und Buttons zu allen Bereichen.
-- Konten (Google Firebase): Registrieren mit E-Mail-Bestätigungslink, danach Passwort festlegen. Admin ist niclasaustermann1607@gmail.com.
+- Konten (Google Firebase): Registrieren mit E-Mail-Bestätigungslink vom Mulmigerotter, danach Name und Passwort festlegen. Admin ist die Inhaber-E-Mail (nur als Hash hinterlegt).
   Einrichtung: Firebase-Projekt anlegen, Web-App hinzufügen, die Konfiguration in `docs/firebase-config.js` eintragen,
   unter Authentication "E-Mail/Passwort" und "E-Mail-Link" einschalten, `mulmigerotter.github.io` als autorisierte Domain eintragen,
   Firestore anlegen und die Regeln aus `firestore.rules` einfügen.

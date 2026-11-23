@@ -17,6 +17,7 @@ const ERR = {
   "auth/expired-action-code": "Der Link ist abgelaufen. Bitte registriere dich noch einmal.",
   "auth/requires-recent-login": "Bitte melde dich ab und neu an und versuche es dann noch einmal.",
   "auth/network-request-failed": "Keine Verbindung. Prüfe dein Internet.",
+  "auth/email-already-in-use": "Für diese E-Mail gibt es schon ein Konto. Melde dich an.",
   "auth/quota-exceeded": "Heute wurden zu viele E-Mails verschickt. Bitte morgen noch einmal versuchen.",
 };
 const errText = (e) => ERR[e && e.code] || "Das hat nicht geklappt" + (e && e.code ? " (" + e.code + ")" : "") + ".";
@@ -87,12 +88,14 @@ if (!CFG) {
 
   $("k-setpw").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const p1 = $("k-p1").value, p2 = $("k-p2").value;
+    const p1 = $("k-p1").value, p2 = $("k-p2").value, name = $("k-name").value.trim();
+    if (name.length < 2) { say("Bitte gib einen Namen mit mindestens 2 Zeichen an.", "err"); return; }
     if (p1.length < 8) { say("Das Passwort braucht mindestens 8 Zeichen.", "err"); return; }
     if (p1 !== p2) { say("Die beiden Passwörter sind nicht gleich.", "err"); return; }
     try {
       await A.updatePassword(auth.currentUser, p1);
-      await F.setDoc(F.doc(db, "users", auth.currentUser.uid), { hasPassword: true }, { merge: true });
+      await A.updateProfile(auth.currentUser, { displayName: name });
+      await F.setDoc(F.doc(db, "users", auth.currentUser.uid), { hasPassword: true, name }, { merge: true });
       needPw = false; $("k-p1").value = $("k-p2").value = "";
       say("✅ Fertig! Dein Konto ist eingerichtet. Ab jetzt meldest du dich mit E-Mail und Passwort an.", "ok");
       showIn();
@@ -110,7 +113,8 @@ if (!CFG) {
 
   async function showIn() {
     showBox("k-in");
-    $("k-me").textContent = me.email;
+    $("k-me").textContent = me.displayName || me.email.split("@")[0];
+    $("k-mail").textContent = me.email;
     const admin = me.emailVerified && (await sha(me.email.toLowerCase())) === ADMIN_HASH;
     $("k-admin").hidden = !admin; $("k-adminbox").hidden = !admin;
     if (admin) loadUsers();
@@ -122,7 +126,8 @@ if (!CFG) {
       rows.sort((a, b) => ((b.created && b.created.seconds) || 0) - ((a.created && a.created.seconds) || 0));
       $("k-count").textContent = "(" + rows.length + ")";
       const fmt = (t) => (t && t.seconds ? new Date(t.seconds * 1000).toLocaleDateString("de-DE") : "–");
-      $("k-users").innerHTML = rows.map((u) => '<div class="k-user"><div>' + String(u.email || u.id).replace(/</g, "&lt;") + (u.blocked ? " ⛔" : "") +
+      const h = (t) => String(t || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+      $("k-users").innerHTML = rows.map((u) => '<div class="k-user"><div><b>' + h(u.name || "ohne Namen") + "</b> " + h(u.email || u.id) + (u.blocked ? " ⛔" : "") +
         "<small>dabei seit " + fmt(u.created) + " · zuletzt " + fmt(u.lastLogin) + (u.hasPassword ? "" : " · noch kein Passwort") + "</small></div>" +
         (u.id === me.uid ? "" : '<button class="btn ghost" type="button" data-block="' + u.id + '" data-b="' + (u.blocked ? 1 : 0) + '">' + (u.blocked ? "Entsperren" : "Sperren") + "</button>") + "</div>").join("");
     } catch (er) { $("k-users").textContent = "Nutzerliste lässt sich nicht laden (" + (er.code || "Fehler") + ")."; }

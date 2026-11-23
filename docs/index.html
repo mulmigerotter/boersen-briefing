@@ -634,7 +634,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
         <button class="btn" type="submit">Anmelden</button>
       </form>
       <form class="k-form" id="k-reg" hidden>
-        <p class="k-msg">Gib deine E-Mail ein. Du bekommst einen Bestätigungs-Link, damit wir wissen, dass die Adresse echt ist. Danach legst du dein Passwort fest.</p>
+        <p class="k-msg">Gib deine E-Mail ein. Du bekommst vom Mulmigerotter eine E-Mail mit einem Bestätigungs-Link. Danach gibst du deinen Namen an und legst dein Passwort fest.</p>
         <label for="k-r-mail">E-Mail</label><input id="k-r-mail" type="email" autocomplete="email" required>
         <button class="btn" type="submit">Bestätigungs-Link schicken</button>
       </form>
@@ -650,14 +650,15 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
         <button class="btn" type="submit">Bestätigen</button>
       </form>
       <form class="k-form" id="k-setpw" hidden>
-        <p class="k-msg ok">✅ Deine E-Mail ist bestätigt. Lege jetzt dein Passwort fest.</p>
+        <p class="k-msg ok">✅ Deine E-Mail ist bestätigt. Gib jetzt deinen Namen an und lege dein Passwort fest.</p>
+        <label for="k-name">Dein Name</label><input id="k-name" type="text" autocomplete="nickname" maxlength="40" required>
         <label for="k-p1">Neues Passwort (mindestens 8 Zeichen)</label><input id="k-p1" type="password" autocomplete="new-password" minlength="8" required>
         <label for="k-p2">Passwort wiederholen</label><input id="k-p2" type="password" autocomplete="new-password" minlength="8" required>
-        <button class="btn" type="submit">Passwort speichern</button>
+        <button class="btn" type="submit">Konto erstellen</button>
       </form>
     </div>
     <div class="k-box" id="k-in" hidden>
-      <p class="k-msg">Angemeldet als <b id="k-me"></b><span class="badge" id="k-admin" hidden>Admin</span></p>
+      <p class="k-msg">Hallo <b id="k-me"></b>!<span class="badge" id="k-admin" hidden>Admin</span><br><small id="k-mail"></small></p>
       <p class="k-msg">Deine Favoriten, „Meine Aktien“ und Meldungs-Einstellungen werden mit deinem Konto gespeichert und sind auf jedem Gerät da.</p>
       <div class="btn-row"><button class="btn ghost" id="k-logout" type="button">Abmelden</button><button class="btn ghost" id="k-delete" type="button">Konto löschen</button></div>
       <div id="k-adminbox" hidden>

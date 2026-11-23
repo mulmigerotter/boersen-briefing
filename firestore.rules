@@ -1,10 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Admin: erkannt am SHA-256 der bestätigten E-Mail-Adresse (die Adresse selbst steht hier nicht)
     function isAdmin() {
       return request.auth != null
-        && request.auth.token.email == "niclasaustermann1607@gmail.com"
-        && request.auth.token.email_verified == true;
+        && request.auth.token.email_verified == true
+        && hashing.sha256(request.auth.token.email.lower()).toHexString().lower()
+           == "38d8fd845c8945f4493ba284fccd02990f83ccf67e463e2f22483a0c01e52daf";
     }
     match /users/{uid} {
       allow read: if (request.auth != null && request.auth.uid == uid) || isAdmin();
