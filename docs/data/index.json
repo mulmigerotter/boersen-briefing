@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-20T22:20:44Z",
+ "updated": "2026-11-23T09:40:26Z",
  "days": [
+  {
+   "date": "2026-11-23",
+   "kind": "tag",
+   "headline": "DAX steigt um 0,7 % – Infineon vorn, Bayer hinten",
+   "dax": 0.69
+  },
   {
    "date": "2026-11-20",
    "kind": "tag",
