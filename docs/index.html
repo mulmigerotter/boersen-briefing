@@ -12,9 +12,6 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Börse">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
   /* Layout: eine schmale Lesespalte. Kurszeile oben, Analyse in der Mitte, Archiv am Ende. */
@@ -181,6 +178,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 6px; box-shadow: 0 10px 30px rgba(15,23,38,.15); }
 .tabs.menu[hidden] { display: none; }
 .tabs.menu a { border: 0; border-radius: 10px; padding: 11px 12px; font-size: 16px; text-align: left; }
+
+.legal h3 { margin: 16px 0 4px; font-size: 16px; }
+.legal p { margin: 0 0 8px; font-size: 14.5px; }
+.todo { background: #FFF3B0; color: #5A4500; padding: 0 4px; border-radius: 4px; }
+.site-foot { text-align: center; font-size: 13px; color: var(--muted); padding: 18px 0 4px; border-top: 1px solid var(--line); margin-top: 10px; }
+.site-foot a { color: var(--muted); }
+.cookie-bar { position: fixed; left: 10px; right: 10px; bottom: 10px; z-index: 60; max-width: 660px; margin: 0 auto; display: flex; gap: 10px; align-items: center;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.18); font-size: 13.5px; }
+.cookie-bar[hidden] { display: none; }
+.cookie-bar p { margin: 0; flex: 1; }
 
 /* Status */
 .status {
@@ -669,6 +676,43 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     </form>
   </section>
 
+
+  <section class="view legal" id="v-ds" hidden aria-labelledby="ds-title">
+    <div class="sec-head"><h2 id="ds-title">Datenschutzerklärung</h2></div>
+    <p class="chat-note">Stand: 23. November 2026</p>
+    <h3>1. Wer ist verantwortlich?</h3>
+    <p><span class="todo">[Vor- und Nachname]</span><br><span class="todo">[Straße Hausnummer, PLZ Ort]</span><br>E-Mail: Mulmigerotter@web.de</p>
+    <h3>2. Kurz gesagt</h3>
+    <p>Diese Seite hat keine Werbung, keine Analyse-Werkzeuge und kein Tracking. Es werden keine Cookies zu Werbe- oder Statistikzwecken gesetzt. Gespeichert wird nur, was die Seite zum Funktionieren braucht oder was du selbst anlegst.</p>
+    <h3>3. Hosting (GitHub Pages)</h3>
+    <p>Die Seite liegt bei GitHub Pages (GitHub Inc., USA). Beim Aufruf verarbeitet GitHub technisch nötige Daten wie IP-Adresse, Zeitpunkt und aufgerufene Datei, um die Seite auszuliefern und vor Angriffen zu schützen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer sicheren, erreichbaren Seite). GitHub ist nach dem EU-US Data Privacy Framework zertifiziert.</p>
+    <h3>4. Lokale Speicherung auf deinem Gerät</h3>
+    <p>Die Seite speichert im Speicher deines Browsers (Local Storage), was du selbst einstellst: Favoriten, „Meine Aktien“, Meldungs-Einstellungen, Hell/Dunkel und ob du diesen Hinweis gesehen hast. Wenn du angemeldet bist, speichert Firebase außerdem deinen Anmeldestatus. Diese Daten bleiben auf deinem Gerät und dienen nur dazu, dir die gewünschten Funktionen zu bieten. Das ist ohne Einwilligung erlaubt (§ 25 Abs. 2 Nr. 2 TDDDG). Du kannst sie jederzeit über die Browser-Einstellungen löschen.</p>
+    <h3>5. Konto (Google Firebase)</h3>
+    <p>Für Konten nutzen wir Firebase Authentication und Cloud Firestore von Google (Google Ireland Ltd. bzw. Google LLC, USA). Gespeichert werden: E-Mail-Adresse, dein gewählter Name, dein Passwort (nur verschlüsselt bei Google), Zeitpunkt der Registrierung und der letzten Anmeldung, deine Einstellungen auf der Seite und Nachrichten, die du über „Fehler &amp; Wünsche“ schickst. Die Bestätigungs-E-Mails verschickt Firebase. Die Datenbank liegt in Frankfurt; Anmeldedaten verarbeitet Google auch in den USA. Google ist nach dem EU-US Data Privacy Framework zertifiziert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Bereitstellung des Kontos, das du anlegst). Beim Laden der Seite werden dafür Programmteile von Google (gstatic.com) geladen; dabei sieht Google deine IP-Adresse.</p>
+    <p>Die Daten bleiben gespeichert, bis du dein Konto löschst (☰ → Konto → „Konto löschen“). Dann werden sie entfernt.</p>
+    <h3>6. Kurse und Nachrichten</h3>
+    <p>Kurse, Kennzahlen und Schlagzeilen holt ein Programm auf dem Server (über GitHub) von Yahoo Finance und Google News. Dabei werden keine Daten von dir übertragen. Links zu Nachrichten öffnen fremde Seiten; dort gilt deren Datenschutz.</p>
+    <h3>7. Handy-Meldungen (ntfy, freiwillig)</h3>
+    <p>Wenn du dich in der App ntfy für die Meldungen einträgst, gelten die Bedingungen von ntfy.sh. Die Seite selbst gibt dafür keine Daten von dir weiter.</p>
+    <h3>8. Deine Rechte</h3>
+    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch (Art. 15–21 DSGVO). Schreib dafür an die oben genannte E-Mail. Du kannst dich außerdem bei einer Datenschutz-Aufsichtsbehörde beschweren.</p>
+  </section>
+
+  <section class="view legal" id="v-imp" hidden aria-labelledby="imp-title">
+    <div class="sec-head"><h2 id="imp-title">Impressum</h2></div>
+    <h3>Angaben gemäß § 5 DDG</h3>
+    <p><span class="todo">[Vor- und Nachname]</span><br><span class="todo">[Straße Hausnummer, PLZ Ort]</span></p>
+    <h3>Kontakt</h3>
+    <p>E-Mail: Mulmigerotter@web.de</p>
+    <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+    <p><span class="todo">[Vor- und Nachname, Anschrift wie oben]</span></p>
+    <h3>Keine Anlageberatung</h3>
+    <p>Alle Inhalte dienen nur der Information und Unterhaltung. Sie sind keine Anlageberatung und keine Aufforderung zum Kauf oder Verkauf von Wertpapieren. Kurse und Daten werden automatisch geladen und können fehlen, verspätet oder falsch sein. Jede Anlage ist auf eigenes Risiko.</p>
+    <h3>Haftung für Links</h3>
+    <p>Für Inhalte verlinkter fremder Seiten sind deren Betreiber verantwortlich. Bei Bekanntwerden von Rechtsverstößen werden solche Links entfernt.</p>
+  </section>
+
   <section class="view" id="v-set" hidden aria-labelledby="set-title">
     <div class="sec-head"><h2 id="set-title">⚙️ Einstellungen</h2></div>
     <h3>Aussehen</h3>
@@ -679,6 +723,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     </div>
     <h3>Meldungen</h3>
     <p><a class="btn ghost" href="#meldungen">🔔 Meldungen einstellen</a></p>
+    <h3>Rechtliches</h3>
+    <p><a class="btn ghost" href="#datenschutz">Datenschutz &amp; Cookies</a> <a class="btn ghost" href="#impressum">Impressum</a></p>
   </section>
 
   <section class="view" id="v-konto" hidden aria-labelledby="k-title">
@@ -698,6 +744,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <form class="k-form" id="k-reg" hidden>
         <p class="k-msg">Gib deine E-Mail ein. Du bekommst vom Mulmigerotter eine E-Mail mit einem Bestätigungs-Link. Danach gibst du deinen Namen an und legst dein Passwort fest.</p>
         <label for="k-r-mail">E-Mail</label><input id="k-r-mail" type="email" autocomplete="email" required>
+        <p class="chat-note">Mit der Registrierung werden deine Daten wie in der <a href="#datenschutz">Datenschutzerklärung</a> beschrieben verarbeitet.</p>
         <button class="btn" type="submit">Bestätigungs-Link schicken</button>
       </form>
       <form class="k-form" id="k-reset" hidden>
@@ -923,8 +970,13 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 
   <p class="fineprint">Keine Anlageberatung. Ein Programm erstellt diese Seite automatisch aus Kurs- und Analystendaten von Yahoo Finance; die Daten können fehlen, verspätet oder fehlerhaft sein. Der „Rechner“ ist eine einfache Punkteformel und die Simulation zeigt nur mögliche Spannen – beides ist keine Empfehlung. Kurse können stark schwanken, prüfe jede Entscheidung selbst.</p>
   </div>
+  <footer class="site-foot"><a href="#impressum">Impressum</a> · <a href="#datenschutz">Datenschutz</a> · <a href="#datenschutz">Cookies</a></footer>
   </div>
 </main>
+<div class="cookie-bar" id="cookie-bar" hidden role="region" aria-label="Hinweis zur Speicherung">
+  <p>🍪 Diese Seite nutzt <b>keine</b> Werbe- oder Tracking-Cookies. Gespeichert wird nur, was für deine Einstellungen und die Anmeldung nötig ist. <a href="#datenschutz">Mehr erfahren</a></p>
+  <button class="btn" id="cookie-ok" type="button">Verstanden</button>
+</div>
 
 <script>
 (function () {
@@ -1571,6 +1623,10 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   applyTheme(ls.get("bb-theme", "light"));
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => applyTheme(document.documentElement.dataset.theme));
   document.querySelectorAll('input[name="theme"]').forEach((r) => r.addEventListener("change", () => { if (r.checked) { ls.set("bb-theme", r.value); applyTheme(r.value); } }));
+
+  // ---------- Hinweis zur Speicherung (nur Info, keine Einwilligung nötig) ----------
+  if (!ls.get("bb-hinweis", false)) $("cookie-bar").hidden = false;
+  $("cookie-ok").addEventListener("click", () => { ls.set("bb-hinweis", true); $("cookie-bar").hidden = true; });
 
   // ---------- Menü (drei Striche oben rechts) ----------
   function setMenu(open) { $("menu").hidden = !open; $("menu-btn").setAttribute("aria-expanded", String(open)); $("menu-btn").setAttribute("aria-label", open ? "Menü schließen" : "Menü öffnen"); }
@@ -2389,12 +2445,12 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   window.addEventListener("focus", tickTimer);
 
   // ---------- Bereiche umschalten ----------
-  const VIEWS = { home: "v-home", brief: "v-brief", stocks: "v-stocks", calc: "v-calc", konto: "v-konto", set: "v-set", fb: "v-fb", ak: "v-ak" };
-  const TITLES = { home: "Börsen-Briefing mit dem Mulmigerotter", brief: "Briefing · Börsen-Briefing", stocks: "Alle Aktien · Börsen-Briefing", calc: "Rechner · Börsen-Briefing", konto: "Konto · Börsen-Briefing", set: "Einstellungen · Börsen-Briefing", fb: "Fehler & Wünsche · Börsen-Briefing", ak: "Gesperrter Bereich · Börsen-Briefing" };
+  const VIEWS = { home: "v-home", brief: "v-brief", stocks: "v-stocks", calc: "v-calc", konto: "v-konto", set: "v-set", fb: "v-fb", ds: "v-ds", imp: "v-imp", ak: "v-ak" };
+  const TITLES = { home: "Börsen-Briefing mit dem Mulmigerotter", brief: "Briefing · Börsen-Briefing", stocks: "Alle Aktien · Börsen-Briefing", calc: "Rechner · Börsen-Briefing", konto: "Konto · Börsen-Briefing", set: "Einstellungen · Börsen-Briefing", fb: "Fehler & Wünsche · Börsen-Briefing", ds: "Datenschutz · Börsen-Briefing", imp: "Impressum · Börsen-Briefing", ak: "Gesperrter Bereich · Börsen-Briefing" };
   function currentView() {
     const h = location.hash;
     return h === "#gesperrt" || h === "#aktionaer" ? "ak" : h === "#aktien" ? "stocks" : h === "#rechner" ? "calc"
-      : h === "#konto" ? "konto" : h === "#einstellungen" ? "set" : h === "#feedback" ? "fb" : h === "#briefing" || h.startsWith("#tag-") ? "brief" : "home";
+      : h === "#konto" ? "konto" : h === "#einstellungen" ? "set" : h === "#feedback" ? "fb" : h === "#datenschutz" ? "ds" : h === "#impressum" ? "imp" : h === "#briefing" || h.startsWith("#tag-") ? "brief" : "home";
   }
   const isAk = () => currentView() === "ak";
   function setView(v) {
