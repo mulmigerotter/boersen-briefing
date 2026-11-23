@@ -103,6 +103,23 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 }
 .brand span { color: var(--accent); }
 .tagline { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+.mast-btns { display: flex; gap: 6px; align-items: center; }
+.bell-n { background: #c0392b; color: #fff; border-radius: 9px; font-size: 11px; padding: 0 6px; margin-left: 4px; font-weight: 700; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.alert-panel { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 10px 0; }
+.al-row { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; font-size: 15px; }
+.al-row input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
+.al-cats { border: 0; padding: 0; margin: 4px 0; }
+.al-cats legend { font-size: 13px; opacity: .7; padding: 0; }
+.al-cats[disabled] { opacity: .45; }
+.al-hint { font-size: 12.5px; opacity: .7; margin: 4px 0; }
+.al-list { margin-top: 8px; border-top: 1px solid var(--line); }
+.al-item { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+.al-item small { display: block; opacity: .6; font-size: 12px; }
+.al-item.new { border-left: 3px solid #c0392b; padding-left: 8px; }
+.al-push { margin-top: 8px; font-size: 14px; }
+.al-push summary { cursor: pointer; }
+.al-push code { background: rgba(127,127,127,.15); padding: 1px 5px; border-radius: 4px; word-break: break-all; }
 .masthead .btn { font-size: 13px; padding: 6px 12px; white-space: nowrap; }
 
 /* Status */
@@ -493,7 +510,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <h1 class="brand">Börsen<span>-</span>Briefing</h1>
       <p class="tagline">Jeden Handelstag automatisch neu, Mo–Fr gegen 22:30 Uhr</p>
     </div>
-    <button class="btn ghost" id="share" type="button">Link teilen</button>
+    <div class="mast-btns"><button class="btn ghost" id="bell" type="button" aria-expanded="false" aria-controls="alert-panel">🔔<span id="bell-n" class="bell-n" hidden></span><span class="sr-only"> Meldungen</span></button><button class="btn ghost" id="share" type="button">Link teilen</button></div>
   </header>
   <nav class="tabs" aria-label="Bereiche">
     <a href="./" id="tab-brief" data-view="brief" aria-current="page">Briefing</a>
@@ -508,6 +525,26 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <button class="btn ghost lock-btn" id="lock-now" type="button">Abmelden</button>
   </div>
   <p class="toast" id="toast" role="status" hidden></p>
+  <section class="alert-panel" id="alert-panel" hidden aria-label="Börsen-Meldungen">
+    <div class="sec-head"><h2>🔔 Meldungen</h2></div>
+    <label class="al-row al-main"><input type="checkbox" id="al-on"> <b>Meldungen einschalten</b></label>
+    <fieldset class="al-cats" id="al-cats">
+      <legend>Welche Ereignisse möchtest du?</legend>
+      <label class="al-row"><input type="checkbox" data-cat="index"> Indizes: DAX, Dow, S&amp;P, Nasdaq bewegen sich um 2 % oder mehr</label>
+      <label class="al-row"><input type="checkbox" data-cat="aktie"> Einzelne Aktien der Seite bewegen sich um 8 % oder mehr</label>
+      <label class="al-row"><input type="checkbox" data-cat="zinsen"> Zinsen &amp; Notenbanken (EZB, Fed, Zinsentscheide)</label>
+      <label class="al-row"><input type="checkbox" data-cat="crash"> Crash &amp; Krisen (Kurssturz, Ausverkauf, Handelsstopp)</label>
+      <label class="al-row"><input type="checkbox" data-cat="rekord"> Rekorde &amp; Zollstreit</label>
+    </fieldset>
+    <label class="al-row"><input type="checkbox" id="al-notify"> Mitteilung auf diesem Gerät zeigen, solange die Seite offen ist</label>
+    <p class="al-hint" id="al-notify-hint" hidden></p>
+    <div id="al-list" class="al-list"></div>
+    <details class="al-push"><summary>📱 Auch aufs Handy, wenn die Seite zu ist (kostenlos)</summary>
+      <p>Installiere die App <b>ntfy</b> (iPhone/Android) und abonniere dort die Themen, die du willst:</p>
+      <ul id="al-topics"></ul>
+      <p class="al-hint">Die Themen sind nicht geheim. Die Meldungen sind öffentlich, es gibt aber keine Kauf-Empfehlungen. Die Prüfung läuft alle 30 Minuten zu Handelszeiten, kann also leicht verzögert sein.</p>
+    </details>
+  </section>
 
   <section class="view ak" id="v-ak" hidden aria-labelledby="ak-title">
     <div class="sec-head"><h2 id="ak-title">Gesperrter Bereich</h2><button class="btn ghost" id="pin-lock" type="button" hidden>Bereich sperren</button></div>
@@ -1338,10 +1375,59 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* privat-Modus */ } },
   };
   let FAVS = new Set(ls.get(FKEY, []));
+
+  // ---------- Meldungen (Eilmeldungen) ----------
+  const AKEY = "bb-alerts", ACATS = ["index", "aktie", "zinsen", "crash", "rekord"];
+  const ATOPIC = "bb-5aad97eea640";
+  let ASET = Object.assign({ on: true, cats: { index: 1, aktie: 1, zinsen: 1, crash: 1, rekord: 1 }, notify: false, seen: "" }, ls.get(AKEY, {}));
+  let AITEMS = [], aKnown = null;
+  const aSave = () => ls.set(AKEY, ASET);
+  const aVisible = () => AITEMS.filter((x) => ASET.on && ASET.cats[x.cat || x.kind]);
+  function aFmt(ts) { const d = new Date(ts); return d.toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }); }
+  function aRender() {
+    const vis = aVisible(), panelOpen = !$("alert-panel").hidden;
+    const unseen = vis.filter((x) => x.ts > ASET.seen).length;
+    const n = $("bell-n"); n.hidden = !unseen || panelOpen; n.textContent = unseen > 9 ? "9+" : unseen;
+    $("al-on").checked = !!ASET.on;
+    $("al-cats").disabled = !ASET.on;
+    $("al-cats").querySelectorAll("input[data-cat]").forEach((i) => { i.checked = !!ASET.cats[i.dataset.cat]; });
+    $("al-notify").checked = !!ASET.notify;
+    $("al-list").innerHTML = !ASET.on ? '<p class="al-hint">Meldungen sind ausgeschaltet.</p>'
+      : vis.length ? vis.map((x) => '<div class="al-item' + (x.ts > ASET.seen ? " new" : "") + '">' + (x.url ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener noreferrer">' + esc(x.title) + "</a>" : esc(x.title)) + "<small>" + esc(aFmt(x.ts)) + "</small></div>").join("")
+      : '<p class="al-hint">Zurzeit nichts Wichtiges. Alles ruhig.</p>';
+    $("al-topics").innerHTML = ACATS.map((c) => "<li><code>" + ATOPIC + "-" + c + "</code> (" + ({ index: "Indizes", aktie: "Aktien", zinsen: "Zinsen", crash: "Crash", rekord: "Rekorde" })[c] + ")</li>").join("");
+  }
+  async function loadAlerts() {
+    const j = await getJSON("data/alerts.json?t=" + Date.now(), null);
+    if (!j || !Array.isArray(j.items)) return;
+    AITEMS = j.items;
+    if (aKnown === null) aKnown = new Set(AITEMS.map((x) => x.id));
+    else if (ASET.on && ASET.notify && "Notification" in window && Notification.permission === "granted") {
+      aVisible().filter((x) => !aKnown.has(x.id)).slice(0, 3).forEach((x) => { try { new Notification("Börsen-Meldung", { body: x.title, icon: "icon-192.png", tag: x.id }); } catch (e) { /* mobil: nicht erlaubt */ } });
+    }
+    AITEMS.forEach((x) => aKnown.add(x.id));
+    aRender();
+  }
+  $("bell").addEventListener("click", () => {
+    const p = $("alert-panel"); p.hidden = !p.hidden; $("bell").setAttribute("aria-expanded", String(!p.hidden));
+    if (!p.hidden) { aRender(); ASET.seen = (AITEMS[0] && AITEMS[0].ts) || ASET.seen; aSave(); $("bell-n").hidden = true; p.scrollIntoView({ block: "nearest" }); }
+  });
+  $("al-on").addEventListener("change", (e) => { ASET.on = e.target.checked; aSave(); aRender(); });
+  $("al-cats").addEventListener("change", (e) => { const c = e.target.dataset.cat; if (c) { ASET.cats[c] = e.target.checked ? 1 : 0; aSave(); aRender(); } });
+  $("al-notify").addEventListener("change", async (e) => {
+    const hint = $("al-notify-hint"); hint.hidden = true;
+    if (!e.target.checked) { ASET.notify = false; aSave(); return; }
+    if (!("Notification" in window)) { e.target.checked = false; hint.textContent = "Dieser Browser kann keine Mitteilungen zeigen. Nutze die ntfy-App (unten)."; hint.hidden = false; return; }
+    let perm = Notification.permission;
+    if (perm === "default") { try { perm = await Notification.requestPermission(); } catch (er) { perm = "denied"; } }
+    ASET.notify = perm === "granted"; e.target.checked = ASET.notify; aSave();
+    if (!ASET.notify) { hint.textContent = "Mitteilungen sind im Browser blockiert. Erlaube sie in den Website-Einstellungen oder nutze die ntfy-App (unten)."; hint.hidden = false; }
+  });
   async function loadLive() {
     const j = await getJSON("data/live.json", null);
     if (j && j.q) LIVE = j;
     updateLiveSpans();
+    loadAlerts();
     if (!liveTimer) liveTimer = setInterval(() => { if (siteOpen && !document.hidden) loadLive(); }, 5 * 60 * 1000);
   }
   function curOf(sym) {

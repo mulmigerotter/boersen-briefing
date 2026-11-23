@@ -32,6 +32,10 @@ jobs:
       - name: Aktuelle Kurse laden
         run: python scripts/live.py
 
+      - name: Eilmeldungen prüfen
+        run: python scripts/alerts.py
+        continue-on-error: true
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
