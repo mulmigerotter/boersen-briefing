@@ -140,11 +140,27 @@ if (!CFG) {
     showBox("k-in");
     $("k-me").textContent = me.displayName || me.email.split("@")[0];
     $("k-mail").textContent = me.email;
-    const admin = me.emailVerified && (await sha(me.email.toLowerCase())) === ADMIN_HASH;
+    const realAdmin = me.emailVerified && (await sha(me.email.toLowerCase())) === ADMIN_HASH;
+    const admin = realAdmin && !asUser();
+    $("k-asuser-box").hidden = !realAdmin; $("k-asuser").checked = asUser();
     $("k-admin").hidden = !admin; $("k-adminbox").hidden = !admin;
     if (admin) loadUsers();
   }
-  let MSG_ROWS = [], statsOk = false, isAdm = false, admDone;
+  let MSG_ROWS = [], statsOk = false, isAdm = false, admDone, realAdm = false, myData = {};
+  // Admin kann die Seite wie ein normaler Nutzer ansehen
+  const asUser = () => { try { return JSON.parse(localStorage.getItem("bb-asuser") || "false") === true; } catch (er) { return false; } };
+  function applyRole() {
+    isAdm = realAdm && !needPw && !asUser();
+    $("tab-stat").hidden = !isAdm;
+    access = !!me && !needPw && !myData.blocked && (isAdm || myData.heftAccess === true);
+    if (window.BB_onAuth) window.BB_onAuth(access);
+    if (location.hash === "#statistik" && !isAdm) location.hash = "";
+  }
+  $("k-asuser").addEventListener("change", (e) => {
+    try { localStorage.setItem("bb-asuser", JSON.stringify(e.target.checked)); } catch (er) { /* egal */ }
+    applyRole(); showIn();
+    say(e.target.checked ? "Du siehst die Seite jetzt wie ein normaler Nutzer." : "Du siehst wieder alles als Admin.", "ok");
+  });
   const admKnown = new Promise((r) => { admDone = r; });
   function renderOverview(rows) {
     const now = Date.now(), d = 86400000, sec = (t) => (t && t.seconds ? t.seconds * 1000 : 0);
@@ -297,7 +313,7 @@ if (!CFG) {
     me = u;
     authReady();
     fbView();
-    if (!u) { access = false; isAdm = false; $("tab-stat").hidden = true; admDone(); if (location.hash === "#statistik") location.hash = ""; if (window.BB_onAuth) window.BB_onAuth(false); }
+    if (!u) { access = false; isAdm = false; realAdm = false; myData = {}; $("tab-stat").hidden = true; admDone(); if (location.hash === "#statistik") location.hash = ""; if (window.BB_onAuth) window.BB_onAuth(false); }
     if (!u) { if ($("k-link").hidden || $("k-confirm").hidden) showBox("k-out"); return; }
     const ref = F.doc(db, "users", u.uid);
     let data = {};
@@ -314,11 +330,10 @@ if (!CFG) {
       needPw = true; showBox("k-link"); $("k-confirm").hidden = true; $("k-setpw").hidden = false;
       if (location.hash !== "#konto") location.hash = "#konto";
     } else showIn();
-    const admin = u.emailVerified && (await sha((u.email || "").toLowerCase())) === ADMIN_HASH;
-    isAdm = admin && !needPw; $("tab-stat").hidden = !isAdm; admDone();
-    if (location.hash === "#statistik") { if (isAdm) loadUsers(); else location.hash = ""; }
-    access = !needPw && !data.blocked && (admin || data.heftAccess === true);
-    if (window.BB_onAuth) window.BB_onAuth(access);
+    realAdm = u.emailVerified && (await sha((u.email || "").toLowerCase())) === ADMIN_HASH;
+    myData = data;
+    applyRole(); admDone();
+    if (location.hash === "#statistik" && isAdm) loadUsers();
     // Einstellungen: vom Konto übernehmen, sonst hochladen
     const remote = data.prefs || {};
     const changed = SYNC_KEYS.some((k) => remote[k] != null && remote[k] !== localStorage.getItem(k));
