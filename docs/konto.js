@@ -29,6 +29,7 @@ async function sha(t) {
 
 if (!CFG) {
   showBox("k-off");
+  $("fb-login").hidden = false;
   window.BB_hefteKey = async () => ({ reason: "off" });
   if (window.BB_onAuth) window.BB_onAuth(false);
 } else {
@@ -140,12 +141,31 @@ if (!CFG) {
     $("k-admin").hidden = !admin; $("k-adminbox").hidden = !admin;
     if (admin) loadUsers();
   }
+  let MSG_ROWS = [];
+  async function changeMsg(uid, ts, fn) {
+    const u = MSG_ROWS.find((r) => r.id === uid); if (!u) return;
+    const list = (Array.isArray(u.msgs) ? u.msgs : []).map((m) => ({ ...m }));
+    const next = fn(list, list.findIndex((m) => String(m.ts) === ts));
+    try { await F.updateDoc(F.doc(db, "users", uid), { msgs: next }); loadUsers(); } catch (er) { say(errText(er), "err"); }
+  }
   async function loadUsers() {
     try {
       const snap = await F.getDocs(F.collection(db, "users"));
       const rows = []; snap.forEach((d) => rows.push({ id: d.id, ...d.data() }));
       rows.sort((a, b) => ((b.lastLogin && b.lastLogin.seconds) || 0) - ((a.lastLogin && a.lastLogin.seconds) || 0));
       $("k-count").textContent = "(" + rows.length + ")";
+      // Nachrichten aus allen Konten sammeln
+      const msgs = [];
+      rows.forEach((u) => (Array.isArray(u.msgs) ? u.msgs : []).forEach((m, i) => msgs.push({ ...m, uid: u.id, i, from: u.name || u.email || "?", mail: u.email || "" })));
+      msgs.sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
+      const open = msgs.filter((m) => !m.done).length;
+      $("k-fbcount").textContent = msgs.length ? "(" + open + " offen)" : "";
+      const fmtIso = (t) => { const d = new Date(t); return isNaN(d) ? "" : d.toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) + " Uhr"; };
+      const hh = (t) => String(t || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+      $("k-msgs").innerHTML = msgs.length ? msgs.map((m) => '<div class="k-msgitem' + (m.done ? " done" : "") + '"><div><span class="fbt ' + (m.type === "wunsch" ? "wunsch" : "fehler") + '">' + (m.type === "wunsch" ? "💡 Wunsch" : "🐞 Fehler") + "</span> <b>" + hh(m.from) + "</b> <small>" + hh(m.mail) + " · " + fmtIso(m.ts) + "</small></div><p>" + hh(m.text) + "</p>" +
+        '<div class="k-acts"><button class="btn ghost" type="button" data-mdone="' + m.uid + '" data-mts="' + hh(m.ts) + '">' + (m.done ? "Wieder offen" : "✓ Erledigt") + '</button><button class="btn ghost" type="button" data-mdel="' + m.uid + '" data-mts="' + hh(m.ts) + '">Löschen</button></div></div>').join("")
+        : '<p class="k-msg">Noch keine Nachrichten.</p>';
+      MSG_ROWS = rows;
       const fmt = (t) => (t && t.seconds ? new Date(t.seconds * 1000).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) + " Uhr" : "–");
       const h = (t) => String(t || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
       $("k-users").innerHTML = rows.map((u) => '<div class="k-user"><div><b>' + h(u.name || "ohne Namen") + "</b> " + h(u.email || u.id) + (u.blocked ? " ⛔" : "") +
@@ -167,6 +187,27 @@ if (!CFG) {
     try { await F.updateDoc(F.doc(db, "users", b.dataset.access), { heftAccess: b.dataset.a !== "1" }); loadUsers(); }
     catch (er) { say(errText(er), "err"); b.disabled = false; }
   });
+  $("k-msgs").addEventListener("click", (e) => {
+    const d = e.target.closest("[data-mdone]"), x = e.target.closest("[data-mdel]");
+    if (d) changeMsg(d.dataset.mdone, d.dataset.mts, (l, i) => { if (i >= 0) l[i].done = !l[i].done; return l; });
+    if (x) changeMsg(x.dataset.mdel, x.dataset.mts, (l, i) => (i >= 0 ? l.filter((_, k) => k !== i) : l));
+  });
+  // Fehler & Wünsche schicken
+  let fbType = "fehler";
+  document.querySelectorAll("[data-fbt]").forEach((b) => b.addEventListener("click", () => {
+    fbType = b.dataset.fbt; document.querySelectorAll("[data-fbt]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  }));
+  const fbView = () => { $("fb-login").hidden = !!(me && !needPw); $("fb-form").hidden = !(me && !needPw); };
+  $("fb-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = $("fb-text").value.trim(), st = $("fb-status");
+    if (text.length < 3) { st.textContent = "Bitte schreib ein paar Worte mehr."; st.className = "k-msg err"; return; }
+    st.textContent = "Schicke …"; st.className = "k-msg";
+    try {
+      await F.updateDoc(F.doc(db, "users", me.uid), { msgs: F.arrayUnion({ type: fbType, text: text.slice(0, 1000), ts: new Date().toISOString() }) });
+      $("fb-text").value = ""; st.textContent = "✅ Danke! Deine Nachricht ist beim Admin angekommen."; st.className = "k-msg ok";
+    } catch (er) { st.textContent = errText(er); st.className = "k-msg err"; }
+  });
   $("k-logout").addEventListener("click", () => A.signOut(auth));
   $("k-delete").addEventListener("click", async () => {
     if (!confirm("Konto wirklich löschen? Das kann man nicht rückgängig machen.")) return;
@@ -177,6 +218,7 @@ if (!CFG) {
   A.onAuthStateChanged(auth, async (u) => {
     me = u;
     authReady();
+    fbView();
     if (!u) { access = false; if (window.BB_onAuth) window.BB_onAuth(false); }
     if (!u) { if ($("k-link").hidden || $("k-confirm").hidden) showBox("k-out"); return; }
     const ref = F.doc(db, "users", u.uid);
@@ -205,5 +247,5 @@ if (!CFG) {
     sessionStorage.setItem("bb-synced", u.uid);
     if (!Object.keys(remote).length) window.BB_sync();
   });
-  window.BB_konto = (v) => { if (v === "konto" && me && !needPw) showIn(); };
+  window.BB_konto = (v) => { if (v === "konto" && me && !needPw) showIn(); if (v === "fb") fbView(); };
 }

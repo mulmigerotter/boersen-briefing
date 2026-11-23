@@ -162,6 +162,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .k-user small { color: var(--muted); display: block; }
 .k-acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .k-acts .btn { font-size: 13px; padding: 5px 10px; }
+.k-msgitem { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 6px; font-size: 14.5px; }
+.k-msgitem.done { opacity: .55; }
+.k-msgitem p { margin: 0; white-space: pre-wrap; word-break: break-word; }
+.k-msgitem small { color: var(--muted); }
+.fbt { font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 6px; color: #fff; }
+.fbt.fehler { background: var(--down); } .fbt.wunsch { background: var(--accent); }
 .badge { font-size: 11px; font-weight: 700; background: #8A5A2B; color: #fff; border-radius: 6px; padding: 1px 6px; margin-left: 6px; }
 
 
@@ -559,6 +565,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <a href="#aktien" id="tab-stocks" data-view="stocks">📊 Alle Aktien</a>
     <a href="#rechner" id="tab-calc" data-view="calc">🧮 Rechner</a>
     <a href="#konto" id="tab-konto" data-view="konto">👤 Konto</a>
+    <a href="#feedback" id="tab-fb" data-view="fb">💬 Fehler &amp; Wünsche</a>
     <a href="#einstellungen" id="tab-set" data-view="set">⚙️ Einstellungen</a>
     <a href="#gesperrt" id="tab-ak" data-view="ak" hidden>🔒 Gesperrter Bereich</a>
   </nav>
@@ -643,6 +650,25 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     </nav>
   </section>
 
+  <section class="view" id="v-fb" hidden aria-labelledby="fb-title">
+    <div class="sec-head"><h2 id="fb-title">💬 Fehler &amp; Wünsche</h2></div>
+    <p>Hast du einen Fehler gefunden oder wünschst dir etwas für die Seite? Schreib es hier, die Nachricht geht direkt an den Admin.</p>
+    <div class="k-box" id="fb-login">
+      <p class="k-msg">Um eine Nachricht zu schicken, melde dich bitte an. So kann niemand die Seite mit Spam fluten.</p>
+      <a class="btn" href="#konto">Zum Konto</a>
+    </div>
+    <form class="k-form k-box" id="fb-form" hidden>
+      <div class="k-switch" role="radiogroup" aria-label="Art der Nachricht">
+        <button class="btn ghost" type="button" data-fbt="fehler" aria-pressed="true">🐞 Fehler</button>
+        <button class="btn ghost" type="button" data-fbt="wunsch" aria-pressed="false">💡 Wunsch</button>
+      </div>
+      <label for="fb-text">Deine Nachricht</label>
+      <textarea id="fb-text" rows="6" maxlength="1000" required placeholder="Was ist passiert, oder was wünschst du dir?" style="font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);resize:vertical"></textarea>
+      <button class="btn" type="submit">Nachricht schicken</button>
+      <p class="k-msg" id="fb-status" role="status"></p>
+    </form>
+  </section>
+
   <section class="view" id="v-set" hidden aria-labelledby="set-title">
     <div class="sec-head"><h2 id="set-title">⚙️ Einstellungen</h2></div>
     <h3>Aussehen</h3>
@@ -699,6 +725,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <a class="btn" id="k-hefte" href="#gesperrt" hidden>🔒 Gesperrter Bereich öffnen</a>
       <div class="btn-row"><button class="btn ghost" id="k-logout" type="button">Abmelden</button><button class="btn ghost" id="k-delete" type="button">Konto löschen</button></div>
       <div id="k-adminbox" hidden>
+        <h3>Admin: Fehler &amp; Wünsche <span id="k-fbcount"></span></h3>
+        <div class="k-users" id="k-msgs"></div>
         <h3>Admin: Registrierte Nutzer <span id="k-count"></span></h3>
         <div class="k-users" id="k-users"></div>
       </div>
@@ -2361,12 +2389,12 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   window.addEventListener("focus", tickTimer);
 
   // ---------- Bereiche umschalten ----------
-  const VIEWS = { home: "v-home", brief: "v-brief", stocks: "v-stocks", calc: "v-calc", konto: "v-konto", set: "v-set", ak: "v-ak" };
-  const TITLES = { home: "Börsen-Briefing mit dem Mulmigerotter", brief: "Briefing · Börsen-Briefing", stocks: "Alle Aktien · Börsen-Briefing", calc: "Rechner · Börsen-Briefing", konto: "Konto · Börsen-Briefing", set: "Einstellungen · Börsen-Briefing", ak: "Gesperrter Bereich · Börsen-Briefing" };
+  const VIEWS = { home: "v-home", brief: "v-brief", stocks: "v-stocks", calc: "v-calc", konto: "v-konto", set: "v-set", fb: "v-fb", ak: "v-ak" };
+  const TITLES = { home: "Börsen-Briefing mit dem Mulmigerotter", brief: "Briefing · Börsen-Briefing", stocks: "Alle Aktien · Börsen-Briefing", calc: "Rechner · Börsen-Briefing", konto: "Konto · Börsen-Briefing", set: "Einstellungen · Börsen-Briefing", fb: "Fehler & Wünsche · Börsen-Briefing", ak: "Gesperrter Bereich · Börsen-Briefing" };
   function currentView() {
     const h = location.hash;
     return h === "#gesperrt" || h === "#aktionaer" ? "ak" : h === "#aktien" ? "stocks" : h === "#rechner" ? "calc"
-      : h === "#konto" ? "konto" : h === "#einstellungen" ? "set" : h === "#briefing" || h.startsWith("#tag-") ? "brief" : "home";
+      : h === "#konto" ? "konto" : h === "#einstellungen" ? "set" : h === "#feedback" ? "fb" : h === "#briefing" || h.startsWith("#tag-") ? "brief" : "home";
   }
   const isAk = () => currentView() === "ak";
   function setView(v) {
