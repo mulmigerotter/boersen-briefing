@@ -29,15 +29,35 @@ async function sha(t) {
 
 if (!CFG) {
   showBox("k-off");
+  window.BB_hefteKey = async () => ({ reason: "off" });
+  if (window.BB_onAuth) window.BB_onAuth(false);
 } else {
   const V = "10.12.2", base = "https://www.gstatic.com/firebasejs/" + V + "/";
-  const [{ initializeApp }, A, F] = await Promise.all([import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore.js")]);
+  let mods;
+  try { mods = await Promise.all([import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore.js")]); }
+  catch (er) {
+    window.BB_hefteKey = async () => ({ reason: "off" });
+    if (window.BB_onAuth) window.BB_onAuth(false);
+    showBox("k-off"); $("k-off").querySelector("p").textContent = "Konten sind gerade nicht erreichbar. Prüfe deine Verbindung und lade die Seite neu.";
+    throw er;
+  }
+  const [{ initializeApp }, A, F] = mods;
   const app = initializeApp(CFG);
   const auth = A.getAuth(app);
   auth.languageCode = "de";
   const db = F.getFirestore(app);
   const home = location.origin + location.pathname;
-  let me = null, needPw = false;
+  let me = null, needPw = false, access = false, authReady;
+  const ready = new Promise((r) => { authReady = r; });
+  // Schlüssel für den gesperrten Bereich: Firebase gibt ihn nur dem Admin und freigeschalteten Konten
+  window.BB_hefteKey = async () => {
+    await ready;
+    if (!me || needPw) return { reason: "login" };
+    try {
+      const d = await F.getDoc(F.doc(db, "config", "hefte"));
+      return d.exists() && d.data().key ? { key: d.data().key } : { reason: "noaccess" };
+    } catch (er) { return { reason: er && er.code === "permission-denied" ? "noaccess" : "error" }; }
+  };
 
   // Umschalten Anmelden / Registrieren / Passwort vergessen
   document.querySelectorAll("[data-k]").forEach((b) => b.addEventListener("click", () => {
@@ -96,6 +116,7 @@ if (!CFG) {
       await A.updatePassword(auth.currentUser, p1);
       await A.updateProfile(auth.currentUser, { displayName: name });
       await F.setDoc(F.doc(db, "users", auth.currentUser.uid), { hasPassword: true, name }, { merge: true });
+      if (window.BB_onAuth) window.BB_onAuth(true);
       needPw = false; $("k-p1").value = $("k-p2").value = "";
       say("✅ Fertig! Dein Konto ist eingerichtet. Ab jetzt meldest du dich mit E-Mail und Passwort an.", "ok");
       showIn();
@@ -123,13 +144,15 @@ if (!CFG) {
     try {
       const snap = await F.getDocs(F.collection(db, "users"));
       const rows = []; snap.forEach((d) => rows.push({ id: d.id, ...d.data() }));
-      rows.sort((a, b) => ((b.created && b.created.seconds) || 0) - ((a.created && a.created.seconds) || 0));
+      rows.sort((a, b) => ((b.lastLogin && b.lastLogin.seconds) || 0) - ((a.lastLogin && a.lastLogin.seconds) || 0));
       $("k-count").textContent = "(" + rows.length + ")";
-      const fmt = (t) => (t && t.seconds ? new Date(t.seconds * 1000).toLocaleDateString("de-DE") : "–");
+      const fmt = (t) => (t && t.seconds ? new Date(t.seconds * 1000).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) + " Uhr" : "–");
       const h = (t) => String(t || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
       $("k-users").innerHTML = rows.map((u) => '<div class="k-user"><div><b>' + h(u.name || "ohne Namen") + "</b> " + h(u.email || u.id) + (u.blocked ? " ⛔" : "") +
-        "<small>dabei seit " + fmt(u.created) + " · zuletzt " + fmt(u.lastLogin) + (u.hasPassword ? "" : " · noch kein Passwort") + "</small></div>" +
-        (u.id === me.uid ? "" : '<button class="btn ghost" type="button" data-block="' + u.id + '" data-b="' + (u.blocked ? 1 : 0) + '">' + (u.blocked ? "Entsperren" : "Sperren") + "</button>") + "</div>").join("");
+        "<small>zuletzt eingeloggt " + fmt(u.lastLogin) + " · dabei seit " + fmt(u.created) + (u.hasPassword ? "" : " · noch kein Passwort") +
+        (u.id === me.uid ? " · Admin" : u.heftAccess ? " · 🔓 hat Zugang zum gesperrten Bereich" : " · 🔒 kein Zugang") + "</small></div>" +
+        (u.id === me.uid ? "" : '<div class="k-acts"><button class="btn' + (u.heftAccess ? " ghost" : "") + '" type="button" data-access="' + u.id + '" data-a="' + (u.heftAccess ? 1 : 0) + '">' + (u.heftAccess ? "Zugang entziehen" : "Zugang geben") + "</button>" +
+          '<button class="btn ghost" type="button" data-block="' + u.id + '" data-b="' + (u.blocked ? 1 : 0) + '">' + (u.blocked ? "Entsperren" : "Sperren") + "</button></div>") + "</div>").join("");
     } catch (er) { $("k-users").textContent = "Nutzerliste lässt sich nicht laden (" + (er.code || "Fehler") + ")."; }
   }
   $("k-users").addEventListener("click", async (e) => {
@@ -138,6 +161,12 @@ if (!CFG) {
     catch (er) { say(errText(er), "err"); }
   });
 
+  $("k-users").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-access]"); if (!b) return;
+    b.disabled = true;
+    try { await F.updateDoc(F.doc(db, "users", b.dataset.access), { heftAccess: b.dataset.a !== "1" }); loadUsers(); }
+    catch (er) { say(errText(er), "err"); b.disabled = false; }
+  });
   $("k-logout").addEventListener("click", () => A.signOut(auth));
   $("k-delete").addEventListener("click", async () => {
     if (!confirm("Konto wirklich löschen? Das kann man nicht rückgängig machen.")) return;
@@ -147,6 +176,8 @@ if (!CFG) {
 
   A.onAuthStateChanged(auth, async (u) => {
     me = u;
+    authReady();
+    if (!u) { access = false; if (window.BB_onAuth) window.BB_onAuth(false); }
     if (!u) { if ($("k-link").hidden || $("k-confirm").hidden) showBox("k-out"); return; }
     const ref = F.doc(db, "users", u.uid);
     let data = {};
@@ -159,6 +190,8 @@ if (!CFG) {
       needPw = true; showBox("k-link"); $("k-confirm").hidden = true; $("k-setpw").hidden = false;
       if (location.hash !== "#konto") location.hash = "#konto";
     } else showIn();
+    access = !needPw && !data.blocked;
+    if (window.BB_onAuth) window.BB_onAuth(access);
     // Einstellungen: vom Konto übernehmen, sonst hochladen
     const remote = data.prefs || {};
     const changed = SYNC_KEYS.some((k) => remote[k] != null && remote[k] !== localStorage.getItem(k));

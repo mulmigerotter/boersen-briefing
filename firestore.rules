@@ -8,12 +8,21 @@ service cloud.firestore {
         && hashing.sha256(request.auth.token.email.lower()).toHexString().lower()
            == "38d8fd845c8945f4493ba284fccd02990f83ccf67e463e2f22483a0c01e52daf";
     }
+    function me() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    // Schlüssel für den gesperrten Bereich: nur Admin und vom Admin freigeschaltete Konten
+    match /config/hefte {
+      allow read: if isAdmin() || (request.auth != null
+        && me().get("heftAccess", false) == true && me().get("blocked", false) != true);
+      allow write: if false;
+    }
     match /users/{uid} {
       allow read: if (request.auth != null && request.auth.uid == uid) || isAdmin();
       allow create: if request.auth != null && request.auth.uid == uid
-        && !request.resource.data.keys().hasAny(["blocked", "role"]);
+        && !request.resource.data.keys().hasAny(["blocked", "role", "heftAccess"]);
       allow update: if isAdmin() || (request.auth != null && request.auth.uid == uid
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(["blocked", "role"]));
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(["blocked", "role", "heftAccess"]));
       allow delete: if (request.auth != null && request.auth.uid == uid) || isAdmin();
     }
   }

@@ -140,6 +140,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .k-users { display: grid; gap: 6px; }
 .k-user { display: flex; justify-content: space-between; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); padding: 6px 0; font-size: 14px; }
 .k-user small { color: var(--muted); display: block; }
+.k-acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.k-acts .btn { font-size: 13px; padding: 5px 10px; }
 .badge { font-size: 11px; font-weight: 700; background: #8A5A2B; color: #fff; border-radius: 6px; padding: 1px 6px; margin-left: 6px; }
 
 
@@ -674,14 +676,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   <section class="view ak" id="v-ak" hidden aria-labelledby="ak-title">
     <div class="sec-head"><h2 id="ak-title">Gesperrter Bereich</h2><button class="btn ghost" id="pin-lock" type="button" hidden>Bereich sperren</button></div>
     <div class="ak-lock" id="pin-box">
-      <p>Dieser Bereich ist zusätzlich mit einem PIN geschützt. Nach der Eingabe kannst du 15 Minuten lang raus und wieder rein, ohne den PIN neu einzugeben.</p>
-      <form class="ak-form" id="pin-form" autocomplete="off">
-        <label for="pin-input">PIN</label>
-        <input class="ak-pin" id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" enterkeyhint="go" aria-describedby="pin-err">
-        <button class="btn ghost eye" type="button" data-eye="pin-input" aria-label="PIN anzeigen" aria-pressed="false">Anzeigen</button>
-        <button class="btn" id="pin-go" type="submit">Öffnen</button>
-      </form>
-      <p class="ak-err" id="pin-err" role="alert" hidden></p>
+      <p id="pin-msg">Einen Moment …</p>
+      <a class="btn" id="pin-konto" href="#konto" hidden>Zum Konto</a>
     </div>
     <div class="ak-open" id="ak-open" hidden>
     <div class="filters"><input class="search" id="ak-search" type="search" placeholder="Aktie in allen Heften suchen, z. B. SAP" aria-label="Aktie in allen Heften suchen" autocomplete="off"></div>
@@ -2242,65 +2238,56 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     return JSON.parse(new TextDecoder().decode(plain));
   }
   let timerId = null, briefingStarted = false, siteOpen = false;
-  const HEFT_PREFIX = "+100%Aktien|";
-  function showPinBox(msg) {
+  // Gesperrter Bereich: nur mit Konto, das der Admin freigeschaltet hat. Der Schlüssel kommt aus Firebase.
+  const AK_MSG = {
+    wait: "Einen Moment, ich prüfe dein Konto …",
+    off: "Konten sind gerade nicht erreichbar. Versuch es gleich noch einmal.",
+    login: "🔒 Dieser Bereich ist nur für freigeschaltete Konten. Bitte melde dich an.",
+    noaccess: "🔒 Dein Konto ist noch nicht für diesen Bereich freigeschaltet. Der Admin kann ihn für dich aktivieren.",
+    error: "Der Bereich lässt sich gerade nicht laden. Prüfe deine Verbindung.",
+  };
+  function showPinBox(reason) {
     $("ak-open").hidden = true; $("pin-box").hidden = false; $("pin-lock").hidden = true;
-    $("pin-err").hidden = !msg; $("pin-err").textContent = msg || "";
-    hideAllEyes(); const inp = $("pin-input"); inp.value = "";
-    if (currentView() === "ak") setTimeout(() => inp.focus(), 50);
+    $("pin-msg").textContent = AK_MSG[reason] || reason || "";
+    $("pin-konto").hidden = !(reason === "login" || reason === "noaccess");
   }
-  function lockPin(msg) {
-    pinStore.del();
+  function lockPin(reason) {
     AK.data = null; if ($("ak-search")) $("ak-search").value = ""; AK.cache = {}; AK.busy++;
     $("ak-content").innerHTML = "";
-    showPinBox(msg);
+    showPinBox(reason || "login");
   }
-  const pinExpired = () => { const p = pinStore.get(); return !p || !(p.until > Date.now()); };
-  function tickTimer() {
-    if (!siteOpen) return;
-    if (AK.data && pinExpired() && currentView() !== "ak") lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
-    const p = pinStore.get(), pleft = p && p.until ? p.until - Date.now() : 0;
-    $("timer").textContent = AK.data ? (pleft > 0 ? "🔓 Gesperrter Bereich ohne PIN noch " + Math.ceil(pleft / 60000) + " Min." : "🔓 Beim Verlassen PIN neu") : "";
-    $("pin-lock").hidden = !AK.data;
+  function tickTimer() { /* keine Zeitsperre mehr: Zugang hängt am Konto */ }
+  function onLeave() {}
+  function onReturn() { if (siteOpen) loadLive(); }
+  let akOpening = false;
+  async function openHefte() {
+    if (AK.data) { $("pin-box").hidden = true; $("ak-open").hidden = false; akCompute(); return; }
+    if (!window.BB_hefteKey) { showPinBox("wait"); return; }
+    if (akOpening) return;
+    akOpening = true; showPinBox("wait");
+    try {
+      const r = await window.BB_hefteKey();
+      if (!r || !r.key) { showPinBox((r && r.reason) || "error"); return; }
+      AK.data = await decryptFile("data/hefte.enc.json", r.key);
+      AK.cache = {};
+      if (currentView() === "ak") { $("pin-box").hidden = true; $("ak-open").hidden = false; akCompute(); }
+    } catch (e) { showPinBox("error"); }
+    finally { akOpening = false; }
   }
-  function onLeave() {
-    if (!siteOpen) return;
-    if (AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
-  }
-  function onReturn() {
-    if (!siteOpen) return;
-    if (AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
-    tickTimer();
-    loadLive();
-  }
+  // Wird von konto.js aufgerufen, wenn sich die Anmeldung ändert
+  window.BB_onAuth = (hasAccess) => {
+    if (!hasAccess && AK.data) lockPin("login");
+    if (siteOpen && currentView() === "ak") openHefte();
+  };
   async function openSite() {
     const [quotes, divs, stocks, isins, wkns] = await Promise.all([getJSON("data/quotes.json", { q: {} }), getJSON("data/dividends.json", {}), getJSON("data/stocks.json", {}), getJSON("data/isin.json", {}), getJSON("data/wkn.json", {})]);
     ISIN = isins || {}; WKNS = wkns || {};
     AK.quotes = quotes && quotes.q ? quotes : { q: {} }; DIVS = divs || {}; STOCKS = stocks || {};
     siteOpen = true;
     await loadLive();
-    tickTimer();
-    if (!timerId) timerId = setInterval(tickTimer, 10000);
     if (!briefingStarted) { briefingStarted = true; startBriefing(); }
     initCalc();
     route();
-  }
-  async function unlockPin(pin, restore) {
-    const go = $("pin-go");
-    go.disabled = true; go.textContent = "Prüfe …";
-    try {
-      AK.data = await decryptFile("data/hefte.enc.json", HEFT_PREFIX + pin);
-      AK.cache = {};
-      pinStore.set(restore || { p: pin, until: Date.now() + OPEN_MS });
-      $("pin-box").hidden = true; $("ak-open").hidden = false;
-      tickTimer();
-      if (currentView() === "ak") akCompute();
-    } catch (e) {
-      const m = e && e.message;
-      lockPin(restore ? "" : m === "code" ? "Falscher PIN. Bitte noch einmal." : "Der Bereich lässt sich gerade nicht laden. Prüfe deine Verbindung.");
-    } finally {
-      go.disabled = false; go.textContent = "Öffnen";
-    }
   }
   document.querySelectorAll("[data-eye]").forEach((b) => {
     b.addEventListener("click", () => {
@@ -2312,19 +2299,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     });
   });
   function hideAllEyes(){ document.querySelectorAll("[data-eye]").forEach((b) => { $(b.dataset.eye).type = "password"; b.textContent = "Anzeigen"; b.setAttribute("aria-pressed","false"); }); }
-  $("pin-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    if ($("pin-go").disabled) return;
-    const pin = $("pin-input").value.trim();
-    if (!/^\d{4}$/.test(pin)) { showPinBox("Bitte die 4 Ziffern eingeben."); return; }
-    unlockPin(pin, null);
-  });
-  $("pin-input").addEventListener("input", (e) => {
-    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
-    if (v !== e.target.value) e.target.value = v;
-    if (v.length === 4 && !$("pin-go").disabled) unlockPin(v, null);
-  });
-  $("pin-lock").addEventListener("click", () => { lockPin(""); tickTimer(); });
+  $("pin-lock").addEventListener("click", () => { lockPin("login"); });
   document.addEventListener("visibilitychange", () => { if (document.hidden) onLeave(); else onReturn(); });
   window.addEventListener("pagehide", onLeave);
   window.addEventListener("pageshow", (e) => { if (e.persisted) onReturn(); });
@@ -2349,17 +2324,10 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     if (!siteOpen) return;
     let v = currentView();
     if (location.hash === "#meldungen") { history.replaceState(null, "", location.pathname); v = "home"; openBell(); }
-    // Gesperrten Bereich verlassen, nachdem die 15 Minuten um sind -> PIN beim nächsten Mal nötig
-    if (prevView === "ak" && v !== "ak" && AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
     prevView = v;
     setView(v);
     if (v === "ak") {
-      if (AK.data && pinExpired()) lockPin("Die 15 Minuten sind um – bitte den PIN neu eingeben.");
-      if (AK.data) { $("pin-box").hidden = true; $("ak-open").hidden = false; akCompute(); }
-      else {
-        const p = pinStore.get();
-        if (p && p.p && p.until > Date.now()) unlockPin(p.p, p); else { pinStore.del(); showPinBox($("pin-err").hidden ? "" : $("pin-err").textContent); }
-      }
+      openHefte();
     } else if (v === "stocks") renderStocks();
     else if (v === "calc") renderCalc();
     else if (v === "brief") show();
