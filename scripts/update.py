@@ -577,7 +577,7 @@ def summarize_dividends(rows, today):
     return out
 
 
-def refresh_isins(symbols, cache, max_new=150):
+def refresh_isins(symbols, cache, max_new=60):
     """ISIN je Kürzel (einmal holen, dann aus dem Cache) -> isin.json; die WKN steckt in deutschen ISINs."""
     import yfinance as yf
 
@@ -591,7 +591,7 @@ def refresh_isins(symbols, cache, max_new=150):
                 ok += 1
         except Exception as e:
             log(f"  ISIN {sym}: {e}")
-        time.sleep(0.3)
+        time.sleep(1.5)
     log(f"ISIN: {ok} von {len(todo)} neu")
     return cache
 
