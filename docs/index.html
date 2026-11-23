@@ -192,6 +192,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.18); font-size: 13.5px; }
 .cookie-bar[hidden] { display: none; }
 .cookie-bar p { margin: 0; flex: 1; }
+.cookie-bar { flex-wrap: wrap; }
+.cookie-btns { display: flex; gap: 8px; margin-left: auto; }
 
 /* Status */
 .status {
@@ -741,7 +743,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <p>Für Konten nutzen wir Firebase Authentication und Cloud Firestore von Google (Google Ireland Ltd. bzw. Google LLC, USA). Gespeichert werden: E-Mail-Adresse, dein gewählter Name, dein Passwort (nur verschlüsselt bei Google), Zeitpunkt der Registrierung und der letzten Anmeldung, deine Einstellungen auf der Seite und Nachrichten, die du über „Fehler &amp; Wünsche“ schickst. Die Bestätigungs-E-Mails verschickt Firebase. Die Datenbank liegt in Frankfurt; Anmeldedaten verarbeitet Google auch in den USA. Google ist nach dem EU-US Data Privacy Framework zertifiziert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Bereitstellung des Kontos, das du anlegst). Beim Laden der Seite werden dafür Programmteile von Google (gstatic.com) geladen; dabei sieht Google deine IP-Adresse.</p>
     <p>Die Daten bleiben gespeichert, bis du dein Konto löschst (☰ → Konto → „Konto löschen“). Dann werden sie entfernt.</p>
     <h3>5a. Nutzungsstatistik (nur mit deiner Zustimmung)</h3>
-    <p>Wenn du angemeldet bist und unter „Konto“ zustimmst, wird in deinem Konto gezählt, wie lange du die Seite nutzt, welche Bereiche du öffnest und welche Aktien du dir ansiehst. Das sieht nur der Admin. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG). Du kannst sie jederzeit im Konto widerrufen; Besucher ohne Konto werden nicht gezählt.</p>
+    <p>Wenn du angemeldet bist und unter „Konto“ zustimmst, wird in deinem Konto gezählt, wie lange du die Seite nutzt, welche Bereiche du öffnest und welche Aktien du dir ansiehst. Das sieht nur der Admin. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG). Du gibst sie mit „Akzeptieren“ im Cookie-Hinweis oder mit dem Haken im Konto und kannst sie jederzeit unter Einstellungen → Cookie-Einstellungen oder im Konto widerrufen. Besucher ohne Konto werden nicht gezählt.</p>
     <h3>6. Kurse und Nachrichten</h3>
     <p>Kurse, Kennzahlen und Schlagzeilen holt ein Programm auf dem Server (über GitHub) von Yahoo Finance und Google News. Dabei werden keine Daten von dir übertragen. Links zu Nachrichten öffnen fremde Seiten; dort gilt deren Datenschutz.</p>
     <h3>7. Handy-Meldungen (ntfy, freiwillig)</h3>
@@ -775,7 +777,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <h3>Meldungen</h3>
     <p><a class="btn ghost" href="#meldungen">🔔 Meldungen einstellen</a></p>
     <h3>Rechtliches</h3>
-    <p><a class="btn ghost" href="#datenschutz">Datenschutz &amp; Cookies</a> <a class="btn ghost" href="#impressum">Impressum</a></p>
+    <p><button class="btn ghost" id="cookie-open" type="button">🍪 Cookie-Einstellungen</button> <a class="btn ghost" href="#datenschutz">Datenschutz &amp; Cookies</a> <a class="btn ghost" href="#impressum">Impressum</a></p>
   </section>
 
   <section class="view" id="v-konto" hidden aria-labelledby="k-title">
@@ -1031,8 +1033,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   </div>
 </main>
 <div class="cookie-bar" id="cookie-bar" hidden role="region" aria-label="Hinweis zur Speicherung">
-  <p>🍪 Diese Seite nutzt <b>keine</b> Werbe- oder Tracking-Cookies. Gespeichert wird nur, was für deine Einstellungen und die Anmeldung nötig ist. <a href="#datenschutz">Mehr erfahren</a></p>
-  <button class="btn" id="cookie-ok" type="button">Verstanden</button>
+  <p>🍪 Wir speichern, was für deine Einstellungen und die Anmeldung nötig ist. Mit <b>„Akzeptieren“</b> erlaubst du zusätzlich eine Nutzungsstatistik (nur wenn du angemeldet bist, sieht nur der Admin). Keine Werbung, kein Tracking durch Dritte. <a href="#datenschutz">Mehr erfahren</a></p>
+  <div class="cookie-btns"><button class="btn ghost" id="cookie-no" type="button">Nur notwendige</button><button class="btn" id="cookie-ok" type="button">Akzeptieren</button></div>
 </div>
 
 <script>
@@ -1704,8 +1706,15 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   window.BB_stockName = (sym) => (STOCKS[sym] && STOCKS[sym].name) || sym;
 
   // ---------- Hinweis zur Speicherung (nur Info, keine Einwilligung nötig) ----------
-  if (!ls.get("bb-hinweis", false)) $("cookie-bar").hidden = false;
-  $("cookie-ok").addEventListener("click", () => { ls.set("bb-hinweis", true); $("cookie-bar").hidden = true; });
+  // Einwilligung: "all" = Nutzungsstatistik erlaubt, "necessary" = nur Notwendiges
+  if (!ls.get("bb-consent", "")) $("cookie-bar").hidden = false;
+  function setConsent(all) {
+    ls.set("bb-consent", all ? "all" : "necessary"); $("cookie-bar").hidden = true;
+    if (window.BB_setConsent) window.BB_setConsent(all);
+  }
+  $("cookie-ok").addEventListener("click", () => setConsent(true));
+  $("cookie-no").addEventListener("click", () => setConsent(false));
+  $("cookie-open").addEventListener("click", () => { $("cookie-bar").hidden = false; });
 
   // ---------- Menü (drei Striche oben rechts) ----------
   function setMenu(open) { $("menu").hidden = !open; $("menu-btn").setAttribute("aria-expanded", String(open)); $("menu-btn").setAttribute("aria-label", open ? "Menü schließen" : "Menü öffnen"); }

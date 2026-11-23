@@ -158,8 +158,14 @@ if (!CFG) {
     U.sec = 0; U.secBy = {}; U.views = {}; U.stocks = {};
     F.updateDoc(F.doc(db, "users", me.uid), upd).catch(() => {});
   };
+  const saveStats = async (on) => {
+    statsOk = on; $("k-stats-ok").checked = on;
+    if (me && !needPw) { try { await F.updateDoc(F.doc(db, "users", me.uid), { statsOk: on }); } catch (er) { /* später erneut */ } }
+  };
+  window.BB_setConsent = (all) => saveStats(all);
   $("k-stats-ok").addEventListener("change", async (e) => {
     statsOk = e.target.checked;
+    try { localStorage.setItem("bb-consent", JSON.stringify(statsOk ? "all" : "necessary")); } catch (er) { /* egal */ }
     try { await F.updateDoc(F.doc(db, "users", me.uid), { statsOk }); say(statsOk ? "Danke! Deine Nutzung wird ab jetzt gezählt." : "Deine Nutzung wird nicht mehr gezählt.", "ok"); }
     catch (er) { say(errText(er), "err"); }
   });
@@ -274,6 +280,9 @@ if (!CFG) {
     if (data.blocked) { await A.signOut(auth); say("Dein Konto wurde gesperrt.", "err"); return; }
     const first = !data.created;
     statsOk = data.statsOk === true; $("k-stats-ok").checked = statsOk;
+    let consent = ""; try { consent = JSON.parse(localStorage.getItem("bb-consent") || '""'); } catch (er) { /* egal */ }
+    if (consent === "all" && !statsOk && !needPw) saveStats(true);
+    if (consent === "necessary" && statsOk) saveStats(false);
     F.setDoc(ref, first ? { email: u.email, created: F.serverTimestamp(), lastLogin: F.serverTimestamp(), hasPassword: !needPw }
       : { email: u.email, lastLogin: F.serverTimestamp() }, { merge: true }).catch(() => {});
     if (needPw || data.hasPassword === false) {
