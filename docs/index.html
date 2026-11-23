@@ -161,6 +161,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .k-acts .btn { font-size: 13px; padding: 5px 10px; }
 .k-msgitem { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 6px; font-size: 14.5px; }
 .k-msgitem.done { opacity: .55; }
+.use-tab { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 4px 0 12px; }
+.use-tab th, .use-tab td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.use-tab td.n { text-align: right; font-family: var(--font-num); white-space: nowrap; }
+.use-bar { height: 6px; border-radius: 3px; background: var(--accent); opacity: .7; margin-top: 3px; }
 .k-msgitem p { margin: 0; white-space: pre-wrap; word-break: break-word; }
 .k-msgitem small { color: var(--muted); }
 .fbt { font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 6px; color: #fff; }
@@ -728,7 +732,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <h3>1. Wer ist verantwortlich?</h3>
     <p><span class="todo">[Vor- und Nachname]</span><br><span class="todo">[Straße Hausnummer, PLZ Ort]</span><br>E-Mail: Mulmigerotter@web.de</p>
     <h3>2. Kurz gesagt</h3>
-    <p>Diese Seite hat keine Werbung, keine Analyse-Werkzeuge und kein Tracking. Es werden keine Cookies zu Werbe- oder Statistikzwecken gesetzt. Gespeichert wird nur, was die Seite zum Funktionieren braucht oder was du selbst anlegst.</p>
+    <p>Diese Seite hat keine Werbung, keine fremden Analyse-Werkzeuge und kein Tracking von Besuchern ohne Konto. Es werden keine Cookies zu Werbe- oder Statistikzwecken gesetzt. Gespeichert wird nur, was die Seite zum Funktionieren braucht oder was du selbst anlegst.</p>
     <h3>3. Hosting (GitHub Pages)</h3>
     <p>Die Seite liegt bei GitHub Pages (GitHub Inc., USA). Beim Aufruf verarbeitet GitHub technisch nötige Daten wie IP-Adresse, Zeitpunkt und aufgerufene Datei, um die Seite auszuliefern und vor Angriffen zu schützen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer sicheren, erreichbaren Seite). GitHub ist nach dem EU-US Data Privacy Framework zertifiziert.</p>
     <h3>4. Lokale Speicherung auf deinem Gerät</h3>
@@ -736,6 +740,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <h3>5. Konto (Google Firebase)</h3>
     <p>Für Konten nutzen wir Firebase Authentication und Cloud Firestore von Google (Google Ireland Ltd. bzw. Google LLC, USA). Gespeichert werden: E-Mail-Adresse, dein gewählter Name, dein Passwort (nur verschlüsselt bei Google), Zeitpunkt der Registrierung und der letzten Anmeldung, deine Einstellungen auf der Seite und Nachrichten, die du über „Fehler &amp; Wünsche“ schickst. Die Bestätigungs-E-Mails verschickt Firebase. Die Datenbank liegt in Frankfurt; Anmeldedaten verarbeitet Google auch in den USA. Google ist nach dem EU-US Data Privacy Framework zertifiziert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Bereitstellung des Kontos, das du anlegst). Beim Laden der Seite werden dafür Programmteile von Google (gstatic.com) geladen; dabei sieht Google deine IP-Adresse.</p>
     <p>Die Daten bleiben gespeichert, bis du dein Konto löschst (☰ → Konto → „Konto löschen“). Dann werden sie entfernt.</p>
+    <h3>5a. Nutzungsstatistik (nur mit deiner Zustimmung)</h3>
+    <p>Wenn du angemeldet bist und unter „Konto“ zustimmst, wird in deinem Konto gezählt, wie lange du die Seite nutzt, welche Bereiche du öffnest und welche Aktien du dir ansiehst. Das sieht nur der Admin. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG). Du kannst sie jederzeit im Konto widerrufen; Besucher ohne Konto werden nicht gezählt.</p>
     <h3>6. Kurse und Nachrichten</h3>
     <p>Kurse, Kennzahlen und Schlagzeilen holt ein Programm auf dem Server (über GitHub) von Yahoo Finance und Google News. Dabei werden keine Daten von dir übertragen. Links zu Nachrichten öffnen fremde Seiten; dort gilt deren Datenschutz.</p>
     <h3>7. Handy-Meldungen (ntfy, freiwillig)</h3>
@@ -814,9 +820,15 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <div class="k-box" id="k-in" hidden>
       <p class="k-msg">Hallo <b id="k-me"></b>!<span class="badge" id="k-admin" hidden>Admin</span><br><small id="k-mail"></small></p>
       <p class="k-msg">Deine Favoriten, „Meine Aktien“ und Meldungs-Einstellungen werden mit deinem Konto gespeichert und sind auf jedem Gerät da.</p>
+      <div class="k-box" id="k-stats">
+        <p class="k-msg"><b>📊 Nutzungsstatistik</b><br>Darf gezählt werden, wie lange du auf der Seite bist, welche Bereiche du nutzt und welche Aktien du dir ansiehst? Das sieht nur der Admin, sonst niemand.</p>
+        <label class="al-row"><input type="checkbox" id="k-stats-ok"> Ja, Nutzung zählen</label>
+      </div>
       <a class="btn" id="k-hefte" href="#gesperrt" hidden>🔒 Gesperrter Bereich öffnen</a>
       <div class="btn-row"><button class="btn ghost" id="k-logout" type="button">Abmelden</button><button class="btn ghost" id="k-delete" type="button">Konto löschen</button></div>
       <div id="k-adminbox" hidden>
+        <h3>Admin: 📊 Nutzung</h3>
+        <div id="k-usage"></div>
         <h3>Admin: Fehler &amp; Wünsche <span id="k-fbcount"></span></h3>
         <div class="k-users" id="k-msgs"></div>
         <h3>Admin: Registrierte Nutzer <span id="k-count"></span></h3>
@@ -1669,6 +1681,28 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => applyTheme(document.documentElement.dataset.theme));
   document.querySelectorAll('input[name="theme"]').forEach((r) => r.addEventListener("change", () => { if (r.checked) { ls.set("bb-theme", r.value); applyTheme(r.value); } }));
 
+  // ---------- Nutzungsstatistik (nur angemeldete Nutzer, die zugestimmt haben; sieht nur der Admin) ----------
+  const USE = { sec: 0, secBy: {}, views: {}, stocks: {}, newSession: true };
+  let useCur = null, useT = Date.now();
+  function useTick() {
+    const now = Date.now(), d = Math.min(60, (now - useT) / 1000); useT = now;
+    if (document.hidden || !useCur || d <= 0) return;
+    USE.sec += d; USE.secBy[useCur] = (USE.secBy[useCur] || 0) + d;
+  }
+  function useView(v) { useTick(); useCur = v; USE.views[v] = (USE.views[v] || 0) + 1; }
+  function trackStock(sym) { if (sym) USE.stocks[sym] = (USE.stocks[sym] || 0) + 1; }
+  const useFlush = () => { useTick(); if (window.BB_usage) window.BB_usage(USE); };
+  setInterval(useFlush, 30000);
+  document.addEventListener("visibilitychange", () => { if (document.hidden) useFlush(); else useT = Date.now(); });
+  window.addEventListener("pagehide", useFlush);
+  document.addEventListener("toggle", (e) => {
+    const d = e.target;
+    if (!(d instanceof HTMLDetailsElement) || !d.open || !d.classList.contains("akp")) return;
+    const pick = d.closest("[data-pick]");
+    trackStock(d.dataset.sym || (pick ? pick.dataset.pick.split("|")[1] : ""));
+  }, true);
+  window.BB_stockName = (sym) => (STOCKS[sym] && STOCKS[sym].name) || sym;
+
   // ---------- Hinweis zur Speicherung (nur Info, keine Einwilligung nötig) ----------
   if (!ls.get("bb-hinweis", false)) $("cookie-bar").hidden = false;
   $("cookie-ok").addEventListener("click", () => { ls.set("bb-hinweis", true); $("cookie-bar").hidden = true; });
@@ -1754,6 +1788,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     return best;
   }
   function stockAnswer(sym, day) {
+    trackStock(sym);
     const info = STOCKS[sym] || {}, q = LIVE.q && LIVE.q[sym], aq = AK.quotes.q[sym];
     const name = info.name || sym;
     let t = "<b>" + esc(name) + "</b>" + (info.sector ? " (" + esc(info.sector) + ")" : "") + ": ";
@@ -2518,6 +2553,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     else if (v === "home") renderHome();
     else if (v === "set") document.querySelectorAll('input[name="theme"]').forEach((r) => { r.checked = r.value === document.documentElement.dataset.theme; });
     if (window.BB_konto) window.BB_konto(v);
+    useView(v);
   }
   $("tab-home").addEventListener("click", (e) => {
     e.preventDefault();

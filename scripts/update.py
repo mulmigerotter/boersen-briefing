@@ -449,12 +449,13 @@ def watch_symbols():
 def currency_of(sym):
     suffix = sym.rsplit(".", 1)[-1].upper() if "." in sym else ""
     return {"DE": "EUR", "F": "EUR", "AS": "EUR", "PA": "EUR", "MI": "EUR", "VI": "EUR",
-            "MC": "EUR", "HK": "HKD", "AX": "AUD", "SW": "CHF", "ST": "SEK", "CO": "DKK", "TO": "CAD", "BD": "HUF"}.get(suffix, "USD")
+            "MC": "EUR", "HE": "EUR", "HK": "HKD", "AX": "AUD", "SW": "CHF", "ST": "SEK", "CO": "DKK", "TO": "CAD", "BD": "HUF"}.get(suffix, "USD")
 
 
 def all_stock_symbols():
     """Alle Aktien der Seite: DAX, US-Werte und die Merkliste aus dem gesperrten Bereich."""
-    return list(dict.fromkeys([x["symbol"] for x in CONFIG["dax"] + CONFIG["us"]] + watch_symbols()))
+    return list(dict.fromkeys([x["symbol"] for x in CONFIG["dax"] + CONFIG["us"]] + watch_symbols()
+                              + [x["symbol"] for x in CONFIG.get("extra", [])]))
 
 
 def write_long(today):
@@ -664,6 +665,7 @@ def main():
     else:
         symbols = [i["symbol"] for i in CONFIG["indices"]] + [s["symbol"] for s in CONFIG["dax"] + CONFIG["us"]]
         symbols += [s for s in watch_fetch_list() if s not in symbols]
+        symbols += [x["symbol"] for x in CONFIG.get("extra", []) if x["symbol"] not in symbols]
         symbols += [s for s in sorted({FX[c] for c in map(currency_of, all_stock_symbols()) if c in FX}) if s not in symbols]
         hist = fetch_history(symbols)
         meta_file = DATA / "meta.json"
@@ -684,7 +686,7 @@ def main():
             log(f"Langfristige Kurse fehlgeschlagen: {e}")
         try:
             div = json.loads(DIV_FILE.read_text(encoding="utf-8")) if DIV_FILE.exists() else {}
-            div_syms = watch_symbols() + [x["symbol"] for x in CONFIG["dax"] + CONFIG["us"]]
+            div_syms = watch_symbols() + [x["symbol"] for x in CONFIG["dax"] + CONFIG["us"] + CONFIG.get("extra", [])]
             div = refresh_dividends(list(dict.fromkeys(div_syms)), today, div)
             DIV_FILE.write_text(json.dumps(div, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         except Exception as e:

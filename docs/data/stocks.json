@@ -514,5 +514,405 @@
  "OMV.VI": {
   "name": "OMV",
   "sector": "Energie"
+ },
+ "AIXA.DE": {
+  "name": "Aixtron",
+  "sector": "Technologie"
+ },
+ "BOSS.DE": {
+  "name": "Hugo Boss",
+  "sector": "Zyklischer Konsum"
+ },
+ "KGX.DE": {
+  "name": "Kion",
+  "sector": "Industrie"
+ },
+ "LEG.DE": {
+  "name": "LEG Immobilien",
+  "sector": "Immobilien"
+ },
+ "LHA.DE": {
+  "name": "Lufthansa",
+  "sector": "Industrie"
+ },
+ "NDA.DE": {
+  "name": "Aurubis",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "FRA.DE": {
+  "name": "Fraport",
+  "sector": "Industrie"
+ },
+ "EVK.DE": {
+  "name": "Evonik",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "HLAG.DE": {
+  "name": "Hapag-Lloyd",
+  "sector": "Industrie"
+ },
+ "JUN3.DE": {
+  "name": "Jungheinrich",
+  "sector": "Industrie"
+ },
+ "KRN.DE": {
+  "name": "Krones",
+  "sector": "Industrie"
+ },
+ "LXS.DE": {
+  "name": "Lanxess",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "NEM.DE": {
+  "name": "Nemetschek",
+  "sector": "Technologie"
+ },
+ "PAH3.DE": {
+  "name": "Porsche SE",
+  "sector": "Zyklischer Konsum"
+ },
+ "P911.DE": {
+  "name": "Porsche AG",
+  "sector": "Zyklischer Konsum"
+ },
+ "RAA.DE": {
+  "name": "Rational",
+  "sector": "Industrie"
+ },
+ "RRTL.DE": {
+  "name": "RTL Group",
+  "sector": "Kommunikation & Medien"
+ },
+ "TMV.DE": {
+  "name": "TeamViewer",
+  "sector": "Technologie"
+ },
+ "TEG.DE": {
+  "name": "TAG Immobilien",
+  "sector": "Immobilien"
+ },
+ "WCH.DE": {
+  "name": "Wacker Chemie",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "EVD.DE": {
+  "name": "CTS Eventim",
+  "sector": "Kommunikation & Medien"
+ },
+ "FPE3.DE": {
+  "name": "Fuchs",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "GXI.DE": {
+  "name": "Gerresheimer",
+  "sector": "Gesundheit"
+ },
+ "HAG.DE": {
+  "name": "Hensoldt",
+  "sector": "Industrie"
+ },
+ "R3NK.DE": {
+  "name": "Renk",
+  "sector": "Industrie"
+ },
+ "SDF.DE": {
+  "name": "K+S",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "BC8.DE": {
+  "name": "Bechtle",
+  "sector": "Technologie"
+ },
+ "AFX.DE": {
+  "name": "Carl Zeiss Meditec",
+  "sector": "Gesundheit"
+ },
+ "SIX2.DE": {
+  "name": "Sixt",
+  "sector": "Industrie"
+ },
+ "UTDI.DE": {
+  "name": "United Internet",
+  "sector": "Kommunikation & Medien"
+ },
+ "8TRA.DE": {
+  "name": "Traton",
+  "sector": "Industrie"
+ },
+ "DHER.DE": {
+  "name": "Delivery Hero",
+  "sector": "Zyklischer Konsum"
+ },
+ "ASML.AS": {
+  "name": "ASML",
+  "sector": "Technologie"
+ },
+ "ADYEN.AS": {
+  "name": "Adyen",
+  "sector": "Finanzen"
+ },
+ "PRX.AS": {
+  "name": "Prosus",
+  "sector": "Kommunikation & Medien"
+ },
+ "INGA.AS": {
+  "name": "ING",
+  "sector": "Finanzen"
+ },
+ "MC.PA": {
+  "name": "LVMH",
+  "sector": "Zyklischer Konsum"
+ },
+ "OR.PA": {
+  "name": "L'Oréal",
+  "sector": "Basiskonsum"
+ },
+ "RMS.PA": {
+  "name": "Hermès",
+  "sector": "Zyklischer Konsum"
+ },
+ "SAN.PA": {
+  "name": "Sanofi",
+  "sector": "Gesundheit"
+ },
+ "SU.PA": {
+  "name": "Schneider Electric",
+  "sector": "Industrie"
+ },
+ "BN.PA": {
+  "name": "Danone",
+  "sector": "Basiskonsum"
+ },
+ "CS.PA": {
+  "name": "AXA",
+  "sector": "Finanzen"
+ },
+ "KER.PA": {
+  "name": "Kering",
+  "sector": "Zyklischer Konsum"
+ },
+ "RI.PA": {
+  "name": "Pernod Ricard",
+  "sector": "Basiskonsum"
+ },
+ "SAF.PA": {
+  "name": "Safran",
+  "sector": "Industrie"
+ },
+ "DG.PA": {
+  "name": "Vinci",
+  "sector": "Industrie"
+ },
+ "CAP.PA": {
+  "name": "Capgemini",
+  "sector": "Technologie"
+ },
+ "STLAM.MI": {
+  "name": "Stellantis",
+  "sector": "Zyklischer Konsum"
+ },
+ "RACE.MI": {
+  "name": "Ferrari",
+  "sector": "Zyklischer Konsum"
+ },
+ "ENI.MI": {
+  "name": "Eni",
+  "sector": "Energie"
+ },
+ "ISP.MI": {
+  "name": "Intesa Sanpaolo",
+  "sector": "Finanzen"
+ },
+ "UCG.MI": {
+  "name": "UniCredit",
+  "sector": "Finanzen"
+ },
+ "ENEL.MI": {
+  "name": "Enel",
+  "sector": "Versorger"
+ },
+ "SAN.MC": {
+  "name": "Banco Santander",
+  "sector": "Finanzen"
+ },
+ "IBE.MC": {
+  "name": "Iberdrola",
+  "sector": "Versorger"
+ },
+ "BBVA.MC": {
+  "name": "BBVA",
+  "sector": "Finanzen"
+ },
+ "NOVN.SW": {
+  "name": "Novartis",
+  "sector": "Gesundheit"
+ },
+ "ROG.SW": {
+  "name": "Roche",
+  "sector": "Gesundheit"
+ },
+ "UBSG.SW": {
+  "name": "UBS",
+  "sector": "Finanzen"
+ },
+ "ZURN.SW": {
+  "name": "Zurich Insurance",
+  "sector": "Finanzen"
+ },
+ "ABBN.SW": {
+  "name": "ABB",
+  "sector": "Industrie"
+ },
+ "NOVO-B.CO": {
+  "name": "Novo Nordisk",
+  "sector": "Gesundheit"
+ },
+ "ERIC-B.ST": {
+  "name": "Ericsson",
+  "sector": "Technologie"
+ },
+ "VOLV-B.ST": {
+  "name": "Volvo",
+  "sector": "Industrie"
+ },
+ "ATCO-A.ST": {
+  "name": "Atlas Copco",
+  "sector": "Industrie"
+ },
+ "NOKIA.HE": {
+  "name": "Nokia",
+  "sector": "Technologie"
+ },
+ "JPM": {
+  "name": "JPMorgan Chase",
+  "sector": "Finanzen"
+ },
+ "V": {
+  "name": "Visa",
+  "sector": "Finanzen"
+ },
+ "MA": {
+  "name": "Mastercard",
+  "sector": "Finanzen"
+ },
+ "BAC": {
+  "name": "Bank of America",
+  "sector": "Finanzen"
+ },
+ "WMT": {
+  "name": "Walmart",
+  "sector": "Basiskonsum"
+ },
+ "COST": {
+  "name": "Costco",
+  "sector": "Basiskonsum"
+ },
+ "PG": {
+  "name": "Procter & Gamble",
+  "sector": "Basiskonsum"
+ },
+ "JNJ": {
+  "name": "Johnson & Johnson",
+  "sector": "Gesundheit"
+ },
+ "UNH": {
+  "name": "UnitedHealth",
+  "sector": "Gesundheit"
+ },
+ "XOM": {
+  "name": "Exxon Mobil",
+  "sector": "Energie"
+ },
+ "CVX": {
+  "name": "Chevron",
+  "sector": "Energie"
+ },
+ "PEP": {
+  "name": "PepsiCo",
+  "sector": "Basiskonsum"
+ },
+ "DIS": {
+  "name": "Walt Disney",
+  "sector": "Kommunikation & Medien"
+ },
+ "ORCL": {
+  "name": "Oracle",
+  "sector": "Technologie"
+ },
+ "CRM": {
+  "name": "Salesforce",
+  "sector": "Technologie"
+ },
+ "AMD": {
+  "name": "AMD",
+  "sector": "Technologie"
+ },
+ "QCOM": {
+  "name": "Qualcomm",
+  "sector": "Technologie"
+ },
+ "IBM": {
+  "name": "IBM",
+  "sector": "Technologie"
+ },
+ "CSCO": {
+  "name": "Cisco",
+  "sector": "Technologie"
+ },
+ "PLTR": {
+  "name": "Palantir",
+  "sector": "Technologie"
+ },
+ "PYPL": {
+  "name": "PayPal",
+  "sector": "Finanzen"
+ },
+ "SHOP": {
+  "name": "Shopify",
+  "sector": "Technologie"
+ },
+ "BA": {
+  "name": "Boeing",
+  "sector": "Industrie"
+ },
+ "CAT": {
+  "name": "Caterpillar",
+  "sector": "Industrie"
+ },
+ "GS": {
+  "name": "Goldman Sachs",
+  "sector": "Finanzen"
+ },
+ "NKE": {
+  "name": "Nike",
+  "sector": "Zyklischer Konsum"
+ },
+ "SBUX": {
+  "name": "Starbucks",
+  "sector": "Zyklischer Konsum"
+ },
+ "PFE": {
+  "name": "Pfizer",
+  "sector": "Gesundheit"
+ },
+ "ABBV": {
+  "name": "AbbVie",
+  "sector": "Gesundheit"
+ },
+ "MRK": {
+  "name": "Merck & Co.",
+  "sector": "Gesundheit"
+ },
+ "COIN": {
+  "name": "Coinbase",
+  "sector": "Finanzen"
+ },
+ "ABNB": {
+  "name": "Airbnb",
+  "sector": "Zyklischer Konsum"
+ },
+ "HD": {
+  "name": "Home Depot",
+  "sector": "Zyklischer Konsum"
  }
 }

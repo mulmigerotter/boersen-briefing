@@ -141,7 +141,53 @@ if (!CFG) {
     $("k-admin").hidden = !admin; $("k-adminbox").hidden = !admin;
     if (admin) loadUsers();
   }
-  let MSG_ROWS = [];
+  let MSG_ROWS = [], statsOk = false;
+  const enc = (s) => String(s).replace(/\./g, "_"), dec = (s) => String(s).replace(/_/g, ".");
+  // Nutzung hochzählen (nur mit Zustimmung)
+  window.BB_usage = (U) => {
+    if (!me || needPw || !statsOk) return;
+    const upd = {}; let any = false;
+    const add = (path, n) => { n = Math.round(n); if (n > 0) { upd[path] = F.increment(n); any = true; } };
+    add("usage.sec", U.sec);
+    Object.keys(U.secBy).forEach((k) => add("usage.secBy." + k, U.secBy[k]));
+    Object.keys(U.views).forEach((k) => add("usage.views." + k, U.views[k]));
+    Object.keys(U.stocks).forEach((k) => add("usage.stocks." + enc(k), U.stocks[k]));
+    if (U.newSession && any) { upd["usage.sessions"] = F.increment(1); U.newSession = false; }
+    if (!any) return;
+    upd["usage.last"] = F.serverTimestamp();
+    U.sec = 0; U.secBy = {}; U.views = {}; U.stocks = {};
+    F.updateDoc(F.doc(db, "users", me.uid), upd).catch(() => {});
+  };
+  $("k-stats-ok").addEventListener("change", async (e) => {
+    statsOk = e.target.checked;
+    try { await F.updateDoc(F.doc(db, "users", me.uid), { statsOk }); say(statsOk ? "Danke! Deine Nutzung wird ab jetzt gezählt." : "Deine Nutzung wird nicht mehr gezählt.", "ok"); }
+    catch (er) { say(errText(er), "err"); }
+  });
+  const AREA = { home: "Start", brief: "Briefing", stocks: "Alle Aktien", calc: "Rechner", konto: "Konto", set: "Einstellungen", fb: "Fehler & Wünsche", ak: "Gesperrter Bereich", ds: "Datenschutz", imp: "Impressum" };
+  const dur = (s) => { s = Math.round(s || 0); const h = Math.floor(s / 3600), m = Math.round((s % 3600) / 60); return h ? h + " Std. " + m + " Min." : m + " Min."; };
+  function renderUsage(rows) {
+    const hh = (t) => String(t || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+    const us = rows.filter((u) => u.usage && u.usage.sec);
+    if (!us.length) { $("k-usage").innerHTML = '<p class="k-msg">Noch keine Daten. Gezählt wird nur bei angemeldeten Nutzern, die im Konto zugestimmt haben.</p>'; return; }
+    const area = {}, stocks = {};
+    us.forEach((u) => {
+      Object.entries(u.usage.secBy || {}).forEach(([k, v]) => { area[k] = (area[k] || 0) + v; });
+      Object.entries(u.usage.stocks || {}).forEach(([k, v]) => { stocks[k] = (stocks[k] || 0) + v; });
+    });
+    const fmt = (t) => (t && t.seconds ? new Date(t.seconds * 1000).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) + " Uhr" : "–");
+    us.sort((a, b) => b.usage.sec - a.usage.sec);
+    const top = (o) => { const e = Object.entries(o || {}).sort((a, b) => b[1] - a[1])[0]; return e ? (AREA[e[0]] || e[0]) : "–"; };
+    const people = '<table class="use-tab"><tr><th>Person</th><th>Zeit</th><th>Besuche</th><th>Meist in</th></tr>' + us.map((u) =>
+      "<tr><td><b>" + hh(u.name || u.email) + "</b><br><small>zuletzt aktiv " + fmt(u.usage.last) + "</small></td><td class=n>" + dur(u.usage.sec) + "</td><td class=n>" + (u.usage.sessions || 0) + "</td><td>" + hh(top(u.usage.secBy)) + "</td></tr>").join("") + "</table>";
+    const ae = Object.entries(area).sort((a, b) => b[1] - a[1]), amax = ae.length ? ae[0][1] : 1;
+    const areas = '<table class="use-tab"><tr><th>Bereich</th><th>Zeit gesamt</th></tr>' + ae.map(([k, v]) =>
+      "<tr><td>" + hh(AREA[k] || k) + '<div class="use-bar" style="width:' + Math.max(4, Math.round(v / amax * 100)) + '%"></div></td><td class=n>' + dur(v) + "</td></tr>").join("") + "</table>";
+    const se = Object.entries(stocks).sort((a, b) => b[1] - a[1]).slice(0, 15), smax = se.length ? se[0][1] : 1;
+    const name = (k) => (window.BB_stockName ? window.BB_stockName(dec(k)) : dec(k));
+    const st = se.length ? '<table class="use-tab"><tr><th>Meist angeschaute Aktien</th><th>Aufrufe</th></tr>' + se.map(([k, v], i) =>
+      "<tr><td>" + (i + 1) + ". " + hh(name(k)) + '<div class="use-bar" style="width:' + Math.max(4, Math.round(v / smax * 100)) + '%"></div></td><td class=n>' + v + "</td></tr>").join("") + "</table>" : '<p class="k-msg">Noch keine Aktien angesehen.</p>';
+    $("k-usage").innerHTML = '<p class="k-msg">' + us.length + " Personen mit Statistik · zusammen " + dur(us.reduce((a, u) => a + u.usage.sec, 0)) + "</p>" + people + areas + st;
+  }
   async function changeMsg(uid, ts, fn) {
     const u = MSG_ROWS.find((r) => r.id === uid); if (!u) return;
     const list = (Array.isArray(u.msgs) ? u.msgs : []).map((m) => ({ ...m }));
@@ -166,6 +212,7 @@ if (!CFG) {
         '<div class="k-acts"><button class="btn ghost" type="button" data-mdone="' + m.uid + '" data-mts="' + hh(m.ts) + '">' + (m.done ? "Wieder offen" : "✓ Erledigt") + '</button><button class="btn ghost" type="button" data-mdel="' + m.uid + '" data-mts="' + hh(m.ts) + '">Löschen</button></div></div>').join("")
         : '<p class="k-msg">Noch keine Nachrichten.</p>';
       MSG_ROWS = rows;
+      renderUsage(rows);
       const fmt = (t) => (t && t.seconds ? new Date(t.seconds * 1000).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) + " Uhr" : "–");
       const h = (t) => String(t || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
       $("k-users").innerHTML = rows.map((u) => '<div class="k-user"><div><b>' + h(u.name || "ohne Namen") + "</b> " + h(u.email || u.id) + (u.blocked ? " ⛔" : "") +
@@ -226,6 +273,7 @@ if (!CFG) {
     try { const d = await F.getDoc(ref); data = d.exists() ? d.data() : {}; } catch (er) { /* offline */ }
     if (data.blocked) { await A.signOut(auth); say("Dein Konto wurde gesperrt.", "err"); return; }
     const first = !data.created;
+    statsOk = data.statsOk === true; $("k-stats-ok").checked = statsOk;
     F.setDoc(ref, first ? { email: u.email, created: F.serverTimestamp(), lastLogin: F.serverTimestamp(), hasPassword: !needPw }
       : { email: u.email, lastLogin: F.serverTimestamp() }, { merge: true }).catch(() => {});
     if (needPw || data.hasPassword === false) {
