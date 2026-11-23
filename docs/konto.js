@@ -32,6 +32,7 @@ if (!CFG) {
   $("fb-login").hidden = false;
   window.BB_hefteKey = async () => ({ reason: "off" });
   if (window.BB_onAuth) window.BB_onAuth(false);
+  window.BB_konto = (v) => { if (v === "stat") location.hash = ""; };
 } else {
   const V = "10.12.2", base = "https://www.gstatic.com/firebasejs/" + V + "/";
   let mods;
@@ -39,6 +40,8 @@ if (!CFG) {
   catch (er) {
     window.BB_hefteKey = async () => ({ reason: "off" });
     if (window.BB_onAuth) window.BB_onAuth(false);
+    window.BB_konto = (v) => { if (v === "stat") location.hash = ""; };
+    if (location.hash === "#statistik") location.hash = "";
     showBox("k-off"); $("k-off").querySelector("p").textContent = "Konten sind gerade nicht erreichbar. Prüfe deine Verbindung und lade die Seite neu.";
     throw er;
   }
@@ -141,7 +144,28 @@ if (!CFG) {
     $("k-admin").hidden = !admin; $("k-adminbox").hidden = !admin;
     if (admin) loadUsers();
   }
-  let MSG_ROWS = [], statsOk = false;
+  let MSG_ROWS = [], statsOk = false, isAdm = false, admDone;
+  const admKnown = new Promise((r) => { admDone = r; });
+  function renderOverview(rows) {
+    const now = Date.now(), d = 86400000, sec = (t) => (t && t.seconds ? t.seconds * 1000 : 0);
+    const n7 = rows.filter((u) => now - sec(u.created) < 7 * d).length;
+    const a1 = rows.filter((u) => now - Math.max(sec(u.lastLogin), sec(u.usage && u.usage.last)) < d).length;
+    const a7 = rows.filter((u) => now - Math.max(sec(u.lastLogin), sec(u.usage && u.usage.last)) < 7 * d).length;
+    const acc = rows.filter((u) => u.heftAccess).length, blk = rows.filter((u) => u.blocked).length;
+    let open = 0; rows.forEach((u) => (u.msgs || []).forEach((m) => { if (!m.done) open++; }));
+    const withStats = rows.filter((u) => u.usage && u.usage.sec).length;
+    const tot = rows.reduce((a, u) => a + ((u.usage && u.usage.sec) || 0), 0);
+    const tile = (v, l) => '<div class="stat-tile"><b>' + v + "</b><span>" + l + "</span></div>";
+    $("stat-tiles").innerHTML = tile(rows.length, "Konten gesamt") + tile(n7, "neu in 7 Tagen") + tile(a1, "aktiv heute") + tile(a7, "aktiv in 7 Tagen") +
+      tile(acc, "mit Zugang zum gesperrten Bereich") + tile(open, "offene Nachrichten") + tile(withStats, "zählen Nutzung mit") + tile(dur(tot), "Zeit gesamt") + tile(blk, "gesperrt");
+    const days = [];
+    for (let i = 13; i >= 0; i--) { const t = new Date(now - i * d); days.push({ k: t.toISOString().slice(0, 10), n: 0 }); }
+    rows.forEach((u) => { const c = sec(u.created); if (!c) return; const k = new Date(c).toISOString().slice(0, 10); const x = days.find((y) => y.k === k); if (x) x.n++; });
+    const mx = Math.max(1, ...days.map((x) => x.n));
+    $("stat-reg").innerHTML = '<div class="reg-bars">' + days.map((x) => '<div title="' + x.k + ": " + x.n + '" style="height:' + (x.n / mx * 100) + '%"></div>').join("") +
+      '</div><div class="reg-lab"><span>' + days[0].k.slice(8, 10) + "." + days[0].k.slice(5, 7) + ".</span><span>heute</span></div>";
+    $("stat-note").textContent = "Nur für den Admin sichtbar · Stand " + new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) + " Uhr";
+  }
   const enc = (s) => String(s).replace(/\./g, "_"), dec = (s) => String(s).replace(/_/g, ".");
   // Nutzung hochzählen (nur mit Zustimmung)
   window.BB_usage = (U) => {
@@ -219,6 +243,7 @@ if (!CFG) {
         : '<p class="k-msg">Noch keine Nachrichten.</p>';
       MSG_ROWS = rows;
       renderUsage(rows);
+      renderOverview(rows);
       const fmt = (t) => (t && t.seconds ? new Date(t.seconds * 1000).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) + " Uhr" : "–");
       const h = (t) => String(t || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
       $("k-users").innerHTML = rows.map((u) => '<div class="k-user"><div><b>' + h(u.name || "ohne Namen") + "</b> " + h(u.email || u.id) + (u.blocked ? " ⛔" : "") +
@@ -272,7 +297,7 @@ if (!CFG) {
     me = u;
     authReady();
     fbView();
-    if (!u) { access = false; if (window.BB_onAuth) window.BB_onAuth(false); }
+    if (!u) { access = false; isAdm = false; $("tab-stat").hidden = true; admDone(); if (location.hash === "#statistik") location.hash = ""; if (window.BB_onAuth) window.BB_onAuth(false); }
     if (!u) { if ($("k-link").hidden || $("k-confirm").hidden) showBox("k-out"); return; }
     const ref = F.doc(db, "users", u.uid);
     let data = {};
@@ -290,6 +315,8 @@ if (!CFG) {
       if (location.hash !== "#konto") location.hash = "#konto";
     } else showIn();
     const admin = u.emailVerified && (await sha((u.email || "").toLowerCase())) === ADMIN_HASH;
+    isAdm = admin && !needPw; $("tab-stat").hidden = !isAdm; admDone();
+    if (location.hash === "#statistik") { if (isAdm) loadUsers(); else location.hash = ""; }
     access = !needPw && !data.blocked && (admin || data.heftAccess === true);
     if (window.BB_onAuth) window.BB_onAuth(access);
     // Einstellungen: vom Konto übernehmen, sonst hochladen
@@ -304,5 +331,10 @@ if (!CFG) {
     sessionStorage.setItem("bb-synced", u.uid);
     if (!Object.keys(remote).length) window.BB_sync();
   });
-  window.BB_konto = (v) => { if (v === "konto" && me && !needPw) showIn(); if (v === "fb") fbView(); };
+  window.BB_konto = async (v) => {
+    if (v === "konto" && me && !needPw) showIn();
+    if (v === "fb") fbView();
+    if (v === "stat") { await admKnown; if (isAdm) loadUsers(); else location.hash = ""; }
+  };
+  $("stat-reload").addEventListener("click", () => { if (isAdm) loadUsers(); });
 }

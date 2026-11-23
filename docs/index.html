@@ -161,6 +161,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .k-acts .btn { font-size: 13px; padding: 5px 10px; }
 .k-msgitem { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 6px; font-size: 14.5px; }
 .k-msgitem.done { opacity: .55; }
+.stat-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (min-width: 560px) { .stat-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.stat-tile { border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; background: var(--surface); display: grid; gap: 2px; }
+.stat-tile b { font-family: var(--font-num); font-size: 22px; }
+.stat-tile span { font-size: 12.5px; color: var(--muted); }
+.reg-bars { display: flex; align-items: flex-end; gap: 4px; height: 90px; border-bottom: 1px solid var(--line); }
+.reg-bars div { flex: 1; background: var(--accent); opacity: .75; border-radius: 3px 3px 0 0; min-height: 2px; position: relative; }
+.reg-lab { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 3px; }
 .use-tab { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 4px 0 12px; }
 .use-tab th, .use-tab td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .use-tab td.n { text-align: right; font-family: var(--font-num); white-space: nowrap; }
@@ -578,6 +586,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <a href="#aktien" id="tab-stocks" data-view="stocks">📊 Alle Aktien</a>
     <a href="#rechner" id="tab-calc" data-view="calc">🧮 Rechner</a>
     <a href="#konto" id="tab-konto" data-view="konto">👤 Konto</a>
+    <a href="#statistik" id="tab-stat" data-view="stat" hidden>📊 Statistik (Admin)</a>
     <a href="#feedback" id="tab-fb" data-view="fb">💬 Fehler &amp; Wünsche</a>
     <a href="#einstellungen" id="tab-set" data-view="set">⚙️ Einstellungen</a>
     <a href="#gesperrt" id="tab-ak" data-view="ak" hidden>🔒 Gesperrter Bereich</a>
@@ -708,6 +717,16 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     </nav>
   </section>
 
+  <section class="view" id="v-stat" hidden aria-labelledby="stat-title">
+    <div class="sec-head"><h2 id="stat-title">📊 Statistik</h2><button class="btn ghost" id="stat-reload" type="button">Aktualisieren</button></div>
+    <p class="chat-note" id="stat-note">Nur für den Admin sichtbar.</p>
+    <div class="stat-tiles" id="stat-tiles"></div>
+    <h3>Neue Konten (letzte 14 Tage)</h3>
+    <div id="stat-reg"></div>
+    <h3>Nutzung</h3>
+    <div id="k-usage"><p class="k-msg">Lade …</p></div>
+  </section>
+
   <section class="view" id="v-fb" hidden aria-labelledby="fb-title">
     <div class="sec-head"><h2 id="fb-title">💬 Fehler &amp; Wünsche</h2></div>
     <p>Hast du einen Fehler gefunden oder wünschst dir etwas für die Seite? Schreib es hier, die Nachricht geht direkt an den Admin.</p>
@@ -829,8 +848,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <a class="btn" id="k-hefte" href="#gesperrt" hidden>🔒 Gesperrter Bereich öffnen</a>
       <div class="btn-row"><button class="btn ghost" id="k-logout" type="button">Abmelden</button><button class="btn ghost" id="k-delete" type="button">Konto löschen</button></div>
       <div id="k-adminbox" hidden>
-        <h3>Admin: 📊 Nutzung</h3>
-        <div id="k-usage"></div>
+        <p><a class="btn ghost" href="#statistik">📊 Zur Statistik</a></p>
         <h3>Admin: Fehler &amp; Wünsche <span id="k-fbcount"></span></h3>
         <div class="k-users" id="k-msgs"></div>
         <h3>Admin: Registrierte Nutzer <span id="k-count"></span></h3>
@@ -2534,12 +2552,12 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   window.addEventListener("focus", tickTimer);
 
   // ---------- Bereiche umschalten ----------
-  const VIEWS = { home: "v-home", brief: "v-brief", stocks: "v-stocks", calc: "v-calc", konto: "v-konto", set: "v-set", fb: "v-fb", ds: "v-ds", imp: "v-imp", ak: "v-ak" };
-  const TITLES = { home: "Börsen-Briefing mit dem Mulmigerotter", brief: "Briefing · Börsen-Briefing", stocks: "Alle Aktien · Börsen-Briefing", calc: "Rechner · Börsen-Briefing", konto: "Konto · Börsen-Briefing", set: "Einstellungen · Börsen-Briefing", fb: "Fehler & Wünsche · Börsen-Briefing", ds: "Datenschutz · Börsen-Briefing", imp: "Impressum · Börsen-Briefing", ak: "Gesperrter Bereich · Börsen-Briefing" };
+  const VIEWS = { home: "v-home", brief: "v-brief", stocks: "v-stocks", calc: "v-calc", konto: "v-konto", set: "v-set", fb: "v-fb", stat: "v-stat", ds: "v-ds", imp: "v-imp", ak: "v-ak" };
+  const TITLES = { home: "Börsen-Briefing mit dem Mulmigerotter", brief: "Briefing · Börsen-Briefing", stocks: "Alle Aktien · Börsen-Briefing", calc: "Rechner · Börsen-Briefing", konto: "Konto · Börsen-Briefing", set: "Einstellungen · Börsen-Briefing", fb: "Fehler & Wünsche · Börsen-Briefing", stat: "Statistik · Börsen-Briefing", ds: "Datenschutz · Börsen-Briefing", imp: "Impressum · Börsen-Briefing", ak: "Gesperrter Bereich · Börsen-Briefing" };
   function currentView() {
     const h = location.hash;
     return h === "#gesperrt" || h === "#aktionaer" ? "ak" : h === "#aktien" ? "stocks" : h === "#rechner" ? "calc"
-      : h === "#konto" ? "konto" : h === "#einstellungen" ? "set" : h === "#feedback" ? "fb" : h === "#datenschutz" ? "ds" : h === "#impressum" ? "imp" : h === "#briefing" || h.startsWith("#tag-") ? "brief" : "home";
+      : h === "#konto" ? "konto" : h === "#einstellungen" ? "set" : h === "#feedback" ? "fb" : h === "#statistik" ? "stat" : h === "#datenschutz" ? "ds" : h === "#impressum" ? "imp" : h === "#briefing" || h.startsWith("#tag-") ? "brief" : "home";
   }
   const isAk = () => currentView() === "ak";
   function setView(v) {
