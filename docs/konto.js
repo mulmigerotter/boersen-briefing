@@ -3,7 +3,7 @@ const CFG = window.BB_FIREBASE;
 const $ = (id) => document.getElementById(id);
 // SHA-256 der Admin-E-Mail (die Rechte selbst prüft Firebase in den Firestore-Regeln)
 const ADMIN_HASH = "38d8fd845c8945f4493ba284fccd02990f83ccf67e463e2f22483a0c01e52daf";
-const SYNC_KEYS = ["bb-favs", "bb-depot", "bb-alerts"];
+const SYNC_KEYS = ["bb-favs", "bb-depot", "bb-alerts", "bb-theme"];
 const say = (t, cls) => { const m = $("k-status"); m.textContent = t || ""; m.className = "k-msg" + (cls ? " " + cls : ""); };
 const showBox = (id) => ["k-off", "k-out", "k-link", "k-in"].forEach((b) => { $(b).hidden = b !== id; });
 const ERR = {
