@@ -6,194 +6,1526 @@
   "meta_refresh_days": 2,
   "meta_max_refresh": 60,
   "indices": [
-    {"symbol": "^GDAXI", "name": "DAX"},
-    {"symbol": "^DJI", "name": "Dow Jones"},
-    {"symbol": "^GSPC", "name": "S&P 500"},
-    {"symbol": "^IXIC", "name": "Nasdaq"}
+    {
+      "symbol": "^GDAXI",
+      "name": "DAX"
+    },
+    {
+      "symbol": "^DJI",
+      "name": "Dow Jones"
+    },
+    {
+      "symbol": "^GSPC",
+      "name": "S&P 500"
+    },
+    {
+      "symbol": "^IXIC",
+      "name": "Nasdaq"
+    }
   ],
   "extra": [
-    {"symbol": "AIXA.DE", "name": "Aixtron", "sector": "Technologie"},
-    {"symbol": "BOSS.DE", "name": "Hugo Boss", "sector": "Zyklischer Konsum"},
-    {"symbol": "KGX.DE", "name": "Kion", "sector": "Industrie"},
-    {"symbol": "LEG.DE", "name": "LEG Immobilien", "sector": "Immobilien"},
-    {"symbol": "LHA.DE", "name": "Lufthansa", "sector": "Industrie"},
-    {"symbol": "NDA.DE", "name": "Aurubis", "sector": "Rohstoffe & Chemie"},
-    {"symbol": "FRA.DE", "name": "Fraport", "sector": "Industrie"},
-    {"symbol": "EVK.DE", "name": "Evonik", "sector": "Rohstoffe & Chemie"},
-    {"symbol": "HLAG.DE", "name": "Hapag-Lloyd", "sector": "Industrie"},
-    {"symbol": "JUN3.DE", "name": "Jungheinrich", "sector": "Industrie"},
-    {"symbol": "KRN.DE", "name": "Krones", "sector": "Industrie"},
-    {"symbol": "LXS.DE", "name": "Lanxess", "sector": "Rohstoffe & Chemie"},
-    {"symbol": "NEM.DE", "name": "Nemetschek", "sector": "Technologie"},
-    {"symbol": "PAH3.DE", "name": "Porsche SE", "sector": "Zyklischer Konsum"},
-    {"symbol": "P911.DE", "name": "Porsche AG", "sector": "Zyklischer Konsum"},
-    {"symbol": "RAA.DE", "name": "Rational", "sector": "Industrie"},
-    {"symbol": "RRTL.DE", "name": "RTL Group", "sector": "Kommunikation & Medien"},
-    {"symbol": "TMV.DE", "name": "TeamViewer", "sector": "Technologie"},
-    {"symbol": "TEG.DE", "name": "TAG Immobilien", "sector": "Immobilien"},
-    {"symbol": "WCH.DE", "name": "Wacker Chemie", "sector": "Rohstoffe & Chemie"},
-    {"symbol": "EVD.DE", "name": "CTS Eventim", "sector": "Kommunikation & Medien"},
-    {"symbol": "FPE3.DE", "name": "Fuchs", "sector": "Rohstoffe & Chemie"},
-    {"symbol": "GXI.DE", "name": "Gerresheimer", "sector": "Gesundheit"},
-    {"symbol": "HAG.DE", "name": "Hensoldt", "sector": "Industrie"},
-    {"symbol": "R3NK.DE", "name": "Renk", "sector": "Industrie"},
-    {"symbol": "SDF.DE", "name": "K+S", "sector": "Rohstoffe & Chemie"},
-    {"symbol": "BC8.DE", "name": "Bechtle", "sector": "Technologie"},
-    {"symbol": "AFX.DE", "name": "Carl Zeiss Meditec", "sector": "Gesundheit"},
-    {"symbol": "SIX2.DE", "name": "Sixt", "sector": "Industrie"},
-    {"symbol": "UTDI.DE", "name": "United Internet", "sector": "Kommunikation & Medien"},
-    {"symbol": "8TRA.DE", "name": "Traton", "sector": "Industrie"},
-    {"symbol": "DHER.DE", "name": "Delivery Hero", "sector": "Zyklischer Konsum"},
-    {"symbol": "ASML.AS", "name": "ASML", "sector": "Technologie"},
-    {"symbol": "ADYEN.AS", "name": "Adyen", "sector": "Finanzen"},
-    {"symbol": "PRX.AS", "name": "Prosus", "sector": "Kommunikation & Medien"},
-    {"symbol": "INGA.AS", "name": "ING", "sector": "Finanzen"},
-    {"symbol": "MC.PA", "name": "LVMH", "sector": "Zyklischer Konsum"},
-    {"symbol": "OR.PA", "name": "L'Oréal", "sector": "Basiskonsum"},
-    {"symbol": "RMS.PA", "name": "Hermès", "sector": "Zyklischer Konsum"},
-    {"symbol": "SAN.PA", "name": "Sanofi", "sector": "Gesundheit"},
-    {"symbol": "SU.PA", "name": "Schneider Electric", "sector": "Industrie"},
-    {"symbol": "BN.PA", "name": "Danone", "sector": "Basiskonsum"},
-    {"symbol": "CS.PA", "name": "AXA", "sector": "Finanzen"},
-    {"symbol": "KER.PA", "name": "Kering", "sector": "Zyklischer Konsum"},
-    {"symbol": "RI.PA", "name": "Pernod Ricard", "sector": "Basiskonsum"},
-    {"symbol": "SAF.PA", "name": "Safran", "sector": "Industrie"},
-    {"symbol": "DG.PA", "name": "Vinci", "sector": "Industrie"},
-    {"symbol": "CAP.PA", "name": "Capgemini", "sector": "Technologie"},
-    {"symbol": "STLAM.MI", "name": "Stellantis", "sector": "Zyklischer Konsum"},
-    {"symbol": "RACE.MI", "name": "Ferrari", "sector": "Zyklischer Konsum"},
-    {"symbol": "ENI.MI", "name": "Eni", "sector": "Energie"},
-    {"symbol": "ISP.MI", "name": "Intesa Sanpaolo", "sector": "Finanzen"},
-    {"symbol": "UCG.MI", "name": "UniCredit", "sector": "Finanzen"},
-    {"symbol": "ENEL.MI", "name": "Enel", "sector": "Versorger"},
-    {"symbol": "SAN.MC", "name": "Banco Santander", "sector": "Finanzen"},
-    {"symbol": "IBE.MC", "name": "Iberdrola", "sector": "Versorger"},
-    {"symbol": "BBVA.MC", "name": "BBVA", "sector": "Finanzen"},
-    {"symbol": "NOVN.SW", "name": "Novartis", "sector": "Gesundheit"},
-    {"symbol": "ROG.SW", "name": "Roche", "sector": "Gesundheit"},
-    {"symbol": "UBSG.SW", "name": "UBS", "sector": "Finanzen"},
-    {"symbol": "ZURN.SW", "name": "Zurich Insurance", "sector": "Finanzen"},
-    {"symbol": "ABBN.SW", "name": "ABB", "sector": "Industrie"},
-    {"symbol": "NOVO-B.CO", "name": "Novo Nordisk", "sector": "Gesundheit"},
-    {"symbol": "ERIC-B.ST", "name": "Ericsson", "sector": "Technologie"},
-    {"symbol": "VOLV-B.ST", "name": "Volvo", "sector": "Industrie"},
-    {"symbol": "ATCO-A.ST", "name": "Atlas Copco", "sector": "Industrie"},
-    {"symbol": "NOKIA.HE", "name": "Nokia", "sector": "Technologie"},
-    {"symbol": "JPM", "name": "JPMorgan Chase", "sector": "Finanzen"},
-    {"symbol": "V", "name": "Visa", "sector": "Finanzen"},
-    {"symbol": "MA", "name": "Mastercard", "sector": "Finanzen"},
-    {"symbol": "BAC", "name": "Bank of America", "sector": "Finanzen"},
-    {"symbol": "WMT", "name": "Walmart", "sector": "Basiskonsum"},
-    {"symbol": "COST", "name": "Costco", "sector": "Basiskonsum"},
-    {"symbol": "PG", "name": "Procter & Gamble", "sector": "Basiskonsum"},
-    {"symbol": "JNJ", "name": "Johnson & Johnson", "sector": "Gesundheit"},
-    {"symbol": "UNH", "name": "UnitedHealth", "sector": "Gesundheit"},
-    {"symbol": "XOM", "name": "Exxon Mobil", "sector": "Energie"},
-    {"symbol": "CVX", "name": "Chevron", "sector": "Energie"},
-    {"symbol": "PEP", "name": "PepsiCo", "sector": "Basiskonsum"},
-    {"symbol": "DIS", "name": "Walt Disney", "sector": "Kommunikation & Medien"},
-    {"symbol": "ORCL", "name": "Oracle", "sector": "Technologie"},
-    {"symbol": "CRM", "name": "Salesforce", "sector": "Technologie"},
-    {"symbol": "AMD", "name": "AMD", "sector": "Technologie"},
-    {"symbol": "QCOM", "name": "Qualcomm", "sector": "Technologie"},
-    {"symbol": "IBM", "name": "IBM", "sector": "Technologie"},
-    {"symbol": "CSCO", "name": "Cisco", "sector": "Technologie"},
-    {"symbol": "PLTR", "name": "Palantir", "sector": "Technologie"},
-    {"symbol": "PYPL", "name": "PayPal", "sector": "Finanzen"},
-    {"symbol": "SHOP", "name": "Shopify", "sector": "Technologie"},
-    {"symbol": "BA", "name": "Boeing", "sector": "Industrie"},
-    {"symbol": "CAT", "name": "Caterpillar", "sector": "Industrie"},
-    {"symbol": "GS", "name": "Goldman Sachs", "sector": "Finanzen"},
-    {"symbol": "NKE", "name": "Nike", "sector": "Zyklischer Konsum"},
-    {"symbol": "SBUX", "name": "Starbucks", "sector": "Zyklischer Konsum"},
-    {"symbol": "PFE", "name": "Pfizer", "sector": "Gesundheit"},
-    {"symbol": "ABBV", "name": "AbbVie", "sector": "Gesundheit"},
-    {"symbol": "MRK", "name": "Merck & Co.", "sector": "Gesundheit"},
-    {"symbol": "COIN", "name": "Coinbase", "sector": "Finanzen"},
-    {"symbol": "ABNB", "name": "Airbnb", "sector": "Zyklischer Konsum"},
-    {"symbol": "HD", "name": "Home Depot", "sector": "Zyklischer Konsum"}
+    {
+      "symbol": "AIXA.DE",
+      "name": "Aixtron",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "BOSS.DE",
+      "name": "Hugo Boss",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "KGX.DE",
+      "name": "Kion",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "LEG.DE",
+      "name": "LEG Immobilien",
+      "sector": "Immobilien"
+    },
+    {
+      "symbol": "LHA.DE",
+      "name": "Lufthansa",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "NDA.DE",
+      "name": "Aurubis",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "FRA.DE",
+      "name": "Fraport",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "EVK.DE",
+      "name": "Evonik",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "HLAG.DE",
+      "name": "Hapag-Lloyd",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "JUN3.DE",
+      "name": "Jungheinrich",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "KRN.DE",
+      "name": "Krones",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "LXS.DE",
+      "name": "Lanxess",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "NEM.DE",
+      "name": "Nemetschek",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "PAH3.DE",
+      "name": "Porsche SE",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "P911.DE",
+      "name": "Porsche AG",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "RAA.DE",
+      "name": "Rational",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "RRTL.DE",
+      "name": "RTL Group",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "TMV.DE",
+      "name": "TeamViewer",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "TEG.DE",
+      "name": "TAG Immobilien",
+      "sector": "Immobilien"
+    },
+    {
+      "symbol": "WCH.DE",
+      "name": "Wacker Chemie",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "EVD.DE",
+      "name": "CTS Eventim",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "FPE3.DE",
+      "name": "Fuchs",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "GXI.DE",
+      "name": "Gerresheimer",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "HAG.DE",
+      "name": "Hensoldt",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "R3NK.DE",
+      "name": "Renk",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "SDF.DE",
+      "name": "K+S",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "BC8.DE",
+      "name": "Bechtle",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "AFX.DE",
+      "name": "Carl Zeiss Meditec",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "SIX2.DE",
+      "name": "Sixt",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "UTDI.DE",
+      "name": "United Internet",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "8TRA.DE",
+      "name": "Traton",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "DHER.DE",
+      "name": "Delivery Hero",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "ASML.AS",
+      "name": "ASML",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "ADYEN.AS",
+      "name": "Adyen",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "PRX.AS",
+      "name": "Prosus",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "INGA.AS",
+      "name": "ING",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "MC.PA",
+      "name": "LVMH",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "OR.PA",
+      "name": "L'Oréal",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "RMS.PA",
+      "name": "Hermès",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "SAN.PA",
+      "name": "Sanofi",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "SU.PA",
+      "name": "Schneider Electric",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "BN.PA",
+      "name": "Danone",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "CS.PA",
+      "name": "AXA",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "KER.PA",
+      "name": "Kering",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "RI.PA",
+      "name": "Pernod Ricard",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "SAF.PA",
+      "name": "Safran",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "DG.PA",
+      "name": "Vinci",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "CAP.PA",
+      "name": "Capgemini",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "STLAM.MI",
+      "name": "Stellantis",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "RACE.MI",
+      "name": "Ferrari",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "ENI.MI",
+      "name": "Eni",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "ISP.MI",
+      "name": "Intesa Sanpaolo",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "UCG.MI",
+      "name": "UniCredit",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "ENEL.MI",
+      "name": "Enel",
+      "sector": "Versorger"
+    },
+    {
+      "symbol": "SAN.MC",
+      "name": "Banco Santander",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "IBE.MC",
+      "name": "Iberdrola",
+      "sector": "Versorger"
+    },
+    {
+      "symbol": "BBVA.MC",
+      "name": "BBVA",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "NOVN.SW",
+      "name": "Novartis",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "ROG.SW",
+      "name": "Roche",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "UBSG.SW",
+      "name": "UBS",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "ZURN.SW",
+      "name": "Zurich Insurance",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "ABBN.SW",
+      "name": "ABB",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "NOVO-B.CO",
+      "name": "Novo Nordisk",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "ERIC-B.ST",
+      "name": "Ericsson",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "VOLV-B.ST",
+      "name": "Volvo",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "ATCO-A.ST",
+      "name": "Atlas Copco",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "NOKIA.HE",
+      "name": "Nokia",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "JPM",
+      "name": "JPMorgan Chase",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "V",
+      "name": "Visa",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "MA",
+      "name": "Mastercard",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "BAC",
+      "name": "Bank of America",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "WMT",
+      "name": "Walmart",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "COST",
+      "name": "Costco",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "PG",
+      "name": "Procter & Gamble",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "JNJ",
+      "name": "Johnson & Johnson",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "UNH",
+      "name": "UnitedHealth",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "XOM",
+      "name": "Exxon Mobil",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "CVX",
+      "name": "Chevron",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "PEP",
+      "name": "PepsiCo",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "DIS",
+      "name": "Walt Disney",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "ORCL",
+      "name": "Oracle",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "CRM",
+      "name": "Salesforce",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "AMD",
+      "name": "AMD",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "QCOM",
+      "name": "Qualcomm",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "IBM",
+      "name": "IBM",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "CSCO",
+      "name": "Cisco",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "PLTR",
+      "name": "Palantir",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "PYPL",
+      "name": "PayPal",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "SHOP",
+      "name": "Shopify",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "BA",
+      "name": "Boeing",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "CAT",
+      "name": "Caterpillar",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "GS",
+      "name": "Goldman Sachs",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "NKE",
+      "name": "Nike",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "SBUX",
+      "name": "Starbucks",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "PFE",
+      "name": "Pfizer",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "ABBV",
+      "name": "AbbVie",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "MRK",
+      "name": "Merck & Co.",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "COIN",
+      "name": "Coinbase",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "ABNB",
+      "name": "Airbnb",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "HD",
+      "name": "Home Depot",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "7203.T",
+      "name": "Toyota",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "6758.T",
+      "name": "Sony",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "7974.T",
+      "name": "Nintendo",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "6861.T",
+      "name": "Keyence",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "9984.T",
+      "name": "SoftBank Group",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "8035.T",
+      "name": "Tokyo Electron",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "6098.T",
+      "name": "Recruit",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "9983.T",
+      "name": "Fast Retailing (Uniqlo)",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "7741.T",
+      "name": "Hoya",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "6501.T",
+      "name": "Hitachi",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "8306.T",
+      "name": "Mitsubishi UFJ",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "4063.T",
+      "name": "Shin-Etsu Chemical",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "6367.T",
+      "name": "Daikin",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "7267.T",
+      "name": "Honda",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "6594.T",
+      "name": "Nidec",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "3659.T",
+      "name": "Nexon",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "4385.T",
+      "name": "Mercari",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "6920.T",
+      "name": "Lasertec",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "2413.T",
+      "name": "M3",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "005930.KS",
+      "name": "Samsung Electronics",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "000660.KS",
+      "name": "SK Hynix",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "005380.KS",
+      "name": "Hyundai Motor",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "035420.KS",
+      "name": "Naver",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "035720.KS",
+      "name": "Kakao",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "2330.TW",
+      "name": "TSMC (Taiwan)",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "2317.TW",
+      "name": "Hon Hai (Foxconn)",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "2454.TW",
+      "name": "MediaTek",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "RELIANCE.NS",
+      "name": "Reliance Industries",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "TCS.NS",
+      "name": "Tata Consultancy Services",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "INFY.NS",
+      "name": "Infosys",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "HDFCBANK.NS",
+      "name": "HDFC Bank",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "ITC.NS",
+      "name": "ITC",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "PETR4.SA",
+      "name": "Petrobras",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "VALE3.SA",
+      "name": "Vale",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "ITUB4.SA",
+      "name": "Itaú Unibanco",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "WEGE3.SA",
+      "name": "WEG",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "WALMEX.MX",
+      "name": "Walmart de México",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "D05.SI",
+      "name": "DBS Group",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "MELI",
+      "name": "MercadoLibre",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "NU",
+      "name": "Nu Holdings",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "SE",
+      "name": "Sea Limited",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "BABA",
+      "name": "Alibaba",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "PDD",
+      "name": "PDD (Temu)",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "JD",
+      "name": "JD.com",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "BHP.AX",
+      "name": "BHP",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "CBA.AX",
+      "name": "Commonwealth Bank",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "CSL.AX",
+      "name": "CSL",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "WES.AX",
+      "name": "Wesfarmers",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "XRO.AX",
+      "name": "Xero",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "PME.AX",
+      "name": "Pro Medicus",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "WTC.AX",
+      "name": "WiseTech Global",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "LYC.AX",
+      "name": "Lynas Rare Earths",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "FPH.NZ",
+      "name": "Fisher & Paykel Healthcare",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "RY.TO",
+      "name": "Royal Bank of Canada",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "TD.TO",
+      "name": "Toronto-Dominion Bank",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "CNQ.TO",
+      "name": "Canadian Natural Resources",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "ENB.TO",
+      "name": "Enbridge",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "CSU.TO",
+      "name": "Constellation Software",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "ATD.TO",
+      "name": "Alimentation Couche-Tard",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "CNR.TO",
+      "name": "Canadian National Railway",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "BB.TO",
+      "name": "BlackBerry",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "DOL.TO",
+      "name": "Dollarama",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "NXE.TO",
+      "name": "NexGen Energy",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "EQNR.OL",
+      "name": "Equinor",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "DNB.OL",
+      "name": "DNB Bank",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "NHY.OL",
+      "name": "Norsk Hydro",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "MOWI.OL",
+      "name": "Mowi",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "KOG.OL",
+      "name": "Kongsberg Gruppen",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "NEL.OL",
+      "name": "Nel",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "ABI.BR",
+      "name": "AB InBev",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "UCB.BR",
+      "name": "UCB",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "ARGX.BR",
+      "name": "argenx",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "RYA.IR",
+      "name": "Ryanair",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "EDP.LS",
+      "name": "EDP",
+      "sector": "Versorger"
+    },
+    {
+      "symbol": "GALP.LS",
+      "name": "Galp Energia",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "BESI.AS",
+      "name": "BE Semiconductor",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "ASM.AS",
+      "name": "ASM International",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "HEIA.AS",
+      "name": "Heineken",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "PHIA.AS",
+      "name": "Philips",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "WKL.AS",
+      "name": "Wolters Kluwer",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "ML.PA",
+      "name": "Michelin",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "DSY.PA",
+      "name": "Dassault Systèmes",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "SOI.PA",
+      "name": "Soitec",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "UBI.PA",
+      "name": "Ubisoft",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "PRY.MI",
+      "name": "Prysmian",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "LDO.MI",
+      "name": "Leonardo",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "MONC.MI",
+      "name": "Moncler",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "AMS.MC",
+      "name": "Amadeus IT",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "LOGN.SW",
+      "name": "Logitech",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "SIKA.SW",
+      "name": "Sika",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "CFR.SW",
+      "name": "Richemont",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "EVO.ST",
+      "name": "Evolution",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "SAAB-B.ST",
+      "name": "Saab",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "HM-B.ST",
+      "name": "H&M",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "DSV.CO",
+      "name": "DSV",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "GMAB.CO",
+      "name": "Genmab",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "PNDORA.CO",
+      "name": "Pandora",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "ORSTED.CO",
+      "name": "Ørsted",
+      "sector": "Versorger"
+    },
+    {
+      "symbol": "KNEBV.HE",
+      "name": "Kone",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "NESTE.HE",
+      "name": "Neste",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "VER.VI",
+      "name": "Verbund",
+      "sector": "Versorger"
+    },
+    {
+      "symbol": "EBS.VI",
+      "name": "Erste Group",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "ANDR.VI",
+      "name": "Andritz",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "NA9.DE",
+      "name": "Nagarro",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "S92.DE",
+      "name": "SMA Solar",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "EUZ.DE",
+      "name": "Eckert & Ziegler",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "VBK.DE",
+      "name": "Verbio",
+      "sector": "Energie"
+    },
+    {
+      "symbol": "ADN1.DE",
+      "name": "adesso",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "SGL.DE",
+      "name": "SGL Carbon",
+      "sector": "Rohstoffe & Chemie"
+    },
+    {
+      "symbol": "HYQ.DE",
+      "name": "Hypoport",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "PNE3.DE",
+      "name": "PNE",
+      "sector": "Versorger"
+    },
+    {
+      "symbol": "NOEJ.DE",
+      "name": "Norma Group",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "STM.DE",
+      "name": "Stabilus",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "MBB.DE",
+      "name": "MBB",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "GFT.DE",
+      "name": "GFT Technologies",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "ELG.DE",
+      "name": "Elmos Semiconductor",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "KTN.DE",
+      "name": "Kontron",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "SOFI",
+      "name": "SoFi Technologies",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "RKLB",
+      "name": "Rocket Lab",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "IONQ",
+      "name": "IonQ",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "HIMS",
+      "name": "Hims & Hers",
+      "sector": "Gesundheit"
+    },
+    {
+      "symbol": "CELH",
+      "name": "Celsius",
+      "sector": "Basiskonsum"
+    },
+    {
+      "symbol": "DUOL",
+      "name": "Duolingo",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "AFRM",
+      "name": "Affirm",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "U",
+      "name": "Unity Software",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "RBLX",
+      "name": "Roblox",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "SNOW",
+      "name": "Snowflake",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "NET",
+      "name": "Cloudflare",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "DDOG",
+      "name": "Datadog",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "ENPH",
+      "name": "Enphase Energy",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "PLUG",
+      "name": "Plug Power",
+      "sector": "Industrie"
+    },
+    {
+      "symbol": "SOUN",
+      "name": "SoundHound AI",
+      "sector": "Technologie"
+    },
+    {
+      "symbol": "OKLO",
+      "name": "Oklo",
+      "sector": "Versorger"
+    },
+    {
+      "symbol": "ASTS",
+      "name": "AST SpaceMobile",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "UPST",
+      "name": "Upstart",
+      "sector": "Finanzen"
+    },
+    {
+      "symbol": "CHWY",
+      "name": "Chewy",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "ETSY",
+      "name": "Etsy",
+      "sector": "Zyklischer Konsum"
+    },
+    {
+      "symbol": "ROKU",
+      "name": "Roku",
+      "sector": "Kommunikation & Medien"
+    },
+    {
+      "symbol": "LMND",
+      "name": "Lemonade",
+      "sector": "Finanzen"
+    }
   ],
   "etfs": [
-    {"symbol": "EUNL.DE", "name": "iShares Core MSCI World (ETF)"},
-    {"symbol": "XDWD.DE", "name": "Xtrackers MSCI World (ETF)"},
-    {"symbol": "VWCE.DE", "name": "Vanguard FTSE All-World Acc (ETF)"},
-    {"symbol": "VGWL.DE", "name": "Vanguard FTSE All-World Dist (ETF)"},
-    {"symbol": "IUSQ.DE", "name": "iShares MSCI ACWI (ETF)"},
-    {"symbol": "SXR8.DE", "name": "iShares Core S&P 500 (ETF)"},
-    {"symbol": "VUSA.DE", "name": "Vanguard S&P 500 (ETF)"},
-    {"symbol": "SXRV.DE", "name": "iShares Nasdaq 100 (ETF)"},
-    {"symbol": "EQQQ.DE", "name": "Invesco Nasdaq-100 (ETF)"},
-    {"symbol": "EXS1.DE", "name": "iShares Core DAX (ETF)"},
-    {"symbol": "EXW1.DE", "name": "iShares Core Euro Stoxx 50 (ETF)"},
-    {"symbol": "SXR7.DE", "name": "iShares Core MSCI EMU (ETF)"},
-    {"symbol": "IS3N.DE", "name": "iShares Core MSCI Emerging Markets IMI (ETF)"},
-    {"symbol": "EUNM.DE", "name": "iShares MSCI Emerging Markets (ETF)"},
-    {"symbol": "IUSN.DE", "name": "iShares MSCI World Small Cap (ETF)"},
-    {"symbol": "VGWD.DE", "name": "Vanguard FTSE All-World High Dividend (ETF)"},
-    {"symbol": "ISPA.DE", "name": "iShares Global Select Dividend 100 (ETF)"},
-    {"symbol": "QDVE.DE", "name": "iShares S&P 500 IT Sector (ETF)"},
-    {"symbol": "XDWT.DE", "name": "Xtrackers MSCI World IT (ETF)"},
-    {"symbol": "2B76.DE", "name": "iShares Automation & Robotics (ETF)"},
-    {"symbol": "IQQH.DE", "name": "iShares Global Clean Energy (ETF)"},
-    {"symbol": "4GLD.DE", "name": "Xetra-Gold (ETC, physisches Gold)"}
+    {
+      "symbol": "EUNL.DE",
+      "name": "iShares Core MSCI World (ETF)"
+    },
+    {
+      "symbol": "XDWD.DE",
+      "name": "Xtrackers MSCI World (ETF)"
+    },
+    {
+      "symbol": "VWCE.DE",
+      "name": "Vanguard FTSE All-World Acc (ETF)"
+    },
+    {
+      "symbol": "VGWL.DE",
+      "name": "Vanguard FTSE All-World Dist (ETF)"
+    },
+    {
+      "symbol": "IUSQ.DE",
+      "name": "iShares MSCI ACWI (ETF)"
+    },
+    {
+      "symbol": "SXR8.DE",
+      "name": "iShares Core S&P 500 (ETF)"
+    },
+    {
+      "symbol": "VUSA.DE",
+      "name": "Vanguard S&P 500 (ETF)"
+    },
+    {
+      "symbol": "SXRV.DE",
+      "name": "iShares Nasdaq 100 (ETF)"
+    },
+    {
+      "symbol": "EQQQ.DE",
+      "name": "Invesco Nasdaq-100 (ETF)"
+    },
+    {
+      "symbol": "EXS1.DE",
+      "name": "iShares Core DAX (ETF)"
+    },
+    {
+      "symbol": "EXW1.DE",
+      "name": "iShares Core Euro Stoxx 50 (ETF)"
+    },
+    {
+      "symbol": "SXR7.DE",
+      "name": "iShares Core MSCI EMU (ETF)"
+    },
+    {
+      "symbol": "IS3N.DE",
+      "name": "iShares Core MSCI Emerging Markets IMI (ETF)"
+    },
+    {
+      "symbol": "EUNM.DE",
+      "name": "iShares MSCI Emerging Markets (ETF)"
+    },
+    {
+      "symbol": "IUSN.DE",
+      "name": "iShares MSCI World Small Cap (ETF)"
+    },
+    {
+      "symbol": "VGWD.DE",
+      "name": "Vanguard FTSE All-World High Dividend (ETF)"
+    },
+    {
+      "symbol": "ISPA.DE",
+      "name": "iShares Global Select Dividend 100 (ETF)"
+    },
+    {
+      "symbol": "QDVE.DE",
+      "name": "iShares S&P 500 IT Sector (ETF)"
+    },
+    {
+      "symbol": "XDWT.DE",
+      "name": "Xtrackers MSCI World IT (ETF)"
+    },
+    {
+      "symbol": "2B76.DE",
+      "name": "iShares Automation & Robotics (ETF)"
+    },
+    {
+      "symbol": "IQQH.DE",
+      "name": "iShares Global Clean Energy (ETF)"
+    },
+    {
+      "symbol": "4GLD.DE",
+      "name": "Xetra-Gold (ETC, physisches Gold)"
+    }
   ],
   "home_indices": [
-    {"symbol": "^MDAXI", "name": "MDAX"},
-    {"symbol": "^STOXX50E", "name": "Euro Stoxx 50"},
-    {"symbol": "^N225", "name": "Nikkei 225"},
-    {"symbol": "^FTSE", "name": "FTSE 100"},
-    {"symbol": "EUNL.DE", "name": "MSCI World (ETF)"}
+    {
+      "symbol": "^MDAXI",
+      "name": "MDAX"
+    },
+    {
+      "symbol": "^STOXX50E",
+      "name": "Euro Stoxx 50"
+    },
+    {
+      "symbol": "^N225",
+      "name": "Nikkei 225"
+    },
+    {
+      "symbol": "^FTSE",
+      "name": "FTSE 100"
+    },
+    {
+      "symbol": "EUNL.DE",
+      "name": "MSCI World (ETF)"
+    }
   ],
   "dax": [
-    {"symbol": "ADS.DE", "name": "adidas"},
-    {"symbol": "AIR.DE", "name": "Airbus"},
-    {"symbol": "ALV.DE", "name": "Allianz"},
-    {"symbol": "BAS.DE", "name": "BASF"},
-    {"symbol": "BAYN.DE", "name": "Bayer"},
-    {"symbol": "BEI.DE", "name": "Beiersdorf"},
-    {"symbol": "BMW.DE", "name": "BMW"},
-    {"symbol": "BNR.DE", "name": "Brenntag"},
-    {"symbol": "CBK.DE", "name": "Commerzbank"},
-    {"symbol": "CON.DE", "name": "Continental"},
-    {"symbol": "DTG.DE", "name": "Daimler Truck"},
-    {"symbol": "DBK.DE", "name": "Deutsche Bank"},
-    {"symbol": "DB1.DE", "name": "Deutsche Börse"},
-    {"symbol": "DTE.DE", "name": "Deutsche Telekom"},
-    {"symbol": "DHL.DE", "name": "DHL Group"},
-    {"symbol": "EOAN.DE", "name": "E.ON"},
-    {"symbol": "FRE.DE", "name": "Fresenius"},
-    {"symbol": "FME.DE", "name": "Fresenius Medical Care"},
-    {"symbol": "G1A.DE", "name": "GEA Group"},
-    {"symbol": "HNR1.DE", "name": "Hannover Rück"},
-    {"symbol": "HEI.DE", "name": "Heidelberg Materials"},
-    {"symbol": "HEN3.DE", "name": "Henkel Vz."},
-    {"symbol": "HOT.DE", "name": "Hochtief"},
-    {"symbol": "IFX.DE", "name": "Infineon"},
-    {"symbol": "MBG.DE", "name": "Mercedes-Benz"},
-    {"symbol": "MRK.DE", "name": "Merck"},
-    {"symbol": "MTX.DE", "name": "MTU Aero Engines"},
-    {"symbol": "MUV2.DE", "name": "Münchener Rück"},
-    {"symbol": "QIA.DE", "name": "Qiagen"},
-    {"symbol": "RHM.DE", "name": "Rheinmetall"},
-    {"symbol": "RWE.DE", "name": "RWE"},
-    {"symbol": "SAP.DE", "name": "SAP"},
-    {"symbol": "G24.DE", "name": "Scout24"},
-    {"symbol": "SIE.DE", "name": "Siemens"},
-    {"symbol": "ENR.DE", "name": "Siemens Energy"},
-    {"symbol": "SHL.DE", "name": "Siemens Healthineers"},
-    {"symbol": "SY1.DE", "name": "Symrise"},
-    {"symbol": "VOW3.DE", "name": "Volkswagen Vz."},
-    {"symbol": "VNA.DE", "name": "Vonovia"},
-    {"symbol": "ZAL.DE", "name": "Zalando"}
+    {
+      "symbol": "ADS.DE",
+      "name": "adidas"
+    },
+    {
+      "symbol": "AIR.DE",
+      "name": "Airbus"
+    },
+    {
+      "symbol": "ALV.DE",
+      "name": "Allianz"
+    },
+    {
+      "symbol": "BAS.DE",
+      "name": "BASF"
+    },
+    {
+      "symbol": "BAYN.DE",
+      "name": "Bayer"
+    },
+    {
+      "symbol": "BEI.DE",
+      "name": "Beiersdorf"
+    },
+    {
+      "symbol": "BMW.DE",
+      "name": "BMW"
+    },
+    {
+      "symbol": "BNR.DE",
+      "name": "Brenntag"
+    },
+    {
+      "symbol": "CBK.DE",
+      "name": "Commerzbank"
+    },
+    {
+      "symbol": "CON.DE",
+      "name": "Continental"
+    },
+    {
+      "symbol": "DTG.DE",
+      "name": "Daimler Truck"
+    },
+    {
+      "symbol": "DBK.DE",
+      "name": "Deutsche Bank"
+    },
+    {
+      "symbol": "DB1.DE",
+      "name": "Deutsche Börse"
+    },
+    {
+      "symbol": "DTE.DE",
+      "name": "Deutsche Telekom"
+    },
+    {
+      "symbol": "DHL.DE",
+      "name": "DHL Group"
+    },
+    {
+      "symbol": "EOAN.DE",
+      "name": "E.ON"
+    },
+    {
+      "symbol": "FRE.DE",
+      "name": "Fresenius"
+    },
+    {
+      "symbol": "FME.DE",
+      "name": "Fresenius Medical Care"
+    },
+    {
+      "symbol": "G1A.DE",
+      "name": "GEA Group"
+    },
+    {
+      "symbol": "HNR1.DE",
+      "name": "Hannover Rück"
+    },
+    {
+      "symbol": "HEI.DE",
+      "name": "Heidelberg Materials"
+    },
+    {
+      "symbol": "HEN3.DE",
+      "name": "Henkel Vz."
+    },
+    {
+      "symbol": "HOT.DE",
+      "name": "Hochtief"
+    },
+    {
+      "symbol": "IFX.DE",
+      "name": "Infineon"
+    },
+    {
+      "symbol": "MBG.DE",
+      "name": "Mercedes-Benz"
+    },
+    {
+      "symbol": "MRK.DE",
+      "name": "Merck"
+    },
+    {
+      "symbol": "MTX.DE",
+      "name": "MTU Aero Engines"
+    },
+    {
+      "symbol": "MUV2.DE",
+      "name": "Münchener Rück"
+    },
+    {
+      "symbol": "QIA.DE",
+      "name": "Qiagen"
+    },
+    {
+      "symbol": "RHM.DE",
+      "name": "Rheinmetall"
+    },
+    {
+      "symbol": "RWE.DE",
+      "name": "RWE"
+    },
+    {
+      "symbol": "SAP.DE",
+      "name": "SAP"
+    },
+    {
+      "symbol": "G24.DE",
+      "name": "Scout24"
+    },
+    {
+      "symbol": "SIE.DE",
+      "name": "Siemens"
+    },
+    {
+      "symbol": "ENR.DE",
+      "name": "Siemens Energy"
+    },
+    {
+      "symbol": "SHL.DE",
+      "name": "Siemens Healthineers"
+    },
+    {
+      "symbol": "SY1.DE",
+      "name": "Symrise"
+    },
+    {
+      "symbol": "VOW3.DE",
+      "name": "Volkswagen Vz."
+    },
+    {
+      "symbol": "VNA.DE",
+      "name": "Vonovia"
+    },
+    {
+      "symbol": "ZAL.DE",
+      "name": "Zalando"
+    }
   ],
   "us": [
-    {"symbol": "NVDA", "name": "Nvidia"},
-    {"symbol": "AAPL", "name": "Apple"},
-    {"symbol": "MSFT", "name": "Microsoft"},
-    {"symbol": "AMZN", "name": "Amazon"},
-    {"symbol": "GOOGL", "name": "Alphabet"},
-    {"symbol": "META", "name": "Meta"},
-    {"symbol": "TSLA", "name": "Tesla"},
-    {"symbol": "AVGO", "name": "Broadcom"}
+    {
+      "symbol": "NVDA",
+      "name": "Nvidia"
+    },
+    {
+      "symbol": "AAPL",
+      "name": "Apple"
+    },
+    {
+      "symbol": "MSFT",
+      "name": "Microsoft"
+    },
+    {
+      "symbol": "AMZN",
+      "name": "Amazon"
+    },
+    {
+      "symbol": "GOOGL",
+      "name": "Alphabet"
+    },
+    {
+      "symbol": "META",
+      "name": "Meta"
+    },
+    {
+      "symbol": "TSLA",
+      "name": "Tesla"
+    },
+    {
+      "symbol": "AVGO",
+      "name": "Broadcom"
+    }
   ]
 }

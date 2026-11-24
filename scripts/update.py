@@ -436,7 +436,8 @@ def build(hist, meta, today, force=False):
 # ---------------------------------------------------------------- Merkliste (geschützter Bereich)
 WATCH_FILE = ROOT / "watch.json"
 FX = {"USD": "EURUSD=X", "HKD": "EURHKD=X", "AUD": "EURAUD=X", "GBP": "EURGBP=X", "CHF": "EURCHF=X", "SEK": "EURSEK=X",
-      "DKK": "EURDKK=X", "CAD": "EURCAD=X", "HUF": "EURHUF=X"}
+      "DKK": "EURDKK=X", "CAD": "EURCAD=X", "HUF": "EURHUF=X", "JPY": "EURJPY=X", "KRW": "EURKRW=X", "TWD": "EURTWD=X",
+      "INR": "EURINR=X", "BRL": "EURBRL=X", "MXN": "EURMXN=X", "SGD": "EURSGD=X", "NZD": "EURNZD=X", "NOK": "EURNOK=X"}
 
 
 def watch_symbols():
@@ -449,7 +450,9 @@ def watch_symbols():
 def currency_of(sym):
     suffix = sym.rsplit(".", 1)[-1].upper() if "." in sym else ""
     return {"DE": "EUR", "F": "EUR", "AS": "EUR", "PA": "EUR", "MI": "EUR", "VI": "EUR",
-            "MC": "EUR", "HE": "EUR", "HK": "HKD", "AX": "AUD", "SW": "CHF", "ST": "SEK", "CO": "DKK", "TO": "CAD", "BD": "HUF"}.get(suffix, "USD")
+            "MC": "EUR", "HE": "EUR", "BR": "EUR", "LS": "EUR", "IR": "EUR", "HK": "HKD", "AX": "AUD", "SW": "CHF", "ST": "SEK",
+            "CO": "DKK", "TO": "CAD", "BD": "HUF", "T": "JPY", "KS": "KRW", "TW": "TWD", "NS": "INR", "SA": "BRL", "MX": "MXN",
+            "SI": "SGD", "NZ": "NZD", "OL": "NOK"}.get(suffix, "USD")
 
 
 def all_stock_symbols():

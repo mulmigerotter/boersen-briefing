@@ -1002,5 +1002,561 @@
  "4GLD.DE": {
   "name": "Xetra-Gold (ETC, physisches Gold)",
   "sector": "ETF"
+ },
+ "7203.T": {
+  "name": "Toyota",
+  "sector": "Zyklischer Konsum"
+ },
+ "6758.T": {
+  "name": "Sony",
+  "sector": "Technologie"
+ },
+ "7974.T": {
+  "name": "Nintendo",
+  "sector": "Kommunikation & Medien"
+ },
+ "6861.T": {
+  "name": "Keyence",
+  "sector": "Technologie"
+ },
+ "9984.T": {
+  "name": "SoftBank Group",
+  "sector": "Kommunikation & Medien"
+ },
+ "8035.T": {
+  "name": "Tokyo Electron",
+  "sector": "Technologie"
+ },
+ "6098.T": {
+  "name": "Recruit",
+  "sector": "Industrie"
+ },
+ "9983.T": {
+  "name": "Fast Retailing (Uniqlo)",
+  "sector": "Zyklischer Konsum"
+ },
+ "7741.T": {
+  "name": "Hoya",
+  "sector": "Gesundheit"
+ },
+ "6501.T": {
+  "name": "Hitachi",
+  "sector": "Industrie"
+ },
+ "8306.T": {
+  "name": "Mitsubishi UFJ",
+  "sector": "Finanzen"
+ },
+ "4063.T": {
+  "name": "Shin-Etsu Chemical",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "6367.T": {
+  "name": "Daikin",
+  "sector": "Industrie"
+ },
+ "7267.T": {
+  "name": "Honda",
+  "sector": "Zyklischer Konsum"
+ },
+ "6594.T": {
+  "name": "Nidec",
+  "sector": "Industrie"
+ },
+ "3659.T": {
+  "name": "Nexon",
+  "sector": "Kommunikation & Medien"
+ },
+ "4385.T": {
+  "name": "Mercari",
+  "sector": "Zyklischer Konsum"
+ },
+ "6920.T": {
+  "name": "Lasertec",
+  "sector": "Technologie"
+ },
+ "2413.T": {
+  "name": "M3",
+  "sector": "Gesundheit"
+ },
+ "005930.KS": {
+  "name": "Samsung Electronics",
+  "sector": "Technologie"
+ },
+ "000660.KS": {
+  "name": "SK Hynix",
+  "sector": "Technologie"
+ },
+ "005380.KS": {
+  "name": "Hyundai Motor",
+  "sector": "Zyklischer Konsum"
+ },
+ "035420.KS": {
+  "name": "Naver",
+  "sector": "Kommunikation & Medien"
+ },
+ "035720.KS": {
+  "name": "Kakao",
+  "sector": "Kommunikation & Medien"
+ },
+ "2330.TW": {
+  "name": "TSMC (Taiwan)",
+  "sector": "Technologie"
+ },
+ "2317.TW": {
+  "name": "Hon Hai (Foxconn)",
+  "sector": "Technologie"
+ },
+ "2454.TW": {
+  "name": "MediaTek",
+  "sector": "Technologie"
+ },
+ "RELIANCE.NS": {
+  "name": "Reliance Industries",
+  "sector": "Energie"
+ },
+ "TCS.NS": {
+  "name": "Tata Consultancy Services",
+  "sector": "Technologie"
+ },
+ "INFY.NS": {
+  "name": "Infosys",
+  "sector": "Technologie"
+ },
+ "HDFCBANK.NS": {
+  "name": "HDFC Bank",
+  "sector": "Finanzen"
+ },
+ "ITC.NS": {
+  "name": "ITC",
+  "sector": "Basiskonsum"
+ },
+ "PETR4.SA": {
+  "name": "Petrobras",
+  "sector": "Energie"
+ },
+ "VALE3.SA": {
+  "name": "Vale",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "ITUB4.SA": {
+  "name": "Itaú Unibanco",
+  "sector": "Finanzen"
+ },
+ "WEGE3.SA": {
+  "name": "WEG",
+  "sector": "Industrie"
+ },
+ "WALMEX.MX": {
+  "name": "Walmart de México",
+  "sector": "Basiskonsum"
+ },
+ "D05.SI": {
+  "name": "DBS Group",
+  "sector": "Finanzen"
+ },
+ "MELI": {
+  "name": "MercadoLibre",
+  "sector": "Zyklischer Konsum"
+ },
+ "NU": {
+  "name": "Nu Holdings",
+  "sector": "Finanzen"
+ },
+ "SE": {
+  "name": "Sea Limited",
+  "sector": "Kommunikation & Medien"
+ },
+ "BABA": {
+  "name": "Alibaba",
+  "sector": "Zyklischer Konsum"
+ },
+ "PDD": {
+  "name": "PDD (Temu)",
+  "sector": "Zyklischer Konsum"
+ },
+ "JD": {
+  "name": "JD.com",
+  "sector": "Zyklischer Konsum"
+ },
+ "BHP.AX": {
+  "name": "BHP",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "CBA.AX": {
+  "name": "Commonwealth Bank",
+  "sector": "Finanzen"
+ },
+ "CSL.AX": {
+  "name": "CSL",
+  "sector": "Gesundheit"
+ },
+ "WES.AX": {
+  "name": "Wesfarmers",
+  "sector": "Zyklischer Konsum"
+ },
+ "XRO.AX": {
+  "name": "Xero",
+  "sector": "Technologie"
+ },
+ "PME.AX": {
+  "name": "Pro Medicus",
+  "sector": "Gesundheit"
+ },
+ "WTC.AX": {
+  "name": "WiseTech Global",
+  "sector": "Technologie"
+ },
+ "LYC.AX": {
+  "name": "Lynas Rare Earths",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "FPH.NZ": {
+  "name": "Fisher & Paykel Healthcare",
+  "sector": "Gesundheit"
+ },
+ "RY.TO": {
+  "name": "Royal Bank of Canada",
+  "sector": "Finanzen"
+ },
+ "TD.TO": {
+  "name": "Toronto-Dominion Bank",
+  "sector": "Finanzen"
+ },
+ "CNQ.TO": {
+  "name": "Canadian Natural Resources",
+  "sector": "Energie"
+ },
+ "ENB.TO": {
+  "name": "Enbridge",
+  "sector": "Energie"
+ },
+ "CSU.TO": {
+  "name": "Constellation Software",
+  "sector": "Technologie"
+ },
+ "ATD.TO": {
+  "name": "Alimentation Couche-Tard",
+  "sector": "Basiskonsum"
+ },
+ "CNR.TO": {
+  "name": "Canadian National Railway",
+  "sector": "Industrie"
+ },
+ "BB.TO": {
+  "name": "BlackBerry",
+  "sector": "Technologie"
+ },
+ "DOL.TO": {
+  "name": "Dollarama",
+  "sector": "Zyklischer Konsum"
+ },
+ "NXE.TO": {
+  "name": "NexGen Energy",
+  "sector": "Energie"
+ },
+ "EQNR.OL": {
+  "name": "Equinor",
+  "sector": "Energie"
+ },
+ "DNB.OL": {
+  "name": "DNB Bank",
+  "sector": "Finanzen"
+ },
+ "NHY.OL": {
+  "name": "Norsk Hydro",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "MOWI.OL": {
+  "name": "Mowi",
+  "sector": "Basiskonsum"
+ },
+ "KOG.OL": {
+  "name": "Kongsberg Gruppen",
+  "sector": "Industrie"
+ },
+ "NEL.OL": {
+  "name": "Nel",
+  "sector": "Industrie"
+ },
+ "ABI.BR": {
+  "name": "AB InBev",
+  "sector": "Basiskonsum"
+ },
+ "UCB.BR": {
+  "name": "UCB",
+  "sector": "Gesundheit"
+ },
+ "ARGX.BR": {
+  "name": "argenx",
+  "sector": "Gesundheit"
+ },
+ "RYA.IR": {
+  "name": "Ryanair",
+  "sector": "Industrie"
+ },
+ "EDP.LS": {
+  "name": "EDP",
+  "sector": "Versorger"
+ },
+ "GALP.LS": {
+  "name": "Galp Energia",
+  "sector": "Energie"
+ },
+ "BESI.AS": {
+  "name": "BE Semiconductor",
+  "sector": "Technologie"
+ },
+ "ASM.AS": {
+  "name": "ASM International",
+  "sector": "Technologie"
+ },
+ "HEIA.AS": {
+  "name": "Heineken",
+  "sector": "Basiskonsum"
+ },
+ "PHIA.AS": {
+  "name": "Philips",
+  "sector": "Gesundheit"
+ },
+ "WKL.AS": {
+  "name": "Wolters Kluwer",
+  "sector": "Industrie"
+ },
+ "ML.PA": {
+  "name": "Michelin",
+  "sector": "Zyklischer Konsum"
+ },
+ "DSY.PA": {
+  "name": "Dassault Systèmes",
+  "sector": "Technologie"
+ },
+ "SOI.PA": {
+  "name": "Soitec",
+  "sector": "Technologie"
+ },
+ "UBI.PA": {
+  "name": "Ubisoft",
+  "sector": "Kommunikation & Medien"
+ },
+ "PRY.MI": {
+  "name": "Prysmian",
+  "sector": "Industrie"
+ },
+ "LDO.MI": {
+  "name": "Leonardo",
+  "sector": "Industrie"
+ },
+ "MONC.MI": {
+  "name": "Moncler",
+  "sector": "Zyklischer Konsum"
+ },
+ "AMS.MC": {
+  "name": "Amadeus IT",
+  "sector": "Technologie"
+ },
+ "LOGN.SW": {
+  "name": "Logitech",
+  "sector": "Technologie"
+ },
+ "SIKA.SW": {
+  "name": "Sika",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "CFR.SW": {
+  "name": "Richemont",
+  "sector": "Zyklischer Konsum"
+ },
+ "EVO.ST": {
+  "name": "Evolution",
+  "sector": "Zyklischer Konsum"
+ },
+ "SAAB-B.ST": {
+  "name": "Saab",
+  "sector": "Industrie"
+ },
+ "HM-B.ST": {
+  "name": "H&M",
+  "sector": "Zyklischer Konsum"
+ },
+ "DSV.CO": {
+  "name": "DSV",
+  "sector": "Industrie"
+ },
+ "GMAB.CO": {
+  "name": "Genmab",
+  "sector": "Gesundheit"
+ },
+ "PNDORA.CO": {
+  "name": "Pandora",
+  "sector": "Zyklischer Konsum"
+ },
+ "ORSTED.CO": {
+  "name": "Ørsted",
+  "sector": "Versorger"
+ },
+ "KNEBV.HE": {
+  "name": "Kone",
+  "sector": "Industrie"
+ },
+ "NESTE.HE": {
+  "name": "Neste",
+  "sector": "Energie"
+ },
+ "VER.VI": {
+  "name": "Verbund",
+  "sector": "Versorger"
+ },
+ "EBS.VI": {
+  "name": "Erste Group",
+  "sector": "Finanzen"
+ },
+ "ANDR.VI": {
+  "name": "Andritz",
+  "sector": "Industrie"
+ },
+ "NA9.DE": {
+  "name": "Nagarro",
+  "sector": "Technologie"
+ },
+ "S92.DE": {
+  "name": "SMA Solar",
+  "sector": "Technologie"
+ },
+ "EUZ.DE": {
+  "name": "Eckert & Ziegler",
+  "sector": "Gesundheit"
+ },
+ "VBK.DE": {
+  "name": "Verbio",
+  "sector": "Energie"
+ },
+ "ADN1.DE": {
+  "name": "adesso",
+  "sector": "Technologie"
+ },
+ "SGL.DE": {
+  "name": "SGL Carbon",
+  "sector": "Rohstoffe & Chemie"
+ },
+ "HYQ.DE": {
+  "name": "Hypoport",
+  "sector": "Finanzen"
+ },
+ "PNE3.DE": {
+  "name": "PNE",
+  "sector": "Versorger"
+ },
+ "NOEJ.DE": {
+  "name": "Norma Group",
+  "sector": "Industrie"
+ },
+ "STM.DE": {
+  "name": "Stabilus",
+  "sector": "Industrie"
+ },
+ "MBB.DE": {
+  "name": "MBB",
+  "sector": "Industrie"
+ },
+ "GFT.DE": {
+  "name": "GFT Technologies",
+  "sector": "Technologie"
+ },
+ "ELG.DE": {
+  "name": "Elmos Semiconductor",
+  "sector": "Technologie"
+ },
+ "KTN.DE": {
+  "name": "Kontron",
+  "sector": "Technologie"
+ },
+ "SOFI": {
+  "name": "SoFi Technologies",
+  "sector": "Finanzen"
+ },
+ "RKLB": {
+  "name": "Rocket Lab",
+  "sector": "Industrie"
+ },
+ "IONQ": {
+  "name": "IonQ",
+  "sector": "Technologie"
+ },
+ "HIMS": {
+  "name": "Hims & Hers",
+  "sector": "Gesundheit"
+ },
+ "CELH": {
+  "name": "Celsius",
+  "sector": "Basiskonsum"
+ },
+ "DUOL": {
+  "name": "Duolingo",
+  "sector": "Technologie"
+ },
+ "AFRM": {
+  "name": "Affirm",
+  "sector": "Finanzen"
+ },
+ "U": {
+  "name": "Unity Software",
+  "sector": "Technologie"
+ },
+ "RBLX": {
+  "name": "Roblox",
+  "sector": "Kommunikation & Medien"
+ },
+ "SNOW": {
+  "name": "Snowflake",
+  "sector": "Technologie"
+ },
+ "NET": {
+  "name": "Cloudflare",
+  "sector": "Technologie"
+ },
+ "DDOG": {
+  "name": "Datadog",
+  "sector": "Technologie"
+ },
+ "ENPH": {
+  "name": "Enphase Energy",
+  "sector": "Technologie"
+ },
+ "PLUG": {
+  "name": "Plug Power",
+  "sector": "Industrie"
+ },
+ "SOUN": {
+  "name": "SoundHound AI",
+  "sector": "Technologie"
+ },
+ "OKLO": {
+  "name": "Oklo",
+  "sector": "Versorger"
+ },
+ "ASTS": {
+  "name": "AST SpaceMobile",
+  "sector": "Kommunikation & Medien"
+ },
+ "UPST": {
+  "name": "Upstart",
+  "sector": "Finanzen"
+ },
+ "CHWY": {
+  "name": "Chewy",
+  "sector": "Zyklischer Konsum"
+ },
+ "ETSY": {
+  "name": "Etsy",
+  "sector": "Zyklischer Konsum"
+ },
+ "ROKU": {
+  "name": "Roku",
+  "sector": "Kommunikation & Medien"
+ },
+ "LMND": {
+  "name": "Lemonade",
+  "sector": "Finanzen"
  }
 }

@@ -1308,7 +1308,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 
   const clip = (x, a, b) => Math.max(a, Math.min(b, x));
   const pctInt = (x) => Math.round(x * 100) + " %";
-  const CUR = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", HKD: "HK$", AUD: "A$", SEK: "SEK", DKK: "DKK", CAD: "C$", HUF: "HUF" };
+  const CUR = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", HKD: "HK$", AUD: "A$", SEK: "SEK", DKK: "DKK", CAD: "C$", HUF: "HUF", JPY: "¥", KRW: "₩", TWD: "NT$", INR: "₹", BRL: "R$", MXN: "MX$", SGD: "S$", NZD: "NZ$", NOK: "NOK" };
   const amt = (v, c) => (typeof v === "number" && isFinite(v) ? nf2.format(v) : "–") + " " + (CUR[c] || c || "€");
   const eur = (v) => amt(v, "EUR");
   function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
