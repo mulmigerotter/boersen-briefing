@@ -541,6 +541,11 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 .seg button { font: inherit; font-size: 13.5px; padding: 6px 12px; background: none; border: 0; color: var(--ink); cursor: pointer; }
 .seg button + button { border-left: 1px solid var(--line); }
 .seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); font-weight: 600; }
+.dp-pick { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 4px; }
+.dp-pick button { font: inherit; font-size: 13.5px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.dp-pick button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); font-weight: 600; }
+.dp-table tr.dp-on td:first-child { font-weight: 700; color: var(--accent); }
+.dp-table tbody tr[data-row] { cursor: pointer; }
 .ak-glance { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 14px; padding: 12px 14px; }
 .ak-glance h3 { margin: 0 0 6px; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .ak-glance ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14.5px; }
@@ -992,6 +997,12 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
         <button class="btn" id="cu-add" type="button">Eigene Aktie hinzufügen</button>
       </details>
       <div id="dp-table"></div>
+
+      <div id="dp-pickbox" hidden>
+        <h4>Welche Aktien anschauen?</h4>
+        <p class="sec-note">Tippe eine oder mehrere Aktien an – Prognose und „Was wäre wenn“ rechnen dann nur mit diesen. „Alle“ zeigt dein ganzes Depot.</p>
+        <div class="dp-pick" id="dp-pick" role="group" aria-label="Aktien für Prognose und Was wäre wenn auswählen"></div>
+      </div>
 
       <h4>Prognose für die nächsten Jahre</h4>
       <div class="ak-controls">
@@ -2289,6 +2300,25 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   // ---------- Rechner ----------
   let DEPOT = ls.get(DKEY, []);
   const saveDepot = () => ls.set(DKEY, DEPOT);
+  // Auswahl einzelner Aktien für Prognose / Was wäre wenn (leer = alle)
+  const posKey = (p) => (p.sym ? "s:" + p.sym : "c:" + p.name);
+  let PICK = new Set();
+  const viewDepot = () => { const v = DEPOT.filter((p) => PICK.has(posKey(p))); return v.length ? v : DEPOT; };
+  function renderPick() {
+    const box = $("dp-pickbox");
+    PICK.forEach((k) => { if (!DEPOT.some((p) => posKey(p) === k)) PICK.delete(k); });
+    box.hidden = DEPOT.length < 2;
+    if (box.hidden) { PICK.clear(); return; }
+    $("dp-pick").innerHTML = '<button type="button" data-pick="" aria-pressed="' + !PICK.size + '">Alle</button>' +
+      DEPOT.map((p) => { const k = posKey(p); return '<button type="button" data-pick="' + esc(k) + '" aria-pressed="' + PICK.has(k) + '">' + esc(posInfo(p).name) + "</button>"; }).join("");
+    document.querySelectorAll("#dp-table tr[data-row]").forEach((tr) => tr.classList.toggle("dp-on", PICK.has(tr.dataset.row)));
+  }
+  const pickNote = (v) => (v.length < DEPOT.length ? '<p class="sec-note"><b>Nur:</b> ' + v.map((p) => esc(posInfo(p).name)).join(", ") + "</p>" : "");
+  function togglePick(k) {
+    if (!k) PICK.clear(); else if (PICK.has(k)) PICK.delete(k); else PICK.add(k);
+    if (PICK.size === DEPOT.length) PICK.clear();
+    renderPick(); renderPrognose(); renderBacktest();
+  }
   function fillStockSelects() {
     const all = Object.keys(STOCKS).sort((a, b) => nameOf(a).localeCompare(nameOf(b), "de"));
     const favs = all.filter((s) => FAVS.has(s));
@@ -2338,9 +2368,12 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     });
     $("dp-table").addEventListener("click", (e) => {
       const b = e.target.closest("button[data-del]");
-      if (!b) return;
-      DEPOT.splice(Number(b.dataset.del), 1); saveDepot(); renderDepot();
+      if (b) { DEPOT.splice(Number(b.dataset.del), 1); saveDepot(); renderDepot(); return; }
+      if (e.target.closest("button, a")) return;
+      const tr = e.target.closest("tr[data-row]");
+      if (tr && DEPOT.length > 1) { togglePick(tr.dataset.row); $("dp-pickbox").scrollIntoView({ behavior: "smooth", block: "start" }); }
     });
+    $("dp-pick").addEventListener("click", (e) => { const b = e.target.closest("button[data-pick]"); if (b) togglePick(b.dataset.pick); });
     $("pr-years").addEventListener("change", renderPrognose);
     $("pr-assume").addEventListener("change", renderPrognose);
     $("bt-years").addEventListener("change", renderBacktest);
@@ -2428,36 +2461,37 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     await loadLong();
     if (!DEPOT.length) {
       $("dp-table").innerHTML = '<p class="sec-note">Noch keine Aktien. Wähle oben eine Aktie und einen Betrag – oder tippe in „Alle Aktien“ auf „Zu Meine Aktien“.</p>';
-      $("pr-out").innerHTML = ""; $("bt-out").innerHTML = ""; return;
+      $("pr-out").innerHTML = ""; $("bt-out").innerHTML = ""; renderPick(); return;
     }
     let tot = 0, totDiv = 0;
     const rows = DEPOT.map((p, i) => {
       const inf = posInfo(p), d = p.amount * inf.y; tot += p.amount; totDiv += d;
       const r = riskClass(inf.sigma);
-      return "<tr><td>" + esc(inf.name) + (inf.custom ? " <small>(eigene)</small>" : copyBtn(p.sym, inf.name)) + "</td><td>" + eur(p.amount) + "</td><td>" + nf1.format(inf.y * 100) + " %</td><td>" + eur(d) +
+      return '<tr data-row="' + esc(posKey(p)) + '"><td>' + esc(inf.name) + (inf.custom ? " <small>(eigene)</small>" : copyBtn(p.sym, inf.name)) + "</td><td>" + eur(p.amount) + "</td><td>" + nf1.format(inf.y * 100) + " %</td><td>" + eur(d) +
         '</td><td><span class="risk ' + r[0] + '">' + r[1] + '</span></td><td><button type="button" data-del="' + i + '" aria-label="' + esc(inf.name) + ' entfernen">✕</button></td></tr>';
     }).join("");
     $("dp-table").innerHTML = '<div class="tbl"><table class="dp-table"><thead><tr><th>Aktie</th><th>Betrag</th><th>Div.</th><th>pro Jahr</th><th>Risiko</th><th></th></tr></thead><tbody>' + rows +
       "</tbody><tfoot><tr><td>Zusammen</td><td>" + eur(tot) + "</td><td>" + nf1.format(tot ? totDiv / tot * 100 : 0) + " %</td><td>" + eur(totDiv) + '</td><td colspan="2"></td></tr></tfoot></table></div>' +
-      '<p class="sec-note">Dividende pro Jahr vor Steuer ≈ ' + eur(totDiv / 12) + " pro Monat (Rendite der letzten 12 Monate).</p>";
-    renderPrognose(); renderBacktest();
+      '<p class="sec-note">Dividende pro Jahr vor Steuer ≈ ' + eur(totDiv / 12) + " pro Monat (Rendite der letzten 12 Monate)." + (DEPOT.length > 1 ? " Tippe auf eine Aktie, um sie einzeln anzuschauen." : "") + "</p>";
+    renderPick(); renderPrognose(); renderBacktest();
   }
   function renderPrognose() {
     if (!DEPOT.length) { $("pr-out").innerHTML = ""; return; }
     const years = Number($("pr-years").value) || 5, as = $("pr-assume").value;
     const noHeft = [];
-    const pos = DEPOT.map((p) => {
+    const VIEW = viewDepot();
+    const pos = VIEW.map((p) => {
       const inf = posInfo(p);
       const hg = as === "heft" ? heftGrowth(p.sym) : null;
       if (as === "heft" && hg == null) noHeft.push(inf.name);
       const mu = as === "hist" ? (inf.cagr == null ? 0.07 : clip(inf.cagr, -0.1, 0.2)) : as === "mine" ? mineGrowth(inf.cagr) : as === "heft" ? (hg == null ? 0.07 : hg) : Number(as) / 100;
       return { amount: p.amount, mu, sigma: clip(inf.sigma, 0.05, 1.5), y: inf.y };
     });
-    const sim = depotSim(pos, years, hashStr(JSON.stringify(DEPOT) + years + as));
+    const sim = depotSim(pos, years, hashStr(JSON.stringify(VIEW) + years + as));
     const b = sim.bands, l = b.p50.length - 1, tot = sim.total0;
     const avgY = pos.reduce((s, p) => s + p.amount * p.y, 0) / tot;
     const xl = ["heute", "in " + Math.round(years / 2) + " J.", "in " + years + " J."];
-    $("pr-out").innerHTML = lineChart([{ v: b.p50, cls: "med", label: (v) => fmtK(v) + " €", tcls: "t1" }, { v: b.p50.map(() => tot), cls: "l3" }], xl,
+    $("pr-out").innerHTML = pickNote(VIEW) + lineChart([{ v: b.p50, cls: "med", label: (v) => fmtK(v) + " €", tcls: "t1" }, { v: b.p50.map(() => tot), cls: "l3" }], xl,
       { bands: b, aria: "Prognose Depotwert über " + years + " Jahre" }) +
       '<p class="legend">Linie: mittlerer Verlauf · Flächen: mittlere 50 % und 80 % der Läufe · gepunktet: heutiger Betrag</p>' +
       '<div class="stats stats4">' + stat("Mitte in " + years + " J.", eur(b.p50[l]), signedPct(b.p50[l] / tot - 1)) +
@@ -2473,14 +2507,14 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   function renderBacktestShort(days, label) {
     if (!DEPOT.length) { $("bt-out").innerHTML = ""; return; }
     const ok = [], missing = [];
-    DEPOT.forEach((p) => { const v = p.sym && shortSeries(p.sym, days); if (v) ok.push({ p, v }); else missing.push(p.sym ? nameOf(p.sym) : p.name); });
+    viewDepot().forEach((p) => { const v = p.sym && shortSeries(p.sym, days); if (v) ok.push({ p, v }); else missing.push(p.sym ? nameOf(p.sym) : p.name); });
     if (!ok.length) { $("bt-out").innerHTML = '<p class="sec-note">Für diesen Zeitraum gibt es noch keine Kursdaten – sie kommen mit dem nächsten Tageslauf.</p>'; return; }
     const n = Math.max.apply(null, ok.map((o) => o.v.length)), inv = ok.reduce((s, o) => s + o.p.amount, 0);
     const path = [];
     for (let i = 0; i < n; i++) path.push(ok.reduce((s, o) => { const k = Math.min(o.v.length - 1, Math.round(i * (o.v.length - 1) / (n - 1))); return s + o.p.amount * o.v[k] / o.v[0]; }, 0));
     const now = path[n - 1];
     const rows = ok.map((o) => { const f = o.v[o.v.length - 1] / o.v[0]; return "<tr><td>" + esc(nameOf(o.p.sym)) + "</td><td>" + eur(o.p.amount) + "</td><td>" + eur(o.p.amount * f) + "</td><td>" + signedPct(f - 1) + "</td></tr>"; }).join("");
-    $("bt-out").innerHTML = lineChart([{ v: path, cls: "l1", label: (v) => fmtK(v) + " €", tcls: "t1" }, { v: path.map(() => inv), cls: "l3" }],
+    $("bt-out").innerHTML = pickNote(viewDepot()) + lineChart([{ v: path, cls: "l1", label: (v) => fmtK(v) + " €", tcls: "t1" }, { v: path.map(() => inv), cls: "l3" }],
       ["vor " + label.replace("Monaten", "Mon.").replace("Wochen", "Wo."), "", "heute"], { aria: "Depotwert seit " + label }) +
       '<div class="stats"><div class="stat"></div></div>'.replace('<div class="stat"></div>', stat("Heute wert", eur(now), "statt " + eur(inv)) + stat("Gesamt", signedPct(now / inv - 1), "in " + label) + stat("Tiefster Stand", eur(Math.min.apply(null, path)), "zwischendurch")) +
       '<table class="dp-table bt-table"><thead><tr><th>Aktie</th><th>Damals</th><th>Heute</th><th>Gesamt</th></tr></thead><tbody>' + rows + "</tbody></table>" +
@@ -2493,7 +2527,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     if (!DEPOT.length || !LONG) { $("bt-out").innerHTML = ""; return; }
     const years = Number(sel) || 5, m = years * 12;
     const ok = [], missing = [];
-    DEPOT.forEach((p) => {
+    viewDepot().forEach((p) => {
       const s = p.sym && LONG.q[p.sym];
       if (s && s.v.length > m) ok.push({ p, v: s.v.slice(s.v.length - 1 - m) }); else missing.push(p.sym ? nameOf(p.sym) : p.name);
     });
@@ -2502,7 +2536,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     for (let i = 0; i <= m; i++) path.push(ok.reduce((s, o) => s + o.p.amount * o.v[i] / o.v[0], 0));
     const now = path[m], cagr = Math.pow(now / inv, 1 / years) - 1;
     const rows = ok.map((o) => { const f = o.v[m] / o.v[0]; return "<tr><td>" + esc(nameOf(o.p.sym)) + "</td><td>" + eur(o.p.amount) + "</td><td>" + eur(o.p.amount * f) + "</td><td>" + signedPct(f - 1) + "</td></tr>"; }).join("");
-    $("bt-out").innerHTML = lineChart([{ v: path, cls: "l1", label: (v) => fmtK(v) + " €", tcls: "t1" }, { v: path.map(() => inv), cls: "l3" }],
+    $("bt-out").innerHTML = pickNote(viewDepot()) + lineChart([{ v: path, cls: "l1", label: (v) => fmtK(v) + " €", tcls: "t1" }, { v: path.map(() => inv), cls: "l3" }],
       ["vor " + years + " J.", "", "heute"], { aria: "Depotwert seit " + years + " Jahren" }) +
       '<div class="stats">' + stat("Heute wert", eur(now), "statt " + eur(inv)) + stat("Gesamt", signedPct(now / inv - 1), signedPct(cagr) + " pro Jahr") +
       stat("Tiefster Stand", eur(Math.min.apply(null, path)), "zwischendurch") + "</div>" +
