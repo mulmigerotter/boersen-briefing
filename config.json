@@ -1308,6 +1308,74 @@
     {
       "symbol": "4GLD.DE",
       "name": "Xetra-Gold (ETC, physisches Gold)"
+    },
+    {
+      "symbol": "VUAA.DE",
+      "name": "Vanguard S&P 500 Acc (ETF)"
+    },
+    {
+      "symbol": "VGVE.DE",
+      "name": "Vanguard FTSE Developed World Dist (ETF)"
+    },
+    {
+      "symbol": "VHVE.DE",
+      "name": "Vanguard FTSE Developed World Acc (ETF)"
+    },
+    {
+      "symbol": "VFEM.DE",
+      "name": "Vanguard FTSE Emerging Markets Dist (ETF)"
+    },
+    {
+      "symbol": "VFEA.DE",
+      "name": "Vanguard FTSE Emerging Markets Acc (ETF)"
+    },
+    {
+      "symbol": "VGEU.DE",
+      "name": "Vanguard FTSE Developed Europe Dist (ETF)"
+    },
+    {
+      "symbol": "VGWE.DE",
+      "name": "Vanguard FTSE All-World High Dividend Acc (ETF)"
+    },
+    {
+      "symbol": "V3AA.DE",
+      "name": "Vanguard ESG Global All Cap Acc (ETF)"
+    },
+    {
+      "symbol": "V80A.DE",
+      "name": "Vanguard LifeStrategy 80% Aktien (ETF)"
+    },
+    {
+      "symbol": "V60A.DE",
+      "name": "Vanguard LifeStrategy 60% Aktien (ETF)"
+    },
+    {
+      "symbol": "V40A.DE",
+      "name": "Vanguard LifeStrategy 40% Aktien (ETF)"
+    },
+    {
+      "symbol": "V20A.DE",
+      "name": "Vanguard LifeStrategy 20% Aktien (ETF)"
+    },
+    {
+      "symbol": "VAGF.DE",
+      "name": "Vanguard Global Aggregate Bond (Anleihen-ETF)"
+    },
+    {
+      "symbol": "VGEA.DE",
+      "name": "Vanguard Eurozone Government Bond (Anleihen-ETF)"
+    },
+    {
+      "symbol": "VJPN.DE",
+      "name": "Vanguard FTSE Japan (ETF)"
+    },
+    {
+      "symbol": "VAPX.DE",
+      "name": "Vanguard FTSE Developed Asia Pacific ex Japan (ETF)"
+    },
+    {
+      "symbol": "VNRA.DE",
+      "name": "Vanguard FTSE North America Acc (ETF)"
     }
   ],
   "home_indices": [

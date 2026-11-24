@@ -1558,5 +1558,73 @@
  "LMND": {
   "name": "Lemonade",
   "sector": "Finanzen"
+ },
+ "VUAA.DE": {
+  "name": "Vanguard S&P 500 Acc (ETF)",
+  "sector": "ETF"
+ },
+ "VGVE.DE": {
+  "name": "Vanguard FTSE Developed World Dist (ETF)",
+  "sector": "ETF"
+ },
+ "VHVE.DE": {
+  "name": "Vanguard FTSE Developed World Acc (ETF)",
+  "sector": "ETF"
+ },
+ "VFEM.DE": {
+  "name": "Vanguard FTSE Emerging Markets Dist (ETF)",
+  "sector": "ETF"
+ },
+ "VFEA.DE": {
+  "name": "Vanguard FTSE Emerging Markets Acc (ETF)",
+  "sector": "ETF"
+ },
+ "VGEU.DE": {
+  "name": "Vanguard FTSE Developed Europe Dist (ETF)",
+  "sector": "ETF"
+ },
+ "VGWE.DE": {
+  "name": "Vanguard FTSE All-World High Dividend Acc (ETF)",
+  "sector": "ETF"
+ },
+ "V3AA.DE": {
+  "name": "Vanguard ESG Global All Cap Acc (ETF)",
+  "sector": "ETF"
+ },
+ "V80A.DE": {
+  "name": "Vanguard LifeStrategy 80% Aktien (ETF)",
+  "sector": "ETF"
+ },
+ "V60A.DE": {
+  "name": "Vanguard LifeStrategy 60% Aktien (ETF)",
+  "sector": "ETF"
+ },
+ "V40A.DE": {
+  "name": "Vanguard LifeStrategy 40% Aktien (ETF)",
+  "sector": "ETF"
+ },
+ "V20A.DE": {
+  "name": "Vanguard LifeStrategy 20% Aktien (ETF)",
+  "sector": "ETF"
+ },
+ "VAGF.DE": {
+  "name": "Vanguard Global Aggregate Bond (Anleihen-ETF)",
+  "sector": "ETF"
+ },
+ "VGEA.DE": {
+  "name": "Vanguard Eurozone Government Bond (Anleihen-ETF)",
+  "sector": "ETF"
+ },
+ "VJPN.DE": {
+  "name": "Vanguard FTSE Japan (ETF)",
+  "sector": "ETF"
+ },
+ "VAPX.DE": {
+  "name": "Vanguard FTSE Developed Asia Pacific ex Japan (ETF)",
+  "sector": "ETF"
+ },
+ "VNRA.DE": {
+  "name": "Vanguard FTSE North America Acc (ETF)",
+  "sector": "ETF"
  }
 }
