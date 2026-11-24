@@ -482,6 +482,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 .check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
 .check input { width: 18px; height: 18px; accent-color: var(--accent); }
 .add-row { display: grid; grid-template-columns: 1fr 7.5em auto; gap: 8px; }
+.add-row.add-3 { display: flex; flex-wrap: wrap; }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .search { flex: 1 1 180px; }
 .fav-filter[aria-pressed="true"] { background: var(--accent); color: var(--surface); border-color: var(--accent); }
@@ -541,6 +542,8 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 .seg button { font: inherit; font-size: 13.5px; padding: 6px 12px; background: none; border: 0; color: var(--ink); cursor: pointer; }
 .seg button + button { border-left: 1px solid var(--line); }
 .seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); font-weight: 600; }
+.dp-mode { margin: 4px 0 8px; width: max-content; max-width: 100%; }
+.dp-hint { margin: 6px 0 0; }
 .dp-pick { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 4px; }
 .dp-pick button { font: inherit; font-size: 13.5px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
 .dp-pick button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); font-weight: 600; }
@@ -978,13 +981,18 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 
     <section class="card" aria-labelledby="dp-title">
       <h3 id="dp-title">Meine Aktien</h3>
-      <p class="sec-note">Füge Aktien mit dem Betrag hinzu, den du anlegst oder angelegt hast. Gespeichert wird nur auf diesem Gerät.</p>
+      <p class="sec-note">Füge Aktien hinzu – als Betrag in Euro oder als Anzahl Aktien zum aktuellen Kurs. Gespeichert wird nur auf diesem Gerät.</p>
       <input class="search" id="dp-q" type="search" placeholder="Aktie oder ETF suchen (z. B. „MSCI World“ oder „ETF“)" aria-label="Aktie oder ETF suchen" autocomplete="off">
+      <div class="seg dp-mode" role="group" aria-label="Wie viel kaufen?">
+        <button type="button" data-mode="eur" aria-pressed="true">Betrag in €</button>
+        <button type="button" data-mode="qty" aria-pressed="false">Anzahl Aktien</button>
+      </div>
       <div class="add-row">
         <select id="dp-stock" aria-label="Aktie wählen"></select>
         <input id="dp-amount" type="number" inputmode="decimal" min="1" step="100" value="1000" aria-label="Betrag in Euro">
         <button class="btn" id="dp-add" type="button">Hinzufügen</button>
       </div>
+      <p class="sec-note dp-hint" id="dp-hint"></p>
       <details class="ak-more">
         <summary>Eigene Aktie, die nicht in der Liste ist</summary>
         <div class="form-grid">
@@ -2274,7 +2282,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     body.dataset.done = "1";
     body.innerHTML = sparkHist(sym) + (divText(sym, (px(sym) || {}).local, curOf(sym)) ? '<p class="div-line"><b>Dividende:</b> ' + divText(sym, (px(sym) || {}).local, curOf(sym)) + "</p>" : "") +
       '<p class="pick-foot">Kurs ' + liveSpan(sym, "eurplus") + " · " + liveSpan(sym, "chg") + "</p>" + '<div class="wi">Lade „Was wäre wenn“ …</div>' +
-      '<div class="add-row"><button class="btn" type="button" data-add="' + esc(sym) + '">Zu „Meine Aktien“ (1.000 €)</button><button class="btn ghost" type="button" data-sp="' + esc(sym) + '">Im Sparrechner</button></div>';
+      '<div class="add-row add-3"><button class="btn" type="button" data-add="' + esc(sym) + '">Zu „Meine Aktien“ (1.000 €)</button>' + (priceEur(sym) ? '<button class="btn" type="button" data-add="' + esc(sym) + '" data-qty="1">1 Aktie (' + eur(priceEur(sym)) + ")</button>" : "") + '<button class="btn ghost" type="button" data-sp="' + esc(sym) + '">Im Sparrechner</button></div>';
     await loadLong();
     const srows = SHORT.map(([d, lab]) => { const v = shortSeries(sym, d); if (!v) return ""; const f = v[v.length - 1] / v[0]; return "<tr><td>vor " + lab + "</td><td>" + eur(1000 * f) + "</td><td>" + signedPct(f - 1) + "</td><td>–</td></tr>"; }).join("");
     const rows = srows + [1, 3, 5, 10, 20].map((yrs) => { const w = whatIf(sym, yrs); return w ? "<tr><td>vor " + yrs + (yrs === 1 ? " Jahr" : " Jahren") + "</td><td>" + eur(1000 * w.factor) + "</td><td>" + signedPct(w.factor - 1) + "</td><td>" + signedPct(w.cagr) + " p. a.</td></tr>" : ""; }).join("");
@@ -2300,6 +2308,37 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   // ---------- Rechner ----------
   let DEPOT = ls.get(DKEY, []);
   const saveDepot = () => ls.set(DKEY, DEPOT);
+  // Kaufen als Betrag (€) oder als Stückzahl
+  let DPMODE = "eur";
+  const priceEur = (sym) => { const x = sym && px(sym); return x && x.eur > 0 ? x.eur : null; };
+  const nf0 = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 2 });
+  const stk = (q) => nf0.format(q) + (q === 1 ? " Aktie" : " Aktien");
+  // Stück-Positionen mit aktuellem Kurs neu bewerten
+  function revalue() { DEPOT.forEach((p) => { if (p.qty) { const pr = priceEur(p.sym); if (pr) p.amount = p.qty * pr; } }); }
+  function addToDepot(sym, o) {
+    const pr = priceEur(sym);
+    let amount = o.amount, qty = o.qty || null;
+    if (qty) { if (!pr) return false; amount = qty * pr; }
+    const ex = DEPOT.find((p) => p.sym === sym);
+    if (ex) { if (ex.qty && qty) ex.qty += qty; else delete ex.qty; ex.amount += amount; }
+    else DEPOT.push(qty ? { sym, amount, qty } : { sym, amount });
+    saveDepot(); return amount;
+  }
+  function dpHint() {
+    const sym = $("dp-stock").value, v = Number($("dp-amount").value), pr = priceEur(sym), h = $("dp-hint");
+    if (!sym || !pr) { h.textContent = sym && DPMODE === "qty" ? "Für diese Aktie gibt es gerade keinen Kurs – bitte als Betrag in € hinzufügen." : ""; return; }
+    h.textContent = DPMODE === "qty" ? (v > 0 ? stk(v) + " × " + eur(pr) + " = " + eur(v * pr) : "1 Aktie kostet gerade " + eur(pr) + ".")
+      : (v > 0 ? "Dafür bekommst du ≈ " + nf0.format(v / pr) + " Aktien (1 Aktie = " + eur(pr) + ")." : "");
+  }
+  function setDpMode(m) {
+    if (m === DPMODE) return;
+    const inp = $("dp-amount"), sym = $("dp-stock").value, pr = priceEur(sym), v = Number(inp.value);
+    DPMODE = m;
+    document.querySelectorAll(".dp-mode button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === m)));
+    if (m === "qty") { inp.step = "1"; inp.min = "0.001"; inp.setAttribute("aria-label", "Anzahl Aktien"); inp.value = pr && v > 0 ? Math.max(1, Math.floor(v / pr)) : 1; }
+    else { inp.step = "100"; inp.min = "1"; inp.setAttribute("aria-label", "Betrag in Euro"); inp.value = pr && v > 0 ? Math.round(v * pr) : 1000; }
+    dpHint();
+  }
   // Auswahl einzelner Aktien für Prognose / Was wäre wenn (leer = alle)
   const posKey = (p) => (p.sym ? "s:" + p.sym : "c:" + p.name);
   let PICK = new Set();
@@ -2344,7 +2383,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       const sp = $("sp-stock"); sp.value = ""; fillStockSelects();
       if ($("sp-q").value.trim()) { const f = [...sp.options].find((o) => o.value); if (f) { sp.value = f.value; await applyStockToSpar(f.value); renderSpar(); } }
     });
-    $("dp-q").addEventListener("input", () => { $("dp-stock").value = ""; fillStockSelects(); });
+    $("dp-q").addEventListener("input", () => { $("dp-stock").value = ""; fillStockSelects(); dpHint(); });
     $("sp-mine").addEventListener("click", () => sparPreset("mine"));
     $("sp-heft").addEventListener("click", () => sparPreset("heft"));
     $("pr-mine").addEventListener("click", () => { $("pr-assume").value = "mine"; $("pr-hint").textContent = ""; renderPrognose(); });
@@ -2354,12 +2393,14 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     });
     $("sp-stock").addEventListener("change", async (e) => { await applyStockToSpar(e.target.value); renderSpar(); });
     $("dp-add").addEventListener("click", () => {
-      const sym = $("dp-stock").value, amount = Number($("dp-amount").value);
-      if (!sym || !(amount > 0)) return;
-      const ex = DEPOT.find((p) => p.sym === sym);
-      if (ex) ex.amount += amount; else DEPOT.push({ sym, amount });
-      saveDepot(); renderDepot();
+      const sym = $("dp-stock").value, v = Number($("dp-amount").value);
+      if (!sym || !(v > 0)) return;
+      if (addToDepot(sym, DPMODE === "qty" ? { qty: v } : { amount: v }) === false) { dpHint(); return; }
+      renderDepot();
     });
+    document.querySelectorAll(".dp-mode button").forEach((b) => b.addEventListener("click", () => setDpMode(b.dataset.mode)));
+    $("dp-amount").addEventListener("input", dpHint);
+    $("dp-stock").addEventListener("change", dpHint);
     $("cu-add").addEventListener("click", () => {
       const name = $("cu-name").value.trim() || "Eigene Aktie", amount = Number($("cu-amount").value);
       if (!(amount > 0)) return;
@@ -2380,9 +2421,10 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     document.addEventListener("click", async (e) => {
       const add = e.target.closest("button[data-add]"), sp = e.target.closest("button[data-sp]");
       if (add) {
-        const sym = add.dataset.add, ex = DEPOT.find((p) => p.sym === sym);
-        if (ex) ex.amount += 1000; else DEPOT.push({ sym, amount: 1000 });
-        saveDepot(); showToast(nameOf(sym) + " mit 1.000 € zu „Meine Aktien“ hinzugefügt.");
+        const sym = add.dataset.add, one = add.dataset.qty === "1";
+        const a = addToDepot(sym, one ? { qty: 1 } : { amount: 1000 });
+        if (a === false) showToast("Für " + nameOf(sym) + " gibt es gerade keinen Kurs.");
+        else showToast(one ? "1 Aktie " + nameOf(sym) + " (" + eur(a) + ") zu „Meine Aktien“ hinzugefügt." : nameOf(sym) + " mit 1.000 € zu „Meine Aktien“ hinzugefügt.");
       } else if (sp) {
         location.hash = "#rechner";
         $("sp-stock").value = sp.dataset.sp;
@@ -2422,7 +2464,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     hint.textContent = nameOf(sym) + ": Kurswachstum so, dass das Heft-Ziel in 12 Monaten erreicht wird (" + signedPct(g) + " pro Jahr), danach gleichbleibend fortgeschrieben – über viele Jahre ist das sehr optimistisch. Werte kannst du ändern.";
     renderSpar();
   }
-  function renderCalc() { initCalc(); renderSpar(); renderDepot(); }
+  function renderCalc() { initCalc(); renderSpar(); renderDepot(); dpHint(); }
   function renderSpar() {
     const start = Math.max(0, Number($("sp-start").value) || 0), rate = Math.max(0, Number($("sp-rate").value) || 0);
     const years = clip(Math.round(Number($("sp-years").value) || 1), 1, 50);
@@ -2463,11 +2505,12 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       $("dp-table").innerHTML = '<p class="sec-note">Noch keine Aktien. Wähle oben eine Aktie und einen Betrag – oder tippe in „Alle Aktien“ auf „Zu Meine Aktien“.</p>';
       $("pr-out").innerHTML = ""; $("bt-out").innerHTML = ""; renderPick(); return;
     }
+    revalue(); saveDepot();
     let tot = 0, totDiv = 0;
     const rows = DEPOT.map((p, i) => {
       const inf = posInfo(p), d = p.amount * inf.y; tot += p.amount; totDiv += d;
       const r = riskClass(inf.sigma);
-      return '<tr data-row="' + esc(posKey(p)) + '"><td>' + esc(inf.name) + (inf.custom ? " <small>(eigene)</small>" : copyBtn(p.sym, inf.name)) + "</td><td>" + eur(p.amount) + "</td><td>" + nf1.format(inf.y * 100) + " %</td><td>" + eur(d) +
+      return '<tr data-row="' + esc(posKey(p)) + '"><td>' + esc(inf.name) + (inf.custom ? " <small>(eigene)</small>" : copyBtn(p.sym, inf.name)) + "</td><td>" + eur(p.amount) + (p.qty ? "<br><small>" + stk(p.qty) + "</small>" : "") + "</td><td>" + nf1.format(inf.y * 100) + " %</td><td>" + eur(d) +
         '</td><td><span class="risk ' + r[0] + '">' + r[1] + '</span></td><td><button type="button" data-del="' + i + '" aria-label="' + esc(inf.name) + ' entfernen">✕</button></td></tr>';
     }).join("");
     $("dp-table").innerHTML = '<div class="tbl"><table class="dp-table"><thead><tr><th>Aktie</th><th>Betrag</th><th>Div.</th><th>pro Jahr</th><th>Risiko</th><th></th></tr></thead><tbody>' + rows +
