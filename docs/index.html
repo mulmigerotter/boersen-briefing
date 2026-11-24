@@ -947,7 +947,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <h3 id="sp-title">Dividenden- und Sparrechner</h3>
       <p class="sec-note">Wie wächst dein Geld, wenn du einmal anlegst und monatlich sparst? Dividenden werden einmal im Jahr gezahlt und auf Wunsch wieder angelegt.</p>
       <label class="sortbox wide">Aktie suchen
-        <input class="search" id="sp-q" type="search" placeholder="Name, Kürzel oder Branche" autocomplete="off">
+        <input class="search" id="sp-q" type="search" placeholder="Aktie oder ETF: Name, Kürzel, Branche" autocomplete="off">
       </label>
       <label class="sortbox wide">Werte einer Aktie übernehmen
         <select id="sp-stock"><option value="">– eigene Werte –</option></select>
@@ -974,7 +974,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     <section class="card" aria-labelledby="dp-title">
       <h3 id="dp-title">Meine Aktien</h3>
       <p class="sec-note">Füge Aktien mit dem Betrag hinzu, den du anlegst oder angelegt hast. Gespeichert wird nur auf diesem Gerät.</p>
-      <input class="search" id="dp-q" type="search" placeholder="Aktie suchen: Name, Kürzel oder Branche" aria-label="Aktie suchen" autocomplete="off">
+      <input class="search" id="dp-q" type="search" placeholder="Aktie oder ETF suchen (z. B. „MSCI World“ oder „ETF“)" aria-label="Aktie oder ETF suchen" autocomplete="off">
       <div class="add-row">
         <select id="dp-stock" aria-label="Aktie wählen"></select>
         <input id="dp-amount" type="number" inputmode="decimal" min="1" step="100" value="1000" aria-label="Betrag in Euro">
@@ -2292,15 +2292,16 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   function fillStockSelects() {
     const all = Object.keys(STOCKS).sort((a, b) => nameOf(a).localeCompare(nameOf(b), "de"));
     const favs = all.filter((s) => FAVS.has(s));
+    const etfs = all.filter((s) => sectorOf(s) === "ETF"), shares = all.filter((s) => sectorOf(s) !== "ETF");
     const opts = (list) => list.map((s) => '<option value="' + esc(s) + '">' + esc(nameOf(s)) + "</option>").join("");
     const match = (q) => (s) => { const t = q.trim().toLowerCase(); return !t || (nameOf(s) + " " + s + " " + sectorOf(s)).toLowerCase().includes(t); };
     const qs = $("sp-q").value, qd = $("dp-q").value;
     const flat = (q) => { const l = all.filter(match(q)); return l.length ? opts(l) : ""; };
-    const grouped = (favs.length ? '<optgroup label="★ Favoriten">' + opts(favs) + "</optgroup>" : "") + '<optgroup label="Alle Aktien">' + opts(all) + "</optgroup>";
+    const grouped = (favs.length ? '<optgroup label="★ Favoriten">' + opts(favs) + "</optgroup>" : "") + (etfs.length ? '<optgroup label="📦 ETFs">' + opts(etfs) + "</optgroup>" : "") + '<optgroup label="Alle Aktien">' + opts(shares) + "</optgroup>";
     const sp = $("sp-stock"), keep = sp.value;
-    sp.innerHTML = '<option value="">– eigene Werte –</option>' + (qs.trim() ? (flat(qs) || '<option value="" disabled>Keine Aktie gefunden</option>') : grouped); sp.value = keep;
+    sp.innerHTML = '<option value="">– eigene Werte –</option>' + (qs.trim() ? (flat(qs) || '<option value="" disabled>Nichts gefunden</option>') : grouped); sp.value = keep;
     const dp = $("dp-stock"), keep2 = dp.value;
-    dp.innerHTML = qd.trim() ? (flat(qd) || '<option value="" disabled>Keine Aktie gefunden</option>') : grouped; if (keep2) dp.value = keep2;
+    dp.innerHTML = qd.trim() ? (flat(qd) || '<option value="" disabled>Nichts gefunden</option>') : grouped; if (keep2) dp.value = keep2;
     if (qd.trim() && !dp.selectedOptions[0]?.value) dp.selectedIndex = [...dp.options].findIndex((o) => o.value);
   }
   let calcReady = false;
@@ -2318,7 +2319,7 @@ button.fd-m:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     $("sp-heft").addEventListener("click", () => sparPreset("heft"));
     $("pr-mine").addEventListener("click", () => { $("pr-assume").value = "mine"; $("pr-hint").textContent = ""; renderPrognose(); });
     $("pr-heft").addEventListener("click", () => {
-      if (!AK.data) { $("pr-hint").textContent = "Die Hefte sind gesperrt: erst den Gesperrten Bereich mit dem PIN öffnen, dann hier erneut tippen."; return; }
+      if (!AK.data) { $("pr-hint").textContent = "Die Heft-Prognosen gibt es nur für freigeschaltete Konten: erst anmelden und den gesperrten Bereich öffnen, dann hier erneut tippen."; return; }
       $("pr-assume").value = "heft"; $("pr-hint").textContent = ""; renderPrognose();
     });
     $("sp-stock").addEventListener("change", async (e) => { await applyStockToSpar(e.target.value); renderSpar(); });
