@@ -1318,10 +1318,6 @@
       "name": "Vanguard FTSE Developed World Dist (ETF)"
     },
     {
-      "symbol": "VHVE.DE",
-      "name": "Vanguard FTSE Developed World Acc (ETF)"
-    },
-    {
       "symbol": "VFEM.DE",
       "name": "Vanguard FTSE Emerging Markets Dist (ETF)"
     },
@@ -1368,10 +1364,6 @@
     {
       "symbol": "VJPN.DE",
       "name": "Vanguard FTSE Japan (ETF)"
-    },
-    {
-      "symbol": "VAPX.DE",
-      "name": "Vanguard FTSE Developed Asia Pacific ex Japan (ETF)"
     },
     {
       "symbol": "VNRA.DE",
