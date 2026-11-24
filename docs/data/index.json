@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-23T09:40:26Z",
+ "updated": "2026-11-24T08:49:09Z",
  "days": [
+  {
+   "date": "2026-11-24",
+   "kind": "tag",
+   "headline": "DAX fällt um 0,4 % – Siemens Energy vorn, Bayer hinten",
+   "dax": -0.44
+  },
   {
    "date": "2026-11-23",
    "kind": "tag",
