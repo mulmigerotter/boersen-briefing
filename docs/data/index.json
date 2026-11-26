@@ -1,6 +1,12 @@
 {
- "updated": "2026-11-25T22:31:23Z",
+ "updated": "2026-11-26T22:30:53Z",
  "days": [
+  {
+   "date": "2026-11-26",
+   "kind": "tag",
+   "headline": "DAX steigt um 2,1 % – Volkswagen Vz. vorn, Commerzbank hinten",
+   "dax": 2.08
+  },
   {
    "date": "2026-11-25",
    "kind": "tag",
