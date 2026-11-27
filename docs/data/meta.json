@@ -1,17 +1,17 @@
 {
  "ADS.DE": {
-  "updated": "2026-11-25",
-  "target": 199.66667,
+  "updated": "2026-11-27",
+  "target": 198.13333,
   "n_analysts": 30,
   "currency": "EUR",
-  "buy_share": 0.75,
+  "buy_share": 0.71875,
   "n_ratings": 32,
   "earnings": [
    "2026-10-29"
   ]
  },
  "AIR.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": null,
   "n_analysts": 0,
   "currency": "EUR",
@@ -20,8 +20,8 @@
   ]
  },
  "ALV.DE": {
-  "updated": "2026-11-25",
-  "target": 455.48486,
+  "updated": "2026-11-27",
+  "target": 456.95544,
   "n_analysts": 17,
   "currency": "EUR",
   "buy_share": 0.29411764705882354,
@@ -31,8 +31,8 @@
   ]
  },
  "BAS.DE": {
-  "updated": "2026-11-25",
-  "target": 53.91667,
+  "updated": "2026-11-27",
+  "target": 53.80556,
   "n_analysts": 18,
   "currency": "EUR",
   "buy_share": 0.4444444444444444,
@@ -42,18 +42,18 @@
   ]
  },
  "BAYN.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 61.08333,
   "n_analysts": 18,
   "currency": "EUR",
-  "buy_share": 0.7222222222222222,
+  "buy_share": 0.7777777777777778,
   "n_ratings": 18,
   "earnings": [
    "2026-11-03"
   ]
  },
  "BEI.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 81.95238,
   "n_analysts": 21,
   "currency": "EUR",
@@ -64,7 +64,7 @@
   ]
  },
  "BMW.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 66.77368,
   "n_analysts": 19,
   "currency": "EUR",
@@ -75,8 +75,8 @@
   ]
  },
  "BNR.DE": {
-  "updated": "2026-11-25",
-  "target": 59.33333,
+  "updated": "2026-11-27",
+  "target": 59.26667,
   "n_analysts": 15,
   "currency": "EUR",
   "buy_share": 0.13333333333333333,
@@ -86,18 +86,18 @@
   ]
  },
  "CBK.DE": {
-  "updated": "2026-11-25",
-  "target": 42.38333,
+  "updated": "2026-11-27",
+  "target": 41.71667,
   "n_analysts": 12,
   "currency": "EUR",
-  "buy_share": 0.3076923076923077,
-  "n_ratings": 13,
+  "buy_share": 0.16666666666666666,
+  "n_ratings": 12,
   "earnings": [
    "2027-02-11"
   ]
  },
  "CON.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 80.58333,
   "n_analysts": 12,
   "currency": "EUR",
@@ -108,8 +108,8 @@
   ]
  },
  "DTG.DE": {
-  "updated": "2026-11-25",
-  "target": 49.53333,
+  "updated": "2026-11-27",
+  "target": 49.36667,
   "n_analysts": 18,
   "currency": "EUR",
   "buy_share": 0.6666666666666666,
@@ -119,7 +119,7 @@
   ]
  },
  "DBK.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 35.58306,
   "n_analysts": 18,
   "currency": "EUR",
@@ -130,7 +130,7 @@
   ]
  },
  "DB1.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 320.64285,
   "n_analysts": 14,
   "currency": "EUR",
@@ -141,8 +141,8 @@
   ]
  },
  "DTE.DE": {
-  "updated": "2026-11-25",
-  "target": 35.81111,
+  "updated": "2026-11-27",
+  "target": 35.53333,
   "n_analysts": 18,
   "currency": "EUR",
   "buy_share": 0.8823529411764706,
@@ -152,7 +152,7 @@
   ]
  },
  "DHL.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 59.02046,
   "n_analysts": 19,
   "currency": "EUR",
@@ -163,7 +163,7 @@
   ]
  },
  "EOAN.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 20.88489,
   "n_analysts": 18,
   "currency": "EUR",
@@ -174,18 +174,18 @@
   ]
  },
  "FRE.DE": {
-  "updated": "2026-11-25",
-  "target": 58.83571,
+  "updated": "2026-11-27",
+  "target": 60.27857,
   "n_analysts": 14,
   "currency": "EUR",
-  "buy_share": 0.8571428571428571,
+  "buy_share": 0.9285714285714286,
   "n_ratings": 14,
   "earnings": [
    "2026-11-04"
   ]
  },
  "FME.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 39.38824,
   "n_analysts": 17,
   "currency": "EUR",
@@ -196,7 +196,7 @@
   ]
  },
  "G1A.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 73.19444,
   "n_analysts": 18,
   "currency": "EUR",
@@ -207,7 +207,7 @@
   ]
  },
  "HNR1.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 286.8,
   "n_analysts": 15,
   "currency": "EUR",
@@ -218,7 +218,7 @@
   ]
  },
  "HEI.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 207.33333,
   "n_analysts": 18,
   "currency": "EUR",
@@ -229,7 +229,7 @@
   ]
  },
  "HEN3.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 83.14222,
   "n_analysts": 18,
   "currency": "EUR",
@@ -240,18 +240,18 @@
   ]
  },
  "HOT.DE": {
-  "updated": "2026-11-25",
-  "target": 472.575,
-  "n_analysts": 8,
+  "updated": "2026-11-27",
+  "target": 460.86,
+  "n_analysts": 10,
   "currency": "EUR",
-  "buy_share": 0.25,
-  "n_ratings": 8,
+  "buy_share": 0.3,
+  "n_ratings": 10,
   "earnings": [
    "2027-02-18"
   ]
  },
  "IFX.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 80.16,
   "n_analysts": 25,
   "currency": "EUR",
@@ -262,7 +262,7 @@
   ]
  },
  "MBG.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 49.1525,
   "n_analysts": 20,
   "currency": "EUR",
@@ -273,8 +273,8 @@
   ]
  },
  "MRK.DE": {
-  "updated": "2026-11-25",
-  "target": 160.0,
+  "updated": "2026-11-27",
+  "target": 160.35715,
   "n_analysts": 14,
   "currency": "EUR",
   "buy_share": 0.42857142857142855,
@@ -284,7 +284,7 @@
   ]
  },
  "MTX.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 408.35,
   "n_analysts": 20,
   "currency": "EUR",
@@ -295,18 +295,18 @@
   ]
  },
  "MUV2.DE": {
-  "updated": "2026-11-25",
-  "target": 559.125,
+  "updated": "2026-11-27",
+  "target": 561.0,
   "n_analysts": 16,
   "currency": "EUR",
-  "buy_share": 0.1875,
+  "buy_share": 0.125,
   "n_ratings": 16,
   "earnings": [
    "2026-11-12"
   ]
  },
  "QIA.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 43.1,
   "n_analysts": 5,
   "currency": "EUR",
@@ -317,8 +317,8 @@
   ]
  },
  "RHM.DE": {
-  "updated": "2026-11-25",
-  "target": 1296.2273,
+  "updated": "2026-11-27",
+  "target": 1278.0454,
   "n_analysts": 22,
   "currency": "EUR",
   "buy_share": 0.7727272727272727,
@@ -328,7 +328,7 @@
   ]
  },
  "RWE.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 70.42222,
   "n_analysts": 18,
   "currency": "EUR",
@@ -339,7 +339,7 @@
   ]
  },
  "SAP.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 243.54222,
   "n_analysts": 27,
   "currency": "EUR",
@@ -350,20 +350,20 @@
   ]
  },
  "G24.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 107.90556,
   "n_analysts": 18,
   "currency": "EUR",
   "buy_share": 0.8333333333333334,
   "n_ratings": 18,
   "earnings": [
-   "2026-11-04"
+   "2027-03-25"
   ]
  },
  "SIE.DE": {
-  "updated": "2026-11-25",
-  "target": 310.64825,
-  "n_analysts": 23,
+  "updated": "2026-11-27",
+  "target": 311.66293,
+  "n_analysts": 24,
   "currency": "EUR",
   "buy_share": 0.6,
   "n_ratings": 25,
@@ -372,7 +372,7 @@
   ]
  },
  "ENR.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 191.53178,
   "n_analysts": 28,
   "currency": "EUR",
@@ -383,18 +383,18 @@
   ]
  },
  "SHL.DE": {
-  "updated": "2026-11-25",
-  "target": 46.87,
-  "n_analysts": 20,
+  "updated": "2026-11-27",
+  "target": 46.81053,
+  "n_analysts": 19,
   "currency": "EUR",
-  "buy_share": 0.6,
-  "n_ratings": 20,
+  "buy_share": 0.5789473684210527,
+  "n_ratings": 19,
   "earnings": [
    "2027-02-04"
   ]
  },
  "SY1.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 104.83333,
   "n_analysts": 15,
   "currency": "EUR",
@@ -403,7 +403,7 @@
   "earnings": []
  },
  "VOW3.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 98.15556,
   "n_analysts": 18,
   "currency": "EUR",
@@ -414,8 +414,8 @@
   ]
  },
  "VNA.DE": {
-  "updated": "2026-11-25",
-  "target": 22.31333,
+  "updated": "2026-11-27",
+  "target": 21.91333,
   "n_analysts": 15,
   "currency": "EUR",
   "buy_share": 0.5,
@@ -425,7 +425,7 @@
   ]
  },
  "ZAL.DE": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 35.47826,
   "n_analysts": 23,
   "currency": "EUR",
@@ -436,7 +436,7 @@
   ]
  },
  "NVDA": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 242.4278,
   "n_analysts": 59,
   "currency": "USD",
@@ -447,7 +447,7 @@
   ]
  },
  "AAPL": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 345.6313,
   "n_analysts": 39,
   "currency": "USD",
@@ -458,7 +458,7 @@
   ]
  },
  "MSFT": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 637.3617,
   "n_analysts": 54,
   "currency": "USD",
@@ -469,7 +469,7 @@
   ]
  },
  "AMZN": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 326.34033,
   "n_analysts": 60,
   "currency": "USD",
@@ -480,7 +480,7 @@
   ]
  },
  "GOOGL": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 395.1078,
   "n_analysts": 54,
   "currency": "USD",
@@ -491,7 +491,7 @@
   ]
  },
  "META": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 842.53656,
   "n_analysts": 58,
   "currency": "USD",
@@ -502,7 +502,7 @@
   ]
  },
  "TSLA": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 419.05,
   "n_analysts": 41,
   "currency": "USD",
@@ -513,7 +513,7 @@
   ]
  },
  "AVGO": {
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "target": 523.28064,
   "n_analysts": 47,
   "currency": "USD",
